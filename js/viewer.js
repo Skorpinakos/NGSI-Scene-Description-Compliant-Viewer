@@ -38,7 +38,8 @@ export async function initViewer() {
   });
 
   // Load the splat scene
-  const sceneFile = './splat_data/555k_bodegas.ksplat';
+  // const sceneFile = './splat_data/555k_bodegas.ksplat';
+  const sceneFile = './splat_data/4500k_bodegas.ksplat';
   await viewer.addSplatScene(sceneFile, {
     position: [0, 0, 0],
     scale: [1, 1, 1],
