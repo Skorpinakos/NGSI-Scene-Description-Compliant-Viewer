@@ -91,6 +91,55 @@ export function createSecondaryScene() {
       console.error('An error occurred while loading the model:', error);
   });
 
+  //Load Aircraft 
+  const aircraftLoader= new OBJLoader();
+  const textureLoader_ac = new THREE.TextureLoader();
+  const aircraftTexture = textureLoader_ac.load('./mesh_data/aircraft/steel.jpg');
+
+
+  aircraftLoader.load('./mesh_data/aircraft/aircraft.obj', (object) => {
+    object.traverse((child) => {
+        if (child.isMesh) {
+            child.material = new THREE.MeshStandardMaterial({
+                map: aircraftTexture,
+                color: 0xffffff,
+                roughness: 0.5,
+                metalness: 0.2,
+            });
+        }
+    });
+    object.position.set(-2, -10, 0);
+    object.scale.set(0.5, -0.5, 0.5);
+    object.rotation.y = Math.PI/2; //roll pitch yaw x , y , z
+    secondaryScene.add(object);
+}, undefined, (error) => {
+    console.error('An error occurred while loading the model:', error);
+}
+);
+
+const manLoader= new OBJLoader();
+const texture_manLoader = new THREE.TextureLoader();
+// const manTexture = texture_manLoader
+// .load('./mesh_data/aircaft/steel.jpg');
+manLoader.load('./mesh_data/man/FinalBaseMesh.obj', (object) => {
+  // object.traverse((child) => {
+  //     if (child.isMesh) {
+  //         child.material = new THREE.MeshStandardMaterial({
+  //             map: manTexture,
+  //             color: 0xffffff,
+  //             roughness: 0.5,
+  //             metalness: 0.2,
+  //         });
+  //     }
+  // });
+  object.position.set(-3, 0, 0);
+  object.scale.set(0.1, -0.1, 0.1);
+  secondaryScene.add(object);
+}, undefined, (error) => {
+  console.error('An error occurred while loading the model:', error);
+}
+);
+
   // Update sign text every 3 seconds
   setInterval(() => {
     messageIndex = (messageIndex + 1) % signMessages.length;

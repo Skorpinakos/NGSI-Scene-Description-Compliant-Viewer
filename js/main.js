@@ -101,7 +101,7 @@ initViewer().then(() => {
   // Main animation loop
   const clock = new THREE.Clock();
   const allowedBox1 = new THREE.Box3(
-    new THREE.Vector3(-30, -3.5, -2), // minX, minY, minZ
+    new THREE.Vector3(-30, -3.5, -2), // minX, minY, minZ //TODO ask how those where determined
     new THREE.Vector3(20, -1.5, 2)     // maxX, maxY, maxZ
   );
   function animate() {
