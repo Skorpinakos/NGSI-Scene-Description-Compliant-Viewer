@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="VPV0Q4vTDiiC92GclTuC" name="Page-1">
-        <mxGraphModel dx="1949" dy="563" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+        <mxGraphModel dx="1724" dy="487" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -115,19 +115,19 @@
                         <mxPoint x="740" y="88.82" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="32" value="Anotations" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="32" value="Anotations" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry y="280" width="80" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="33" value="" style="endArrow=classic;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="18" target="32">
+                <mxCell id="33" value="" style="endArrow=classic;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0;exitY=1;exitDx=0;exitDy=0;" parent="1" source="18" target="32" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="160" y="210" as="sourcePoint"/>
                         <mxPoint x="130" y="260" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="34" value="Labels" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+                <mxCell id="34" value="Labels" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
                     <mxGeometry x="-20" y="320" width="110" height="35" as="geometry"/>
                 </mxCell>
-                <mxCell id="35" value="" style="endArrow=classic;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;dashed=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="14">
+                <mxCell id="35" value="" style="endArrow=classic;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;dashed=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="3" target="14" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="40" y="140" as="sourcePoint"/>
                         <mxPoint x="360" y="280" as="targetPoint"/>
@@ -137,6 +137,24 @@
                             <mxPoint x="360" y="290"/>
                         </Array>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="36" value="Sensor" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="-50" y="490" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="&lt;div&gt;Device ID&lt;/div&gt;&lt;div&gt;Model&lt;/div&gt;&lt;div&gt;FW Vesion&lt;/div&gt;&lt;div&gt;Net Layer identifier&lt;/div&gt;&lt;div&gt;Posting Data: URL or MQTT Broker&lt;/div&gt;Measurements(eg):&lt;div&gt;-&amp;gt;Temp&lt;/div&gt;&lt;div&gt;-&amp;gt;Humidity&lt;/div&gt;&lt;div&gt;Sensor Status: Baterry % etc&lt;/div&gt;&lt;div&gt;Timestamp&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
+                    <mxGeometry x="-150" y="520" width="280" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" value="" style="endArrow=classic;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="120" y="610" as="sourcePoint"/>
+                        <mxPoint x="320" y="610" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="39" value="Sensor Representation" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="490" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="&lt;div&gt;Sensor ID&lt;/div&gt;&lt;div&gt;Type of Sensor&lt;/div&gt;&lt;div&gt;3D Representation { obj src, texture src}&lt;/div&gt;&lt;div&gt;GeoPose Positioning (Lat,Lon,YPR) or GIS&lt;/div&gt;&lt;div&gt;Data source (API etc)&lt;/div&gt;&lt;div&gt;Measurements of interest {type of measurement}&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
+                    <mxGeometry x="310" y="520" width="300" height="200" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
