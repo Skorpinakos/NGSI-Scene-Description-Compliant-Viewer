@@ -1,6 +1,7 @@
 // secondaryScene.js: Builds the secondary scene with additional objects
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { add } from 'three/tsl';
 
 let secondaryScene, cube, sign, signTexture, signMessages, messageIndex = 0;
 
@@ -69,36 +70,41 @@ export function createSecondaryScene() {
   sign.position.set(2, -1.75, 0);
   secondaryScene.add(sign);
 
-    // Update sign text every 3 seconds
-    setInterval(() => {
-      messageIndex = (messageIndex + 1) % signMessages.length;
-      drawSignText(signMessages[messageIndex]);
-      signTexture.needsUpdate = true;
-    }, 3000);
+  function addObjectToScene(obj_src,tecture_src, position, scale, rotation) {
+    const objLoader = new OBJLoader();
+    const textureLoader = new THREE.TextureLoader();
+     const texture = textureLoader.load(tecture_src);
+    
+    objLoader.load(obj_src, (object) => {
+          object.traverse((child) => {
+              if (child.isMesh) {
+                  child.material = new THREE.MeshStandardMaterial({
+                      map: texture,
+                      color: 0xffffff,
+                      roughness: 0.5,
+                      metalness: 0.2,
+                  });
+              }
+          });
+        object.position.set(position[0], position[1], position[2]);
+        object.scale.set(scale[0], scale[1], scale[2]);
+        object.rotation.y = rotation[0];
+        secondaryScene.add(object);
+    }, undefined, (error) => {
+        console.error('An error occurred while loading the model:', error);
+    });
+  }
 
-  // Load weather station model via OBJLoader
-  const objLoader = new OBJLoader();
-  const textureLoader_ws = new THREE.TextureLoader();
-  const weatherStationTexture = textureLoader_ws.load('./mesh_data/ws/weather_station.png');
-  objLoader.load('./mesh_data/ws/weather_station.obj', (object) => {
-      object.traverse((child) => {
-          if (child.isMesh) {
-              child.material = new THREE.MeshStandardMaterial({
-                  map: weatherStationTexture,
-                  color: 0xffffff,
-                  roughness: 0.5,
-                  metalness: 0.2,
-              });
-          }
-      });
-      object.position.set(2, -1, 0);
-      object.scale.set(0.5, -0.5, 0.5);
-      secondaryScene.add(object);
-  }, undefined, (error) => {
-      console.error('An error occurred while loading the model:', error);
-  });
+  addObjectToScene('./mesh_data/ws/weather_station.obj','./mesh_data/ws/weather_station.png',[2, -1, 0],[0.5, -0.5, 0.5],[0]);
+  addObjectToScene('./mesh_data/aircraft/aircraft.obj','./mesh_data/aircraft/steel.jpg',[-2, -10, 0],[0.5, -0.5, 0.5],[Math.PI/2]);
+  addObjectToScene('./mesh_data/man/FinalBaseMesh.obj',null,[-3, 0, 0],[0.1, -0.1, 0.1],[0]);  
 
-
+  // Update sign text every 3 seconds
+  setInterval(() => {
+    messageIndex = (messageIndex + 1) % signMessages.length;
+    drawSignText(signMessages[messageIndex]);
+    signTexture.needsUpdate = true;
+  }, 3000);
 
   return secondaryScene;
 }

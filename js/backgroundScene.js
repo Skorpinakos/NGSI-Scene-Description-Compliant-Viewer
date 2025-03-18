@@ -58,6 +58,8 @@ export async function initViewer() {
   });
 
   // Load the splat scene
+  // const sceneFile = './splat_data/555k_bodegas.ksplat';
+
   const objectPath = import.meta.env.VITE_3D_OBJECT_PATH;
   const sceneFile = objectPath;
   await viewer.addSplatScene(sceneFile, {
