@@ -3,8 +3,7 @@ const startTime = performance.now();
 
 import { hideViewerContainer, showViewerContainer, removeWelcomeScreen, setupPointerLock, createControlsOverlay } from './loading_helper.js';
 import { createRenderer, adjustRendererSize, getRenderer, getRenderTarget } from './renderer.js';
-import { createMainScene, getCamera } from './scene.js';
-import { initViewer, updateViewer, renderViewer } from './viewer.js';
+import { createMainScene, getCamera, initViewer, updateViewer, renderViewer  } from './backgroundScene.js';
 import { setupUI, getDynamicConfig } from './ui.js';
 import { createSecondaryScene, updateSecondaryObjects } from './secondaryScene.js';
 import { handleControls } from './controls.js';

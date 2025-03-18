@@ -1,9 +1,29 @@
-// viewer.js: Initializes and manages the Gaussian Splats viewer
+// scene.js: Creates the main Three.js scene and camera
+//Initializes and manages a viewer (currently the gsplat viewer) 
 import * as THREE from 'three';
 import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
 
 import { getRenderer } from './renderer.js';
-import { getCamera } from './scene.js';
+
+let mainScene, camera;
+
+export function createMainScene() {
+  mainScene = new THREE.Scene();
+  // Set up the primary camera
+  camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 500);
+  camera.position.set(0, 3, 0);
+  camera.rotation.order = 'YXZ';
+  camera.up.set(0, 1, 0);
+  camera.rotation.set(0, 0, Math.PI);
+  return mainScene;
+}
+
+export function getCamera() {
+  return camera;
+}
+
+
+
 
 let viewer;
 
@@ -38,7 +58,8 @@ export async function initViewer() {
   });
 
   // Load the splat scene
-  const sceneFile = './splat_data/555k_bodegas.ksplat';
+  const objectPath = import.meta.env.VITE_3D_OBJECT_PATH;
+  const sceneFile = objectPath;
   await viewer.addSplatScene(sceneFile, {
     position: [0, 0, 0],
     scale: [1, 1, 1],

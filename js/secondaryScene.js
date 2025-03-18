@@ -69,6 +69,13 @@ export function createSecondaryScene() {
   sign.position.set(2, -1.75, 0);
   secondaryScene.add(sign);
 
+    // Update sign text every 3 seconds
+    setInterval(() => {
+      messageIndex = (messageIndex + 1) % signMessages.length;
+      drawSignText(signMessages[messageIndex]);
+      signTexture.needsUpdate = true;
+    }, 3000);
+
   // Load weather station model via OBJLoader
   const objLoader = new OBJLoader();
   const textureLoader_ws = new THREE.TextureLoader();
@@ -91,12 +98,7 @@ export function createSecondaryScene() {
       console.error('An error occurred while loading the model:', error);
   });
 
-  // Update sign text every 3 seconds
-  setInterval(() => {
-    messageIndex = (messageIndex + 1) % signMessages.length;
-    drawSignText(signMessages[messageIndex]);
-    signTexture.needsUpdate = true;
-  }, 3000);
+
 
   return secondaryScene;
 }

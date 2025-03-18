@@ -1,6 +1,6 @@
 // renderer.js: Handles the WebGLRenderer and resolution adjustments
 import * as THREE from 'three';
-import { getCamera } from './scene.js';
+import { getCamera } from './backgroundScene.js';
 
 let renderer, renderTarget;
 
