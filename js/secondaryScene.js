@@ -2,13 +2,89 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import mqtt from 'mqtt';
 
-let secondaryScene, cube;
 
-let mqtt_broker = "150.140.186.118";
-let mqtt_port = "1883";
-let mqtt_topic = "ster/DT/temperature";
+// Scene Manager
+class SceneManager {
+  constructor() {
+    this.scene = new THREE.Scene();
+    this.objects = [];
+  }
 
-// Class for dynamic text signs
+  addObject(object) {
+    this.scene.add(object);
+    this.objects.push(object);
+  }
+
+  removeObject(object) {
+    this.scene.remove(object);
+    this.objects = this.objects.filter(obj => obj !== object);
+  }
+
+  update(delta) {
+    this.objects.forEach(obj => {
+      if (typeof obj.update === 'function') {
+        obj.update(delta);
+      }
+    });
+  }
+
+  getScene() {
+    return this.scene;
+  }
+}
+
+// Light Manager
+class LightManager {
+  constructor(scene) {
+    this.scene = scene;
+  }
+
+  addPointLight(color = 0xffffff, intensity = 4, position = [0, -3, 0]) {
+    const light = new THREE.PointLight(color, intensity);
+    light.position.set(...position);
+    this.scene.add(light);
+  }
+
+  addAmbientLight(color = 0xffffff, intensity = 0.4) {
+    const ambientLight = new THREE.AmbientLight(color, intensity);
+    this.scene.add(ambientLight);
+  }
+}
+
+// Object Loader
+class ObjectLoaderManager {
+  constructor(scene) {
+    this.scene = scene;
+    this.objLoader = new OBJLoader();
+    this.textureLoader = new THREE.TextureLoader();
+  }
+
+  addObject(objSrc, textureSrc, position, scale, rotation) {
+    const texture = textureSrc ? this.textureLoader.load(textureSrc) : null;
+
+    this.objLoader.load(objSrc, (object) => {
+      object.traverse((child) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            map: texture,
+            color: 0xffffff,
+            roughness: 0.5,
+            metalness: 0.2,
+          });
+        }
+      });
+
+      object.position.set(...position);
+      object.scale.set(...scale);
+      object.rotation.y = rotation[0];
+      this.scene.add(object);
+    }, undefined, (error) => {
+      console.error('Error loading model:', error);
+    });
+  }
+}
+
+// Dynamic Text Sign
 class DynamicTextSign {
   constructor(scene, position, initialText, size = { width: 0.5, height: 0.3 }) {
     this.scene = scene;
@@ -61,18 +137,36 @@ class DynamicTextSign {
   }
 }
 
-// Scene function
+// MQTT Manager
+class MQTTManager {
+  constructor(brokerUrl, topic, callback) {
+    this.client = mqtt.connect(brokerUrl);
+    this.topic = topic;
+
+    this.client.on('connect', () => {
+      console.log('MQTT connected to', brokerUrl);
+      this.client.subscribe(topic);
+    });
+
+    this.client.on('message', (topic, message) => {
+      console.log('MQTT message:', message.toString());
+      if (callback) callback(message.toString());
+    });
+  }
+}
+
+let cube;
+const sceneManager = new SceneManager();
+// Scene Creation
 export function createSecondaryScene() {
-  const secondaryScene = new THREE.Scene();
+  const scene = sceneManager.getScene();
 
-  // Lighting
-  const light = new THREE.PointLight(0xffffff, 4);
-  light.position.set(0, -3, 0);
-  secondaryScene.add(light);
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-  secondaryScene.add(ambientLight);
+  // Lights
+  const lightManager = new LightManager(scene);
+  lightManager.addPointLight();
+  lightManager.addAmbientLight();
 
-  // Rotating cube
+  // Rotating Cube
   const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
   const textureLoader = new THREE.TextureLoader();
   const cubeTexture = textureLoader.load('https://threejs.org/examples/textures/crate.gif');
@@ -82,71 +176,35 @@ export function createSecondaryScene() {
     transparent: true,
     opacity: 0.9,
     roughness: 0.5,
-    metalness: 0.3
+    metalness: 0.3,
   });
 
   cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
   cube.position.set(0, -2, 0);
-  secondaryScene.add(cube);
+  sceneManager.addObject(cube);
 
-  // Create multiple signs
-  const sign1 = new DynamicTextSign(secondaryScene, [2, -1.75, 0], "42°C");
-  const sign2 = new DynamicTextSign(secondaryScene, [2, -2, 0], "Cooling");
+  // Object Loader
+  const objectLoader = new ObjectLoaderManager(scene);
+  objectLoader.addObject('./mesh_data/ws/weather_station.obj', './mesh_data/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
+  objectLoader.addObject('./mesh_data/aircraft/aircraft.obj', './mesh_data/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
+  objectLoader.addObject('./mesh_data/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0]);
 
-  // Function to load objects
-  function addObjectToScene(obj_src, texture_src, position, scale, rotation) {
-    const objLoader = new OBJLoader();
-    const textureLoader = new THREE.TextureLoader();
-    const texture = texture_src ? textureLoader.load(texture_src) : null;
+  // Create Signs
+  const sign1 = new DynamicTextSign(scene, [2, -1.75, 0], "42°C");
+  const sign2 = new DynamicTextSign(scene, [2, -2, 0], "Cooling");
 
-    objLoader.load(obj_src, (object) => {
-      object.traverse((child) => {
-        if (child.isMesh) {
-          child.material = new THREE.MeshStandardMaterial({
-            map: texture,
-            color: 0xffffff,
-            roughness: 0.5,
-            metalness: 0.2,
-          });
-        }
-      });
+  // MQTT for real-time updates
+  new MQTTManager('wss://labserver.sense-campus.gr:9002', "ster/DT/temperature", (msg) => {
+    sign1.updateText(msg);
+  });
 
-      object.position.set(...position);
-      object.scale.set(...scale);
-      object.rotation.y = rotation[0];
-      secondaryScene.add(object);
-    }, undefined, (error) => {
-      console.error('An error occurred while loading the model:', error);
-    });
-  }
-
-  // Add objects
-  addObjectToScene('./mesh_data/ws/weather_station.obj', './mesh_data/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
-  addObjectToScene('./mesh_data/aircraft/aircraft.obj', './mesh_data/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
-  addObjectToScene('./mesh_data/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0]);
-
-  // MQTT Connection Function
-  function connectToMQTT_WS(ws_url, topic, signToUpdate) {
-    const client = mqtt.connect(ws_url);
-    client.on('connect', () => {
-      console.log('MQTT connected');
-      client.subscribe(topic);
-    });
-    client.on('message', (topic, message) => {
-      console.log('MQTT message:', message.toString());
-      signToUpdate.updateText(message.toString());
-    });
-  }
-
-  // Connect signs to MQTT
-  connectToMQTT_WS('wss://labserver.sense-campus.gr:9002', "ster/DT/temperature", sign1);
-
-  return secondaryScene;
+  return scene;
 }
 
-// Update function for animations
+// Update function
 export function updateSecondaryObjects(delta) {
-  if (cube) {
+  sceneManager.update(delta);
+  if (cube){
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
   }
