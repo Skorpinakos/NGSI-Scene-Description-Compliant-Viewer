@@ -2,8 +2,13 @@
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { add } from 'three/tsl';
+import mqtt from 'mqtt';
 
 let secondaryScene, cube, sign, signTexture, signMessages, messageIndex = 0;
+
+let mqtt_broker= "150.140.186.118"
+let mqtt_port= "1883"
+let mqtt_topic= "ster/DT/temperature"
 
 export function createSecondaryScene() {
   secondaryScene = new THREE.Scene();
@@ -32,6 +37,7 @@ export function createSecondaryScene() {
   secondaryScene.add(cube);
 
   // Dynamic text sign
+  
   const textCanvas = document.createElement('canvas');
   textCanvas.width = 256;
   textCanvas.height = 128;
@@ -100,11 +106,40 @@ export function createSecondaryScene() {
   addObjectToScene('./mesh_data/man/FinalBaseMesh.obj',null,[-3, -0.5, 0],[0.1, -0.1, 0.1],[0]);  
 
   // Update sign text every 3 seconds
-  setInterval(() => {
-    messageIndex = (messageIndex + 1) % signMessages.length;
-    drawSignText(signMessages[messageIndex]);
-    signTexture.needsUpdate = true;
-  }, 3000);
+  // setInterval(() => {
+  //   messageIndex = (messageIndex + 1) % signMessages.length;
+  //   drawSignText(signMessages[messageIndex]);
+  //   signTexture.needsUpdate = true;
+  // }, 3000);
+
+  // MQTT 
+  function connectToMQTT(broker,port,topic,signToUpdate){
+    const client = mqtt.connect(`mqtt://${broker}:${port}`);
+    client.on('connect', () => {
+      console.log('MQTT connected');
+      client.subscribe(topic);
+    });
+    client.on('message', (topic, message) => {
+      console.log('MQTT message:', message.toString());
+      drawSignText(message.toString());
+      signToUpdate.needsUpdate = true;
+  });
+  } 
+
+  function connectToMQTT_WS(ws_url,topic,signToUpdate){
+    const client = mqtt.connect(ws_url);
+    client.on('connect', () => {
+      console.log('MQTT connected');
+      client.subscribe(topic);
+    });
+    client.on('message', (topic, message) => {
+      console.log('MQTT message:', message.toString());
+      drawSignText(message.toString());
+      signToUpdate.needsUpdate = true;
+  });
+  }
+
+  connectToMQTT_WS('wss://labserver.sense-campus.gr:9002',mqtt_topic,signTexture);
 
   return secondaryScene;
 }
