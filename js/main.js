@@ -3,7 +3,7 @@ const startTime = performance.now();
 
 import { hideViewerContainer, showViewerContainer, removeWelcomeScreen, setupPointerLock, createControlsOverlay } from './loading_helper.js';
 import { createRenderer, adjustRendererSize, getRenderer, getRenderTarget } from './renderer.js';
-import { createMainScene, getCamera, initViewer, updateViewer, renderViewer  } from './backgroundScene.js';
+import { createMainScene, getCamera, initViewer, updateViewer, renderViewer } from './backgroundScene.js';
 import { setupUI, getDynamicConfig } from './ui.js';
 import { createSecondaryScene, updateSecondaryObjects } from './secondaryScene.js';
 import { handleControls } from './controls.js';
@@ -48,9 +48,7 @@ document.addEventListener('keyup', (event) => {
   keys[event.code] = false;
 });
 
-
-
-// Initialize viewer
+// Initialize the background viewer (which uses the abstracted renderer)
 initViewer().then(() => {
   // Set up pointer lock on the viewer container
   setupPointerLock();
@@ -100,7 +98,7 @@ initViewer().then(() => {
   // Main animation loop
   const clock = new THREE.Clock();
   const allowedBox1 = new THREE.Box3(
-    new THREE.Vector3(-30, -3.5, -2), // minX, minY, minZ //TODO ask how those where determined
+    new THREE.Vector3(-30, -3.5, -2), // minX, minY, minZ
     new THREE.Vector3(20, -1.5, 2)     // maxX, maxY, maxZ
   );
   function animate() {
@@ -108,14 +106,12 @@ initViewer().then(() => {
     const delta = clock.getDelta();
 
     // Process keyboard movement controls
-    // Inside your animate function
-    handleControls(delta, keys, camera,[allowedBox1,]);
+    handleControls(delta, keys, camera, [allowedBox1]);
 
-    
     // Update secondary scene animations
     updateSecondaryObjects(delta);
 
-    // Update viewer based on camera movement
+    // Update background viewer based on camera movement
     if (cameraChanged()) {
       lastCameraMovementTime = clock.elapsedTime;
       const { dynamicResolutionEnabled, movementResolutionScale, fullResolutionScale } = getDynamicConfig();
@@ -144,7 +140,7 @@ initViewer().then(() => {
       }
     }
 
-    // Render the offscreen splat scene via a fullscreen quad
+    // Render the offscreen background via a fullscreen quad
     renderer.autoClear = false;
     renderer.clear();
     renderer.render(window.fullscreenScene, window.fullscreenCamera);
