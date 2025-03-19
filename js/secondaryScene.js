@@ -1,17 +1,69 @@
-// secondaryScene.js: Builds the secondary scene with additional objects
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-import { add } from 'three/tsl';
 import mqtt from 'mqtt';
 
-let secondaryScene, cube, sign, signTexture, signMessages, messageIndex = 0;
+let secondaryScene, cube;
 
-let mqtt_broker= "150.140.186.118"
-let mqtt_port= "1883"
-let mqtt_topic= "ster/DT/temperature"
+let mqtt_broker = "150.140.186.118";
+let mqtt_port = "1883";
+let mqtt_topic = "ster/DT/temperature";
 
+// Class for dynamic text signs
+class DynamicTextSign {
+  constructor(scene, position, initialText, size = { width: 0.5, height: 0.3 }) {
+    this.scene = scene;
+    this.textCanvas = document.createElement('canvas');
+    this.textCanvas.width = 256;
+    this.textCanvas.height = 128;
+    this.textContext = this.textCanvas.getContext('2d');
+
+    this.signTexture = new THREE.CanvasTexture(this.textCanvas);
+    this.signTexture.flipY = false;
+
+    this.signMaterial = new THREE.MeshBasicMaterial({
+      map: this.signTexture,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.75,
+    });
+
+    this.signGeometry = new THREE.PlaneGeometry(size.width, size.height);
+    this.sign = new THREE.Mesh(this.signGeometry, this.signMaterial);
+    this.sign.position.set(...position);
+
+    this.scene.add(this.sign);
+    this.drawSignText(initialText);
+  }
+
+  drawSignText(text) {
+    this.textContext.clearRect(0, 0, this.textCanvas.width, this.textCanvas.height);
+    this.textContext.fillStyle = 'rgba(20, 20, 30, 0.75)';
+    this.textContext.fillRect(0, 0, this.textCanvas.width, this.textCanvas.height);
+
+    const fontSize = this.textCanvas.height * 0.6;
+    this.textContext.font = `bold ${fontSize}px Arial`;
+    this.textContext.fillStyle = 'cyan';
+    this.textContext.textAlign = 'center';
+    this.textContext.textBaseline = 'middle';
+    this.textContext.shadowColor = 'rgba(0, 255, 255, 0.8)';
+    this.textContext.shadowBlur = 8;
+
+    this.textContext.translate(this.textCanvas.width, 0);
+    this.textContext.scale(-1, 1);
+    this.textContext.fillText(text, this.textCanvas.width / 2, this.textCanvas.height / 2);
+    this.textContext.resetTransform();
+
+    this.signTexture.needsUpdate = true;
+  }
+
+  updateText(newText) {
+    this.drawSignText(newText);
+  }
+}
+
+// Scene function
 export function createSecondaryScene() {
-  secondaryScene = new THREE.Scene();
+  const secondaryScene = new THREE.Scene();
 
   // Lighting
   const light = new THREE.PointLight(0xffffff, 4);
@@ -32,101 +84,49 @@ export function createSecondaryScene() {
     roughness: 0.5,
     metalness: 0.3
   });
+
   cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
   cube.position.set(0, -2, 0);
   secondaryScene.add(cube);
 
-  // Dynamic text sign
-  
-  const textCanvas = document.createElement('canvas');
-  textCanvas.width = 256;
-  textCanvas.height = 128;
-  const textContext = textCanvas.getContext('2d');
+  // Create multiple signs
+  const sign1 = new DynamicTextSign(secondaryScene, [2, -1.75, 0], "42°C");
+  const sign2 = new DynamicTextSign(secondaryScene, [2, -2, 0], "Cooling");
 
-  function drawSignText(text) {
-    textContext.clearRect(0, 0, textCanvas.width, textCanvas.height);
-    textContext.fillStyle = 'rgba(20, 20, 30, 0.75)';
-    textContext.fillRect(0, 0, textCanvas.width, textCanvas.height);
-    const fontSize = textCanvas.height * 0.6;
-    textContext.font = `bold ${fontSize}px Arial`;
-    textContext.fillStyle = 'cyan';
-    textContext.textAlign = 'center';
-    textContext.textBaseline = 'middle';
-    textContext.shadowColor = 'rgba(0, 255, 255, 0.8)';
-    textContext.shadowBlur = 8;
-    textContext.translate(textCanvas.width, 0);
-    textContext.scale(-1, 1);
-    textContext.fillText(text, textCanvas.width / 2, textCanvas.height / 2);
-    textContext.resetTransform();
-  }
-
-  // Initial sign text
-  signMessages = ["42°C", "39.2°C", "45°C", "41.3°C", "43°C", "39.7°C"];
-  drawSignText(signMessages[0]);
-  signTexture = new THREE.CanvasTexture(textCanvas);
-  signTexture.flipY = false;
-  const signMaterial = new THREE.MeshBasicMaterial({
-    map: signTexture,
-    side: THREE.DoubleSide,
-    transparent: true,
-    opacity: 0.75
-  });
-  const signGeometry = new THREE.PlaneGeometry(0.5, 0.3);
-  sign = new THREE.Mesh(signGeometry, signMaterial);
-  sign.position.set(2, -1.75, 0);
-  secondaryScene.add(sign);
-
-  function addObjectToScene(obj_src,tecture_src, position, scale, rotation) {
+  // Function to load objects
+  function addObjectToScene(obj_src, texture_src, position, scale, rotation) {
     const objLoader = new OBJLoader();
     const textureLoader = new THREE.TextureLoader();
-     const texture = textureLoader.load(tecture_src);
-    
+    const texture = texture_src ? textureLoader.load(texture_src) : null;
+
     objLoader.load(obj_src, (object) => {
-          object.traverse((child) => {
-              if (child.isMesh) {
-                  child.material = new THREE.MeshStandardMaterial({
-                      map: texture,
-                      color: 0xffffff,
-                      roughness: 0.5,
-                      metalness: 0.2,
-                  });
-              }
+      object.traverse((child) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            map: texture,
+            color: 0xffffff,
+            roughness: 0.5,
+            metalness: 0.2,
           });
-        object.position.set(position[0], position[1], position[2]);
-        object.scale.set(scale[0], scale[1], scale[2]);
-        object.rotation.y = rotation[0];
-        secondaryScene.add(object);
+        }
+      });
+
+      object.position.set(...position);
+      object.scale.set(...scale);
+      object.rotation.y = rotation[0];
+      secondaryScene.add(object);
     }, undefined, (error) => {
-        console.error('An error occurred while loading the model:', error);
+      console.error('An error occurred while loading the model:', error);
     });
   }
 
-  addObjectToScene('./mesh_data/ws/weather_station.obj','./mesh_data/ws/weather_station.png',[2, -1, 0],[0.5, -0.5, 0.5],[0]);
-  addObjectToScene('./mesh_data/aircraft/aircraft.obj','./mesh_data/aircraft/steel.jpg',[-2, -10, 0],[0.5, -0.5, 0.5],[Math.PI/2]);
-  addObjectToScene('./mesh_data/man/FinalBaseMesh.obj',null,[-3, -0.5, 0],[0.1, -0.1, 0.1],[0]);  
+  // Add objects
+  addObjectToScene('./mesh_data/ws/weather_station.obj', './mesh_data/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
+  addObjectToScene('./mesh_data/aircraft/aircraft.obj', './mesh_data/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
+  addObjectToScene('./mesh_data/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0]);
 
-  // Update sign text every 3 seconds
-  // setInterval(() => {
-  //   messageIndex = (messageIndex + 1) % signMessages.length;
-  //   drawSignText(signMessages[messageIndex]);
-  //   signTexture.needsUpdate = true;
-  // }, 3000);
-
-  // MQTT 
-  function connectToMQTT(broker,port,topic,signToUpdate){
-    const client = mqtt.connect(`mqtt://${broker}:${port}`);
-    client.on('connect', () => {
-      console.log('MQTT connected');
-      client.subscribe(topic);
-    });
-    client.on('message', (topic, message) => {
-      console.log('MQTT message:', message.toString());
-      drawSignText(message.toString());
-      signToUpdate.needsUpdate = true;
-  });
-  } 
-
-  function connectToMQTT_WS(ws_url,topic,signToUpdate){
+  // MQTT Connection Function
+  function connectToMQTT_WS(ws_url, topic, signToUpdate) {
     const client = mqtt.connect(ws_url);
     client.on('connect', () => {
       console.log('MQTT connected');
@@ -134,18 +134,18 @@ export function createSecondaryScene() {
     });
     client.on('message', (topic, message) => {
       console.log('MQTT message:', message.toString());
-      drawSignText(message.toString());
-      signToUpdate.needsUpdate = true;
-  });
+      signToUpdate.updateText(message.toString());
+    });
   }
 
-  connectToMQTT_WS('wss://labserver.sense-campus.gr:9002',mqtt_topic,signTexture);
+  // Connect signs to MQTT
+  connectToMQTT_WS('wss://labserver.sense-campus.gr:9002', "ster/DT/temperature", sign1);
 
   return secondaryScene;
 }
 
+// Update function for animations
 export function updateSecondaryObjects(delta) {
-  // Example: rotate the cube for a simple animation
   if (cube) {
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;

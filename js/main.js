@@ -98,6 +98,7 @@ initViewer().then(() => {
   // Main animation loop
   const clock = new THREE.Clock();
   const allowedBox1 = new THREE.Box3(
+    // 38.245258, 21.731860, 0.000000
     new THREE.Vector3(-30, -3.5, -2), // minX, minY, minZ
     new THREE.Vector3(20, -1.5, 2)     // maxX, maxY, maxZ
   );
