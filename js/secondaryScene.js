@@ -97,7 +97,7 @@ export function createSecondaryScene() {
 
   addObjectToScene('./mesh_data/ws/weather_station.obj','./mesh_data/ws/weather_station.png',[2, -1, 0],[0.5, -0.5, 0.5],[0]);
   addObjectToScene('./mesh_data/aircraft/aircraft.obj','./mesh_data/aircraft/steel.jpg',[-2, -10, 0],[0.5, -0.5, 0.5],[Math.PI/2]);
-  addObjectToScene('./mesh_data/man/FinalBaseMesh.obj',null,[-3, 0, 0],[0.1, -0.1, 0.1],[0]);  
+  addObjectToScene('./mesh_data/man/FinalBaseMesh.obj',null,[-3, -0.5, 0],[0.1, -0.1, 0.1],[0]);  
 
   // Update sign text every 3 seconds
   setInterval(() => {
