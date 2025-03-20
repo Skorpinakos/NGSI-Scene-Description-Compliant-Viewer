@@ -1,7 +1,5 @@
 node_modules
 ssl
 *.ksplat
-splat_data
-mesh_data
 *.zip
 .env

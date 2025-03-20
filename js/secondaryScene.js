@@ -185,9 +185,9 @@ export function createSecondaryScene() {
 
   // Object Loader
   const objectLoader = new ObjectLoaderManager(scene);
-  objectLoader.addObject('./mesh_data/ws/weather_station.obj', './mesh_data/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
-  objectLoader.addObject('./mesh_data/aircraft/aircraft.obj', './mesh_data/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
-  objectLoader.addObject('./mesh_data/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0]);
+  objectLoader.addObject('./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
+  objectLoader.addObject('./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
+  objectLoader.addObject('./virtual_assets/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0]);
 
   // Create Signs
   const sign1 = new DynamicTextSign(scene, [2, -1.75, 0], "42°C");
