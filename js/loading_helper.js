@@ -46,7 +46,7 @@ export function hideViewerContainer() {
       </select>
       
       <label>
-        <input type="checkbox" id="dynamic-res-checkbox" checked>
+        <input type="checkbox" id="dynamic-res-checkbox">
         Dynamic Resolution
       </label>
       
