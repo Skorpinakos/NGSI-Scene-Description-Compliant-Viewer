@@ -111,9 +111,11 @@ class DynamicTextSign {
     this.sign = new THREE.Mesh(this.signGeometry, this.signMaterial);
 
     if (this.targetObject) {
+      let bbox=new THREE.Box3().setFromObject(this.targetObject);
+      let height=bbox.max.y-bbox.min.y;
       this.sign.position.set(
         this.targetObject.position.x + this.offset.x,
-        this.targetObject.position.y + this.offset.y,
+        this.targetObject.position.y - height+this.offset.y, //TODO FIX THE - IN THE Y AXIS
         this.targetObject.position.z + this.offset.z
       );
     } else {
