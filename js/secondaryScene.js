@@ -59,7 +59,7 @@ class ObjectLoaderManager {
     this.textureLoader = new THREE.TextureLoader();
   }
 
-  addObject(objSrc, textureSrc, position, scale, rotation) {
+  addObject(objSrc, textureSrc, position, scale, rotation,callback=null) {
     const texture = textureSrc ? this.textureLoader.load(textureSrc) : null;
 
     this.objLoader.load(objSrc, (object) => {
@@ -78,6 +78,7 @@ class ObjectLoaderManager {
       object.scale.set(...scale);
       object.rotation.y = rotation[0];
       this.scene.add(object);
+      if (callback) callback(object);
     }, undefined, (error) => {
       console.error('Error loading model:', error);
     });
@@ -86,8 +87,11 @@ class ObjectLoaderManager {
 
 // Dynamic Text Sign
 class DynamicTextSign {
-  constructor(scene, position, initialText, size = { width: 0.5, height: 0.3 }) {
+  constructor(scene, position, initialText, targetObject = null, offset = { x: 0, y: -0.5, z: 0 }, size = { width: 0.5, height: 0.2 }) {
     this.scene = scene;
+    this.targetObject = targetObject; // Optional object to attach to
+    this.offset = offset;
+    
     this.textCanvas = document.createElement('canvas');
     this.textCanvas.width = 256;
     this.textCanvas.height = 128;
@@ -105,7 +109,18 @@ class DynamicTextSign {
 
     this.signGeometry = new THREE.PlaneGeometry(size.width, size.height);
     this.sign = new THREE.Mesh(this.signGeometry, this.signMaterial);
-    this.sign.position.set(...position);
+
+    if (this.targetObject) {
+      let bbox=new THREE.Box3().setFromObject(this.targetObject);
+      let height=bbox.max.y-bbox.min.y;
+      this.sign.position.set(
+        this.targetObject.position.x + this.offset.x,
+        this.targetObject.position.y - height+this.offset.y, //TODO FIX THE - IN THE Y AXIS
+        this.targetObject.position.z + this.offset.z
+      );
+    } else {
+      this.sign.position.set(...position); // Fixed position if no target
+    }
 
     this.scene.add(this.sign);
     this.drawSignText(initialText);
@@ -135,7 +150,18 @@ class DynamicTextSign {
   updateText(newText) {
     this.drawSignText(newText);
   }
+
+  updatePosition() {
+    if (this.targetObject) {
+      this.sign.position.set(
+        this.targetObject.position.x + this.offset.x,
+        this.targetObject.position.y + this.offset.y,
+        this.targetObject.position.z + this.offset.z
+      );
+    }
+  }
 }
+
 
 // MQTT Manager
 class MQTTManager {
@@ -187,7 +213,10 @@ export function createSecondaryScene() {
   const objectLoader = new ObjectLoaderManager(scene);
   objectLoader.addObject('./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
   objectLoader.addObject('./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
-  objectLoader.addObject('./virtual_assets/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0]);
+  objectLoader.addObject('./virtual_assets/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0],(obj)=>{
+    const manSign=new DynamicTextSign(scene,null,"Person 1",obj);
+  }
+  );
 
   // Create Signs
   const sign1 = new DynamicTextSign(scene, [2, -1.75, 0], "42°C");
