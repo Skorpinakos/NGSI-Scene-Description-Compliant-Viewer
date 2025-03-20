@@ -292,8 +292,9 @@ class PlyPointCloudRenderer extends BackgroundRenderer {
       loader.load(plyPath, (geometry) => {
         // Create a simple points material.
         // Enable vertexColors if a color attribute is available.
+        const pointCount = geometry.attributes.position.count;
         const material = new THREE.PointsMaterial({
-          size: 0.05,
+          size: ((10000000/pointCount)**0.5)*0.01,
           color: 0xffffff,
           vertexColors: geometry.getAttribute('color') ? true : false
         });
@@ -301,7 +302,7 @@ class PlyPointCloudRenderer extends BackgroundRenderer {
         this.pointCloud.position.set(0, 0, 0);  
         this.pointCloud.rotation.set(+Math.PI/2,-0*Math.PI/15,0);  
         this.pointCloud.scale.set(1, 1, 1);       
-        console.log("Total points: "+this.pointCloud.geometry.attributes.position.count);
+        console.log("Total points: "+pointCount);
 
 
         // Add the point cloud to the main scene.
