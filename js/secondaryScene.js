@@ -78,6 +78,8 @@ class ObjectLoaderManager {
       object.scale.set(...scale);
       object.rotation.y = rotation[0];
       this.scene.add(object);
+      //TODO ADD THE SIGN HERE MAYBE BASED ON THE FIWARE DESCRIPTOR
+      //TODO ESTABLISH HERE THE WAY THAT THE SIGN OR THE OBJECT CAN BE UPDATED 
       if (callback) callback(object);
     }, undefined, (error) => {
       console.error('Error loading model:', error);
