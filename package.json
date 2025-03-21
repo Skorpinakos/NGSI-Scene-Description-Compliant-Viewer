@@ -16,7 +16,7 @@
         "build": "vite build",
         "preview": "vite preview"
     },
-    "name": "meshxgsplatsfrwrk",
+    "name": "ngsi-viewer",
     "version": "1.0.0",
     "main": "main.js",
     "keywords": [],
