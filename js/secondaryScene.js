@@ -51,6 +51,50 @@ class LightManager {
   }
 }
 
+class Object{
+  constructor(){
+    //not initializing with a scene as we may want to add it in many scenes
+    this.object=null;
+    this.objLoader = new OBJLoader();
+    this.textureLoader = new THREE.TextureLoader();
+  }
+
+  addObjRepr(scene,objSrc, textureSrc, position, scale, rotation,callback=null) {
+    const texture = textureSrc ? this.textureLoader.load(textureSrc) : null;
+
+    this.objLoader.load(objSrc, (object) => {
+      object.traverse((child) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            map: texture,
+            color: 0xffffff,
+            roughness: 0.5,
+            metalness: 0.2,
+          });
+        }
+      });
+
+      object.position.set(...position);
+      object.scale.set(...scale);
+      object.rotation.y = rotation[0];
+      // this.scene.add(object);
+      this.object=object;
+      scene.add(this.object);
+      
+      if (callback) callback(this.object);
+    }, undefined, (error) => {
+      console.error('Error loading model:', error);
+    });
+  }
+  
+  //TODO based on the Scene Descriptor/ Object Descriptor I will create the signs here
+  createSigns(){
+  }
+  //TODO based on the Scene Descriptor/ Object Descriptor I will update the object here
+  updateObject(){
+  }
+
+}
 // Object Loader
 class ObjectLoaderManager {
   constructor(scene) {
@@ -211,14 +255,24 @@ export function createSecondaryScene() {
   cube.position.set(0, -2, 0);
   sceneManager.addObject(cube);
 
-  // Object Loader
-  const objectLoader = new ObjectLoaderManager(scene);
-  objectLoader.addObject('./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
-  objectLoader.addObject('./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
-  objectLoader.addObject('./virtual_assets/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0],(obj)=>{
-    const manSign=new DynamicTextSign(scene,null,"Person 1",obj);
+  let ws=new Object();
+  ws.addObjRepr(scene,'./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
+  // objectLoader.addObject('./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
+  // objectLoader.addObject('./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
+  let aircraft=new Object();
+  aircraft.addObjRepr(scene,'./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
+  
+  let man=new Object();
+  man.addObjRepr(scene,'./virtual_assets/man/FinalBaseMesh.obj',null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0],(obj)=>{
+    const manSign=new DynamicTextSign(scene,"Person 1",obj);
   }
   );
+
+
+  // objectLoader.addObject('./virtual_assets/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0],(obj)=>{
+  //   const manSign=new DynamicTextSign(scene,null,"Person 1",obj);
+  // }
+  // );
 
   // Create Signs
   const sign1 = new DynamicTextSign(scene, [2, -1.75, 0], "42°C");
