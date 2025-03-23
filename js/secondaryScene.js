@@ -264,7 +264,7 @@ export function createSecondaryScene() {
   
   let man=new Object();
   man.addObjRepr(scene,'./virtual_assets/man/FinalBaseMesh.obj',null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0],(obj)=>{
-    const manSign=new DynamicTextSign(scene,"Person 1",obj);
+    const manSign=new DynamicTextSign(scene,null,"Person 1",obj);
   }
   );
 
