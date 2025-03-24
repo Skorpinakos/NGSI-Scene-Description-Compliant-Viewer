@@ -133,18 +133,18 @@ class ObjectLoaderManager {
 
 // Dynamic Text Sign
 class DynamicTextSign {
-  constructor(scene, position, initialText, targetObject = null, offset = { x: 0, y: -0.5, z: 0 }, size = { width: 0.5, height: 0.2 }) {
+  constructor(scene, position, initialText, targetObject = null, offset = { x: 0, y: 0.5, z: 0 }, size = { width: 0.5, height: 0.2 }) {
     this.scene = scene;
     this.targetObject = targetObject; // Optional object to attach to
     this.offset = offset;
     
     this.textCanvas = document.createElement('canvas');
-    this.textCanvas.width = 256;
-    this.textCanvas.height = 128;
+    this.textCanvas.width = 512;
+    this.textCanvas.height = 192;
     this.textContext = this.textCanvas.getContext('2d');
 
     this.signTexture = new THREE.CanvasTexture(this.textCanvas);
-    this.signTexture.flipY = false;
+    this.signTexture.flipY = true;
 
     this.signMaterial = new THREE.MeshBasicMaterial({
       map: this.signTexture,
@@ -185,8 +185,7 @@ class DynamicTextSign {
     this.textContext.shadowColor = 'rgba(0, 255, 255, 0.8)';
     this.textContext.shadowBlur = 8;
 
-    this.textContext.translate(this.textCanvas.width, 0);
-    this.textContext.scale(-1, 1);
+
     this.textContext.fillText(text, this.textCanvas.width / 2, this.textCanvas.height / 2);
     this.textContext.resetTransform();
 
@@ -252,19 +251,19 @@ export function createSecondaryScene() {
   });
 
   cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-  cube.position.set(0, -2, 0);
+  cube.position.set(0, +2, 0);
   sceneManager.addObject(cube);
 
   let ws=new Object();
-  ws.addObjRepr(scene,'./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
+  ws.addObjRepr(scene,'./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, 1, 0], [0.5, 0.5, 0.5], [0]);
   // objectLoader.addObject('./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
   // objectLoader.addObject('./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
   let aircraft=new Object();
-  aircraft.addObjRepr(scene,'./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
+  aircraft.addObjRepr(scene,'./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, 10, 0], [0.5, 0.5, 0.5], [Math.PI / 2]);
   
   let man=new Object();
-  man.addObjRepr(scene,'./virtual_assets/man/FinalBaseMesh.obj',null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0],(obj)=>{
-    const manSign=new DynamicTextSign(scene,null,"Person 1",obj);
+  man.addObjRepr(scene,'./virtual_assets/man/FinalBaseMesh.obj',null, [-3, 0.5, 0], [0.1, 0.1, 0.1], [0],(obj)=>{
+    const manSign=new DynamicTextSign(scene,[-3, 3, 0],"Person 1");
   }
   );
 
@@ -275,13 +274,42 @@ export function createSecondaryScene() {
   // );
 
   // Create Signs
-  const sign1 = new DynamicTextSign(scene, [2, -1.75, 0], "42°C");
-  const sign2 = new DynamicTextSign(scene, [2, -2, 0], "Cooling");
+  const sign1 = new DynamicTextSign(scene, [2, 1.75, 0], "42°C");
+  const sign2 = new DynamicTextSign(scene, [2, 2, 0], "Cooling");
 
   // MQTT for real-time updates
   new MQTTManager('wss://labserver.sense-campus.gr:9002', "ster/DT/temperature", (msg) => {
     sign1.updateText(msg);
   });
+
+///////DEBUG/////////////////////////////////////////////////////////////////////
+  // Add arrow pointing vertically upward (to the sky)
+  const arrowUp = new THREE.ArrowHelper(
+    new THREE.Vector3(0, 1, 0),  // direction
+    new THREE.Vector3(0, 0, 0),  // origin
+    5,                           // length
+    0xffff00                     // color (yellow)
+  );
+  scene.add(arrowUp);
+
+  // Add arrow pointing north (negative Z direction)
+  const arrowNorth = new THREE.ArrowHelper(
+    new THREE.Vector3(0, 0, -1), // direction
+    new THREE.Vector3(0, 0, 0),  // origin
+    5,                           // length
+    0xff0000                     // color (red)
+  );
+  scene.add(arrowNorth);
+
+  // Add arrow pointing west (negative X direction)
+  const arrowWest = new THREE.ArrowHelper(
+    new THREE.Vector3(-1, 0, 0), // direction
+    new THREE.Vector3(0, 0, 0),  // origin
+    5,                           // length
+    0x0000ff                     // color (blue)
+  );
+  scene.add(arrowWest);
+/////////////////////////////////////////////////////////////////
 
   return scene;
 }

@@ -17,10 +17,10 @@ export function handleControls(delta, keys, camera, allowedSpaces) {
   // Update velocity based on key input
   if (keys['KeyW']) velocity.z -= speed * delta;
   if (keys['KeyS']) velocity.z += speed * delta;
-  if (keys['KeyD']) velocity.x += speed * delta;
-  if (keys['KeyA']) velocity.x -= speed * delta;
-  if (keys['Space']) camera.position.y -= speed * delta;
-  if (keys['ControlLeft'] || keys['ControlRight']) camera.position.y += speed * delta;
+  if (keys['KeyD']) velocity.x -= speed * delta;
+  if (keys['KeyA']) velocity.x += speed * delta;
+  if (keys['Space']) camera.position.y += speed * delta;
+  if (keys['ControlLeft'] || keys['ControlRight']) camera.position.y -= speed * delta;
 
   // Get the forward direction (ignoring vertical component)
   const direction = new THREE.Vector3();
@@ -39,9 +39,11 @@ export function handleControls(delta, keys, camera, allowedSpaces) {
   camera.position.add(move);
 
   // If allowedSpaces are provided, check if the new position is inside any of them.
+ // console.log(allowedSpaces);
   if (allowedSpaces && allowedSpaces.length > 0) {
     // Check if the camera is already inside one of the allowed spaces.
     const insideAny = allowedSpaces.some(space => space.containsPoint(camera.position));
+    //console.log(insideAny);
 
     // If not, find the nearest allowed point.
     if (!insideAny) {

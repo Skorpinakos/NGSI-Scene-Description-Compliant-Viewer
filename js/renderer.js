@@ -50,8 +50,8 @@ export function createRenderer() {
   window.effectiveResolutionScale = window.fullResolutionScale;
 
   // Default base resolution values (can be updated via UI)
-  window.MAX_WIDTH = 1280;
-  window.MAX_HEIGHT = 720;
+  window.MAX_WIDTH = 1920;
+  window.MAX_HEIGHT = 1080;
 
   // Handle window resize
   window.addEventListener('resize', adjustRendererSize);

@@ -1,0 +1,78 @@
+{
+    "scenes": [
+      {
+        "id": "bodegas_400k_pcd",
+        "name": "Bodegas (400k) - Point Cloud",
+        "type": "ply",
+        "filePath": "./background_assets/400k_bodegas.ply",
+        "options": {
+          "position": [0, 0, 0],
+          "rotation": [-1.57, 0, 0.76],
+          "scale":[1,1,1]
+        },
+        "movementBoundaries": [
+          {
+            "min": [-40, 1, -4],
+            "max": [30, 8, 12],
+            "rotation": [0, 0.76, 0]  
+          }
+        ]
+      },
+      {
+        "id": "bodegas_555k_splat",
+        "name": "Bodegas (555k) - Gaussian Splats",
+        "type": "gaussianSplats",
+        "filePath": "./background_assets/555k_bodegas.ksplat",
+        "options": {
+          "position": [0, 0, 0],
+          "scale":[1,1,1],
+          "rotation": [3.14,-0.76,0],
+          "progressiveLoad": false
+        },
+        "movementBoundaries": [
+            {
+                "min": [-30, 1.5, 1],
+                "max": [20, 2.5, 6],
+                "rotation": [0, 0.76, 0]  
+              }
+        ]
+      },
+      {
+        "id": "bodegas_4500k_splat",
+        "name": "Bodegas (4.5M) - Gaussian Splats",
+        "type": "gaussianSplats",
+        "filePath": "./background_assets/4500k_bodegas.ksplat",
+        "options": {
+          "position": [0, 0, 0],
+          "scale":[1,1,1],
+          "rotation": [3.14,-0.76,0],
+          "progressiveLoad": false
+        },
+        "movementBoundaries": [
+            {
+                "min": [-30, 1.5, 1],
+                "max": [20, 2.5, 6],
+                "rotation": [0, 0.76, 0]  
+              }
+          ]
+      },
+      {
+        "id": "bodegas_8700k_pcd",
+        "name": "Bodegas (8.7M) - Point Cloud",
+        "type": "ply",
+        "filePath": "./background_assets/8700k_bodegas/8700k_bodegas_pcd.ply",
+        "options": {
+          "position": [0, 0, 0],
+          "rotation": [-1.57, 0, 0.76],
+          "scale":[1,1,1]
+        },
+        "movementBoundaries": [
+            {
+                "min": [-40, 1, -4],
+                "max": [30, 8, 12],
+                "rotation": [0, 0.76, 0]  
+              }
+        ]
+      }
+    ]
+  }
