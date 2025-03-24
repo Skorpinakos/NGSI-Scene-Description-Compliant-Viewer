@@ -24,6 +24,10 @@ export function getCamera() {
 
 // Base interface for background renderers
 class BackgroundRenderer {
+  constructor(options = {}) {
+    this.options = options;
+  }
+  
   async init() {
     throw new Error("init() must be implemented by subclass");
   }
@@ -40,15 +44,19 @@ class BackgroundRenderer {
 
 // Concrete implementation using Gaussian Splats
 class GaussianSplatsRenderer extends BackgroundRenderer {
-  constructor() {
-    super();
+  constructor(options = {}) {
+    super(options);
     this.viewer = null;
+    this.filePath = options.filePath || null;
+    this.rendererOptions = options.rendererOptions || {};
   }
+  
   async init() {
     const renderer = getRenderer();
     const cam = getCamera();
-    // Create and configure the Gaussian Splats viewer
-    this.viewer = new GaussianSplats3D.Viewer({
+    
+    // Merge default options with any custom options provided
+    const viewerOptions = {
       renderer: renderer,
       camera: cam,
       useBuiltInControls: false,
@@ -72,29 +80,48 @@ class GaussianSplatsRenderer extends BackgroundRenderer {
       splatSortDistanceMapPrecision: 16,
       optimizeSplatData: false,
       freeIntermediateSplatData: true,
-    });
+      ...this.rendererOptions
+    };
+    
+    // Create and configure the Gaussian Splats viewer
+    this.viewer = new GaussianSplats3D.Viewer(viewerOptions);
 
-    // Load the splat scene using the asset path from environment variables
-    const objectPath = import.meta.env.VITE_3D_OBJECT_PATH;
-    await this.viewer.addSplatScene(objectPath, {
-      position: [0, 0, 0],
-      scale: [1, 1, 1],
-      showLoadingUI: false,
-      progressiveLoad: false,
-      splatAlphaRemovalThreshold: 10,
+    if (!this.filePath) {
+      throw new Error("No file path provided for Gaussian Splats renderer");
+    }
+
+    // Load the splat scene using the provided file path
+    await this.viewer.addSplatScene(this.filePath, {
+      position: this.options.position || [0, 0, 0],
+      scale: this.options.scale || [1, 1, 1],
+      showLoadingUI: this.options.showLoadingUI !== undefined ? this.options.showLoadingUI : false,
+      progressiveLoad: this.options.progressiveLoad !== undefined ? this.options.progressiveLoad : false,
+      splatAlphaRemovalThreshold: this.options.splatAlphaRemovalThreshold || 10,
       onProgress: (percentComplete, percentCompleteLabel, loaderStatus) => {
         console.log(`Progress: (${percentCompleteLabel}) - Status: ${loaderStatus}`);
+        if (this.options.onProgress) {
+          this.options.onProgress(percentComplete, percentCompleteLabel, loaderStatus);
+        }
       },
     });
   }
+  
   update() {
     if (this.viewer) {
       this.viewer.update();
     }
   }
+  
   render() {
     if (this.viewer) {
       this.viewer.render();
+    }
+  }
+  
+  dispose() {
+    if (this.viewer) {
+      this.viewer.dispose();
+      this.viewer = null;
     }
   }
 }
@@ -279,31 +306,46 @@ class PLYLoader {
 
 // Concrete implementation that loads a PLY point cloud
 class PlyPointCloudRenderer extends BackgroundRenderer {
-  constructor() {
-    super();
+  constructor(options = {}) {
+    super(options);
     this.pointCloud = null;
+    this.filePath = options.filePath || null;
+    this.pointSize = options.pointSize || null;
+    this.pointColor = options.pointColor || 0xffffff;
+    this.position = options.position || [0, 0, 0];
+    this.rotation = options.rotation || [Math.PI/2, 0, 0];
+    this.scale = options.scale || [1, 1, 1];
   }
+  
   async init() {
+    if (!this.filePath) {
+      throw new Error("No file path provided for PLY point cloud renderer");
+    }
+    
     // Use our inline PLYLoader to load a PLY file.
     const loader = new PLYLoader();
-    // Use an environment variable to define the PLY asset path.
-    const plyPath = import.meta.env.VITE_PLY_OBJECT_PATH;
+    
     await new Promise((resolve, reject) => {
-      loader.load(plyPath, (geometry) => {
+      loader.load(this.filePath, (geometry) => {
         // Create a simple points material.
         // Enable vertexColors if a color attribute is available.
         const pointCount = geometry.attributes.position.count;
+        
+        // Calculate point size based on point count if not explicitly provided
+        const calculatedPointSize = this.pointSize || ((10000000/pointCount)**0.5)*0.01;
+        
         const material = new THREE.PointsMaterial({
-          size: ((10000000/pointCount)**0.5)*0.01,
-          color: 0xffffff,
+          size: calculatedPointSize,
+          color: this.pointColor,
           vertexColors: geometry.getAttribute('color') ? true : false
         });
+        
         this.pointCloud = new THREE.Points(geometry, material);
-        this.pointCloud.position.set(0, 0, 0);  
-        this.pointCloud.rotation.set(+Math.PI/2,-0*Math.PI/15,0);  
-        this.pointCloud.scale.set(1, 1, 1);       
-        console.log("Total points: "+pointCount);
-
+        this.pointCloud.position.set(...this.position);  
+        this.pointCloud.rotation.set(...this.rotation);  
+        this.pointCloud.scale.set(...this.scale);       
+        
+        console.log("Total points: " + pointCount);
 
         // Add the point cloud to the main scene.
         mainScene.add(this.pointCloud);
@@ -314,17 +356,21 @@ class PlyPointCloudRenderer extends BackgroundRenderer {
       });
     });
   }
+  
   update() {
-    // For example, we can slowly rotate the point cloud for a simple animation. OR NOT?
-    if (this.pointCloud) {
-      this.pointCloud.rotation.y += 0*0.001;
+    // Animation can be controlled through options
+    if (this.pointCloud && this.options.animate) {
+      const rotationSpeed = this.options.rotationSpeed || 0.001;
+      this.pointCloud.rotation.y += rotationSpeed;
     }
   }
+  
   render() {
     // Render the main scene (which now contains our point cloud)
     const renderer = getRenderer();
     renderer.render(mainScene, getCamera());
   }
+  
   dispose() {
     if (this.pointCloud) {
       mainScene.remove(this.pointCloud);
@@ -336,22 +382,23 @@ class PlyPointCloudRenderer extends BackgroundRenderer {
 }
 
 // --- Factory Function ---
-function createBackgroundRenderer(type) {
+function createBackgroundRenderer(type, options = {}) {
   if (type === 'gaussianSplats') {
-    return new GaussianSplatsRenderer();
+    return new GaussianSplatsRenderer(options);
   } else if (type === 'ply') {
-    return new PlyPointCloudRenderer();
+    return new PlyPointCloudRenderer(options);
   }
   throw new Error(`Unknown background renderer type: ${type}`);
 }
 
 let backgroundRenderer = null;
 
-export async function initViewer() {
-  // Determine the renderer type from environment variables; default to 'gaussianSplats'
-  const rendererType = import.meta.env.VITE_BACKGROUND_RENDERER_TYPE || 'gaussianSplats';
-  backgroundRenderer = createBackgroundRenderer(rendererType);
+export async function initViewer(options = {}) {
+  // Use options.rendererType instead of environment variables
+  const rendererType = options.rendererType || 'gaussianSplats';
+  backgroundRenderer = createBackgroundRenderer(rendererType, options);
   await backgroundRenderer.init();
+  return backgroundRenderer;
 }
 
 export function updateViewer() {
@@ -364,4 +411,8 @@ export function renderViewer() {
   if (backgroundRenderer) {
     backgroundRenderer.render();
   }
+}
+
+export function getBackgroundRenderer() {
+  return backgroundRenderer;
 }

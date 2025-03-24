@@ -10,6 +10,43 @@ import { handleControls } from './controls.js';
 
 import * as THREE from 'three';
 
+// Configuration object - replace environment variables with direct configuration
+const config = {
+  // Background renderer configuration
+  background: {
+    rendererType: import.meta.env.VITE_BACKGROUND_RENDERER_TYPE, // 'gaussianSplats' or 'ply'
+    filePath: import.meta.env.VITE_OBJECT_PATH, // Path to the 3D file
+    
+    // PLY specific options
+    pointSize: null, // Auto-calculate based on point count if null
+    pointColor: 0xffffff,
+    position: [0, 0, 0],
+    rotation: [Math.PI/2, 0, 0],
+    scale: [1, 1, 1],
+    animate: false,
+    
+    // GaussianSplats specific options
+    showLoadingUI: false,
+    progressiveLoad: false,
+    
+    // Common options
+    onProgress: (percentComplete, percentCompleteLabel, loaderStatus) => {
+      const loadingMessage = document.getElementById('loading-message');
+      if (loadingMessage) {
+        loadingMessage.textContent = `Loading: ${percentCompleteLabel}`;
+      }
+    }
+  },
+  
+  // Movement constraints
+  movementBoundaries: [
+    new THREE.Box3(
+      new THREE.Vector3(-30, -3.5, -2), // minX, minY, minZ
+      new THREE.Vector3(20, -1.5, 2)    // maxX, maxY, maxZ
+    )
+  ]
+};
+
 // Initially hide the viewer container until loaded
 hideViewerContainer();
 
@@ -48,8 +85,8 @@ document.addEventListener('keyup', (event) => {
   keys[event.code] = false;
 });
 
-// Initialize the background viewer (which uses the abstracted renderer)
-initViewer().then(() => {
+// Initialize the background viewer with the config options
+initViewer(config.background).then(() => {
   // Set up pointer lock on the viewer container
   setupPointerLock();
 
@@ -97,17 +134,13 @@ initViewer().then(() => {
 
   // Main animation loop
   const clock = new THREE.Clock();
-  const allowedBox1 = new THREE.Box3(
-    // 38.245258, 21.731860, 0.000000
-    new THREE.Vector3(-30, -3.5, -2), // minX, minY, minZ
-    new THREE.Vector3(20, -1.5, 2)     // maxX, maxY, maxZ
-  );
+  
   function animate() {
     requestAnimationFrame(animate);
     const delta = clock.getDelta();
 
     // Process keyboard movement controls
-    handleControls(delta, keys, camera, [allowedBox1]);
+    handleControls(delta, keys, camera, config.movementBoundaries);
 
     // Update secondary scene animations
     updateSecondaryObjects(delta);
