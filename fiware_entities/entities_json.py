@@ -170,24 +170,44 @@ asset_data={
     },
     "refValue": {
         "type": "Property",
-        "value": "http://labserver.sense-campus.gr:1026/v2/entities/4G_Measurement/attrs/rssi/value"
+        "value": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
     },
     "description": {
         "type": "Property",
-        "value": "RSSI values from 4G measurements"
+        "value": "Temperature dumpy sensor"
     },
     "valueRepr": {
         "type": "Property",
         "value": [
             {
                 "type": "singularValue",
-                "unit": "dBm",
+                "unit": "Celsius",
                 "threshold": {
-                    "min": -120,
-                    "max": -50
+                    "min": 0,
+                    "max": 45
                 }
             }
         ]
+    }
+}
+
+sensor={
+    "id": "urn:ngsi-ld:Source:001",
+    "type": "TempSensor",
+    "temperature": {
+        "type": "Property",
+        "value": 23.0
+    },
+    "location": {
+        "type": "GeoProperty",
+        "value": {
+            "type": "Point",
+            "coordinates": [4.85, 45.76]
+        }
+    },
+    "timestamp": {
+        "type": "DateTime",
+        "value": "2021-06-01T00:00:00Z"
     }
 }
 
