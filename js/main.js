@@ -261,7 +261,7 @@ function startAnimationLoop() {
       lastBackgroundUpdateTime = currentTime;
       
       const { dynamicResolutionEnabled, movementResolutionScale, fullResolutionScale } = getDynamicConfig();
-      if (dynamicResolutionEnabled && !inMovementMode) {
+      if (dynamicResolutionEnabled && !inMovementMode && !timeIntervalExceeded) {
         inMovementMode = true;
         window.effectiveResolutionScale = movementResolutionScale;
         adjustRendererSize();
