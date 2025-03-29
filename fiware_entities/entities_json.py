@@ -280,5 +280,8 @@ sensor={
     }
 }
 
-create_entity(asset_data)
+entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
+for entity in entities:
+    create_entity(entity)
+# create_entity(asset_data)
 

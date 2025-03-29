@@ -5,7 +5,7 @@ url = "http://150.140.186.118:1026/v2/entities"
 
 headers={
     "Content-Type": "application/json",
-    "FIWARE-ServicePath": "/AutoSenseAnalytics/demo"
+    "FIWARE-ServicePath": "/DT/test1"
 }
 
 def create_entity(data):
