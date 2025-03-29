@@ -47,22 +47,66 @@ asset_descriptor = {
         "type": "Relationship",
         "value": ["urn:ngsi-ld:AssetData:001"]
     },
+    "parts": {
+        "type": "Property",
+        "value": [
+            {
+                "name": "part1",
+                "scale": {
+                    "type": "Property",
+                    "value": [1,1,1]
+                },
+                "geoPoseOffset": {  
+                    "type": "Property",
+                    "value": {
+                        #geopose protocol 6DOF
+                        "position": {
+                            "lat": 38.245258,
+                            "lon":  21.731860,
+                            "h": 1
+                        },
+                        "angles": {
+                            "yaw": 5.514456741060452,
+                            "pitch": -0.43610515937237904,
+                            "roll": 0.0
+                        }
+                    }
+                },
+                "models": [
+                            [ 
+                                {
+                                "type": "model", 
+                                "format": "obj",
+                                "url": "https://example.com/models/asset001.obj"
+                                },
+                            {
+                                "type": "texture",
+                                "format": "jpg",
+                                "url": "https://example.com/textures/asset001.jpg"
+                            }
+                        ]
+                ]
+            }
+        ]
+    },
     "resourceLink": {
         "type": "Property",
         "value": [
-            [   
+            [
                 {
-                    "type": "Mesh",
+                    "type": "model", 
                     "format": "obj",
-                    "model": "https://example.com/models/asset001.obj",
-                    "textures": ["https://example.com/textures/asset001.jpg"],
-                    "size": 150, #MB
-                    "scale": [1,1,1],
+                    "url": "https://example.com/models/asset001.obj"
+                },
+                {
+                    "type": "texture",
+                    "format": "jpg",
+                    "url": "https://example.com/textures/asset001.jpg"
                 }
             ]
         ]
     },
-    "geoPose": {
+    "geopose": {
         "type": "Property",
         "value": {
             #geopose protocol 6DOF
@@ -81,17 +125,7 @@ asset_descriptor = {
   "refSemanticRepresentation": {
     "type": "Relationship",
     "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
-  },
-  "refParent": {
-    "type": "Relationship",
-    "value": "urn:ngsi-ld:Asset:000"
-  },
-    "refChildren": {
-        "type": "Relationship",
-        "value": [
-            "urn:ngsi-ld:Asset:002"
-        ]
-    }
+  }
 }
 
 
