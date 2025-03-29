@@ -20,7 +20,7 @@ sensor={
         "type": "GeoProperty",
         "value": {
             "type": "Point",
-            "coordinates": [4.85, 45.76]
+            "coordinates": [38.245258, 21.731860]
         }
     },
     "timestamp": {

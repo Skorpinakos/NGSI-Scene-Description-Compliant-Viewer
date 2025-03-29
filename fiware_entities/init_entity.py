@@ -1,5 +1,5 @@
 import requests
-
+from sub_fiware_mqtt import subscribe_entity_to_mqtt
 url = "http://150.140.186.118:1026/v2/entities"
 
 
@@ -10,7 +10,8 @@ headers={
 
 def create_entity(data):
     response = requests.post(url, json=data, headers=headers)
-
+    if ("Source" in data["id"]):
+        subscribe_entity_to_mqtt(headers["FIWARE-ServicePath"],data["id"],data["type"],"temperature",data["id"])
     if response.status_code == 201:
         print("Entity created successfully with service and path!")
         return 0
@@ -18,3 +19,4 @@ def create_entity(data):
         print(f"Failed to create entity: {response.status_code}")
         print(response.json())
         return 1
+    

@@ -12,20 +12,33 @@ scene_descriptor = {
         #TODO: v2 add MultiPolygon or Holes in Polygon
         "type": "GeoProperty",
         "value": {
-            "type": "Polygon",
+            "type": "MultiPolygon",
             "coordinates": [
-            [
+            [[
                 [4.85, 45.76],
                 [4.86, 45.76],
                 [4.86, 45.77],
                 [4.85, 45.77],
                 [4.85, 45.76]
-            ]
+            ]],
+            [[
+                [4.85, 45.76],
+                [4.86, 45.76],
+                [4.86, 45.77],
+                [4.85, 45.77],
+                [4.85, 45.76]
+            ]]
             ]
         }
     },
-    #TODO add GeoProperty transformations
-    #TODO add Scale
+    "transformation": {
+        "type": "Property",
+        "value": {
+            "position": [1,1,1],
+            "rotation": [0,0,0],
+            "scale": [1,1,1]
+        }
+    },
     "refBackground": {
         "type": "Relationship",
         "value": [
@@ -77,6 +90,30 @@ asset_descriptor = {
                 "roll": 0.0
             }
         }
+  },
+  "updateSrc": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 #ms
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:AssetData:001"
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
   },
   "refSemanticRepresentation": {
     "type": "Relationship",
@@ -196,7 +233,31 @@ asset_data={
                 }
             }
         ]
-    }
+    },
+    "updateSrc": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 #ms
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:Source:001" 
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
+  }
 }
 
 sensor={
