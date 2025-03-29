@@ -125,14 +125,8 @@ async function changeScene(sceneData) {
       return new OBB(center, halfSize, rotationMatrix);
     });
   } else {
-    // Provide a default OBB with no rotation if none is specified in the scene data.
-    const min = new THREE.Vector3(-30, -3.5, -2);
-    const max = new THREE.Vector3(20, -1.5, 2);
-    const center = new THREE.Vector3().addVectors(min, max).multiplyScalar(0.5);
-    const halfSize = new THREE.Vector3().subVectors(max, center);
-    // No rotation: identity matrix
-    const rotationMatrix = new THREE.Matrix3().identity();
-    currentMovementBoundaries = [new OBB(center, halfSize, rotationMatrix)];
+    alert("Failed to load the scene's movement box. Please try another one.");
+    console.error('Invalid movement boundaries:', sceneData.movementBoundaries);
   }
 
   

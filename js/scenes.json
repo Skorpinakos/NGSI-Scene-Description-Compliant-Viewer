@@ -7,14 +7,14 @@
         "filePath": "./background_assets/400k_bodegas.ply",
         "options": {
           "position": [0, 0, 0],
-          "rotation": [-1.57, 0, 0.76],
+          "rotation": [-1.57, 0, 2.33],
           "scale":[1,1,1]
         },
         "movementBoundaries": [
           {
-            "min": [-40, 1, -4],
-            "max": [30, 8, 12],
-            "rotation": [0, 0.76, 0]  
+            "min": [-40, 1, -6],
+            "max": [40, 12, 10],
+            "rotation": [0, 2.33, 0]  
           }
         ]
       },
@@ -26,15 +26,15 @@
         "options": {
           "position": [0, 0, 0],
           "scale":[1,1,1],
-          "rotation": [3.14,-0.76,0],
+          "rotation": [3.14,-2.33,0],
           "progressiveLoad": false
         },
         "movementBoundaries": [
-            {
-                "min": [-30, 1.5, 1],
-                "max": [20, 2.5, 6],
-                "rotation": [0, 0.76, 0]  
-              }
+          {
+            "min": [-20, 1, -6],
+            "max": [20, 3, 0],
+            "rotation": [0, 2.33, 0]  
+          }
         ]
       },
       {
@@ -49,12 +49,12 @@
           "progressiveLoad": false
         },
         "movementBoundaries": [
-            {
-                "min": [-30, 1.5, 1],
-                "max": [20, 2.5, 6],
-                "rotation": [0, 0.76, 0]  
-              }
-          ]
+          {
+            "min": [-30, 1, -3],
+            "max": [30, 3, 6],
+            "rotation": [0, 2.33, 0]  
+          }
+        ]
       },
       {
         "id": "bodegas_8700k_pcd",
@@ -63,15 +63,15 @@
         "filePath": "./background_assets/8700k_bodegas/8700k_bodegas_pcd.ply",
         "options": {
           "position": [0, 0, 0],
-          "rotation": [-1.57, 0, 0.76],
+          "rotation": [-1.57, 0, 2.33],
           "scale":[1,1,1]
         },
         "movementBoundaries": [
-            {
-                "min": [-40, 1, -4],
-                "max": [30, 8, 12],
-                "rotation": [0, 0.76, 0]  
-              }
+          {
+            "min": [-40, 1, -6],
+            "max": [40, 12, 10],
+            "rotation": [0, 2.33, 0]  
+          }
         ]
       }
     ]
