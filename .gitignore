@@ -4,3 +4,4 @@ ssl
 *.zip
 .env
 background_assets/8700k_bodegas
+__pycache__

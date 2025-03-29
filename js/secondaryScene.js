@@ -51,6 +51,7 @@ class LightManager {
   }
 }
 
+
 class Object{
   constructor(){
     //not initializing with a scene as we may want to add it in many scenes
@@ -230,12 +231,14 @@ let cube;
 const sceneManager = new SceneManager();
 // Scene Creation
 export function createSecondaryScene() {
+  //scene will be created based on the scene descriptor
   const scene = sceneManager.getScene();
 
+  
   // Lights
   const lightManager = new LightManager(scene);
-  lightManager.addPointLight();
-  lightManager.addAmbientLight();
+  lightManager.addPointLight(); //possible will be an asset in the scene
+  lightManager.addAmbientLight(); //always ambient light
 
   // Rotating Cube
   const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -254,6 +257,7 @@ export function createSecondaryScene() {
   cube.position.set(0, +2, 0);
   sceneManager.addObject(cube);
 
+  //HERE IT STARTS THE OLD WORKING CODE
   let ws=new Object();
   ws.addObjRepr(scene,'./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, 1, 0], [0.5, 0.5, 0.5], [0]);
   // objectLoader.addObject('./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
@@ -281,6 +285,12 @@ export function createSecondaryScene() {
   new MQTTManager('wss://labserver.sense-campus.gr:9002', "ster/DT/temperature", (msg) => {
     sign1.updateText(msg);
   });
+// WORKING CODE STOPS
+
+//////////////FIWARE CODE STARTS//////////////////
+
+
+//////////////FIWARE CODE STOPS//////////////////
 
 ///////DEBUG/////////////////////////////////////////////////////////////////////
   // Add arrow pointing vertically upward (to the sky)
@@ -309,7 +319,7 @@ export function createSecondaryScene() {
     0x0000ff                     // color (blue)
   );
   scene.add(arrowWest);
-/////////////////////////////////////////////////////////////////
+///////////////////////// ////////////////////////////////////////
 
   return scene;
 }

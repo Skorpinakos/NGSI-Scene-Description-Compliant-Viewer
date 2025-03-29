@@ -67,10 +67,10 @@ asset_descriptor = {
                 {
                     "type": "Mesh",
                     "format": "obj",
-                    "model": "https://example.com/models/asset001.obj",
-                    "textures": ["https://example.com/textures/asset001.jpg"],
-                    "size": 150, #MB
-                    "scale": [1,1,1],
+                    "model": './virtual_assets/ws/weather_station.obj',
+                    "textures": ['./virtual_assets/ws/weather_station.png'],
+                    "size": 0.912, #MB
+                    "scale": [0.5, 0.5, 0.5],
                 }
             ]
         ]
@@ -80,14 +80,14 @@ asset_descriptor = {
         "value": {
             #geopose protocol 6DOF
             "position": {
-                "lat": 38.245258,
-                "lon":  21.731860,
+                "lat": 38.245268,
+                "lon":  21.731840,
                 "h": 1
             },
             "angles": {
-                "yaw": 5.514456741060452,
-                "pitch": -0.43610515937237904,
-                "roll": 0.0
+                "yaw": 0,
+                "pitch": 0,
+                "roll": 0
             }
         }
   },
@@ -280,8 +280,8 @@ sensor={
     }
 }
 
-entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
-for entity in entities:
-    create_entity(entity)
-# create_entity(asset_data)
+# entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
+# for entity in entities:
+#     create_entity(entity)
+create_entity(asset_descriptor)
 
