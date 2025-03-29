@@ -258,36 +258,82 @@ export function createSecondaryScene() {
   sceneManager.addObject(cube);
 
   //HERE IT STARTS THE OLD WORKING CODE
-  let ws=new Object();
-  ws.addObjRepr(scene,'./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, 1, 0], [0.5, 0.5, 0.5], [0]);
-  // objectLoader.addObject('./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
-  // objectLoader.addObject('./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
-  let aircraft=new Object();
-  aircraft.addObjRepr(scene,'./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, 10, 0], [0.5, 0.5, 0.5], [Math.PI / 2]);
+
+  // let ws=new Object();
+  // ws.addObjRepr(scene,'./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, 1, 0], [0.5, 0.5, 0.5], [0]);
+  // // objectLoader.addObject('./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
+  // // objectLoader.addObject('./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
+  // let aircraft=new Object();
+  // aircraft.addObjRepr(scene,'./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, 10, 0], [0.5, 0.5, 0.5], [Math.PI / 2]);
   
-  let man=new Object();
-  man.addObjRepr(scene,'./virtual_assets/man/FinalBaseMesh.obj',null, [-3, 0.5, 0], [0.1, 0.1, 0.1], [0],(obj)=>{
-    const manSign=new DynamicTextSign(scene,[-3, 3, 0],"Person 1");
-  }
-  );
-
-
-  // objectLoader.addObject('./virtual_assets/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0],(obj)=>{
-  //   const manSign=new DynamicTextSign(scene,null,"Person 1",obj);
+  // let man=new Object();
+  // man.addObjRepr(scene,'./virtual_assets/man/FinalBaseMesh.obj',null, [-3, 0.5, 0], [0.1, 0.1, 0.1], [0],(obj)=>{
+  //   const manSign=new DynamicTextSign(scene,[-3, 3, 0],"Person 1");
   // }
   // );
 
-  // Create Signs
-  const sign1 = new DynamicTextSign(scene, [2, 1.75, 0], "42°C");
-  const sign2 = new DynamicTextSign(scene, [2, 2, 0], "Cooling");
 
-  // MQTT for real-time updates
-  new MQTTManager('wss://labserver.sense-campus.gr:9002', "ster/DT/temperature", (msg) => {
-    sign1.updateText(msg);
-  });
+  // // objectLoader.addObject('./virtual_assets/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0],(obj)=>{
+  // //   const manSign=new DynamicTextSign(scene,null,"Person 1",obj);
+  // // }
+  // // );
+
+  // // Create Signs
+  // const sign1 = new DynamicTextSign(scene, [2, 1.75, 0], "42°C");
+  // const sign2 = new DynamicTextSign(scene, [2, 2, 0], "Cooling");
+
+  // // MQTT for real-time updates
+  // new MQTTManager('wss://labserver.sense-campus.gr:9002', "ster/DT/temperature", (msg) => {
+  //   sign1.updateText(msg);
+  // });
 // WORKING CODE STOPS
 
 //////////////FIWARE CODE STARTS//////////////////
+
+//we will parse the scene to look for the assets
+//fetch from FIWARE the scene descriptor
+
+let assets=[];
+fetch('http://localhost:5000/proxy/scene')
+.then(response => {
+  if (!response.ok) {
+    throw new Error('Network response was not ok ' + response.statusText);
+  }
+  return response.json();
+})
+.then(data => {
+  // console.log(data.refAssets.value);
+  assets.push(...data.refAssets.value);
+  // create asset representation
+
+for (let asset of assets) {
+  console.log(asset)
+  fetch(`http://localhost:5000/proxy/${asset}`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok ' + response.statusText);
+    }
+    return response.json();
+  })
+  .then(
+    data => {
+      let obj = new Object();
+      console.log(data.resourceLink.value.model);
+      obj.addObjRepr(scene, data.resourceLink.value.model, data.resourceLink.value.textures, [2, 1, 0], [0.5, 0.5, 0.5], [0]);
+    })
+  .catch(error => { 
+    console.error('Fetch error:', error);
+  });
+}
+
+})
+.catch(error => {
+  console.error('Fetch error:', error);
+});
+
+
+
+
 
 
 //////////////FIWARE CODE STOPS//////////////////
