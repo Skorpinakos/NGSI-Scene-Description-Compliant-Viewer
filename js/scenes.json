@@ -6,15 +6,15 @@
         "type": "ply",
         "filePath": "./background_assets/400k_bodegas.ply",
         "options": {
-          "position": [0, 0, 0],
-          "rotation": [-1.57, 0, 2.33],
+          "translation": [38.245318, 21.731943,0],
+          "rotation": [0, 0,1],
           "scale":[1,1,1]
         },
         "movementBoundaries": [
           {
-            "min": [-40, 1, -6],
-            "max": [40, 12, 10],
-            "rotation": [0, 2.33, 0]  
+            "min": [-40, -18, 1],
+            "max": [20, -10, 9],
+            "rotation": [0, 0, 1]  
           }
         ]
       },
@@ -24,16 +24,15 @@
         "type": "gaussianSplats",
         "filePath": "./background_assets/555k_bodegas.ksplat",
         "options": {
-          "position": [0, 0, 0],
-          "scale":[1,1,1],
-          "rotation": [3.14,-2.33,0],
-          "progressiveLoad": false
+          "translation": [38.245318, 21.731943,0],
+          "rotation": [-1.57, -1,0],
+          "scale":[1,1,1]
         },
         "movementBoundaries": [
           {
-            "min": [-24, 1, 1],
-            "max": [30, 3, 8],
-            "rotation": [0, 2.33, 0]  
+            "min": [-40, -18, 1],
+            "max": [20, -10, 9],
+            "rotation": [0, 0, 1]  
           }
         ]
       },
@@ -43,16 +42,15 @@
         "type": "gaussianSplats",
         "filePath": "./background_assets/4500k_bodegas.ksplat",
         "options": {
-          "position": [0, 0, 0],
-          "scale":[1,1,1],
-          "rotation": [3.14,-2.33,0],
-          "progressiveLoad": false
+          "translation": [38.245318, 21.731943,0],
+          "rotation": [-1.57, -1,0],
+          "scale":[1,1,1]
         },
         "movementBoundaries": [
           {
-            "min": [-24, 1, 1],
-            "max": [30, 3, 8],
-            "rotation": [0, 2.33, 0]  
+            "min": [-40, -18, 1],
+            "max": [20, -10, 9],
+            "rotation": [0, 0, 1]  
           }
         ]
       },
@@ -62,15 +60,15 @@
         "type": "ply",
         "filePath": "./background_assets/8700k_bodegas/8700k_bodegas_pcd.ply",
         "options": {
-          "position": [0, 0, 0],
-          "rotation": [-1.57, 0, 2.33],
+          "translation": [38.245318, 21.731943,0],
+          "rotation": [0, 0,1],
           "scale":[1,1,1]
         },
         "movementBoundaries": [
           {
-            "min": [-24, 1, 1],
-            "max": [30, 3, 8],
-            "rotation": [0, 2.33, 0]  
+            "min": [-40, -18, 1],
+            "max": [20, -10, 9],
+            "rotation": [0, 0, 1]  
           }
         ]
       }

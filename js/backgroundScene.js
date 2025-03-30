@@ -3,17 +3,19 @@ import * as THREE from 'three';
 import * as GaussianSplats3D from '@mkkellogg/gaussian-splats-3d';
 import { getRenderer } from './renderer.js';
 import { rotate } from 'three/tsl';
+import {getLocalOffset} from './global2local.js';
 
 let mainScene, camera;
 
 export function createMainScene() {
   mainScene = new THREE.Scene();
+  mainScene.up.set(0, 0, 1);
   // Set up the primary camera
   camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 500);
   camera.position.set(0, 0, 0);
-  camera.rotation.order = 'YXZ';
-  camera.up.set(0, 1, 0);
-  camera.rotation.set(0, 0, 0);
+  camera.rotation.order = 'ZXY';
+  camera.up.set(0, 0, 1);
+  camera.rotation.set(Math.PI/2, 0, 0);
   return mainScene;
 }
 
@@ -94,9 +96,9 @@ class GaussianSplatsRenderer extends BackgroundRenderer {
     // Load the splat scene using the provided file path
     
     await this.viewer.addSplatScene(this.filePath, {
-      position: this.options.position || [0, 0, 0],
+      position: getLocalOffset(this.options.translation,this.options.translation)-getLocalOffset(this.options.translation,this.options.translation) || [0, 0, 0],
       scale: this.options.scale || [1, 1, 1],
-      rotation: this.options.rotation 
+      rotation: this.options.rotation //this propably neeeds some remapping //TODO
       ? new THREE.Quaternion().setFromEuler(new THREE.Euler(...this.options.rotation, 'XYZ')).toArray() 
       : [0, 0, 0, 1],
       showLoadingUI: this.options.showLoadingUI !== undefined ? this.options.showLoadingUI : false,
@@ -317,7 +319,7 @@ class PlyPointCloudRenderer extends BackgroundRenderer {
     this.filePath = options.filePath || null;
     this.pointSize = options.pointSize || null;
     this.pointColor = options.pointColor || 0xffffff;
-    this.position = options.position || [0, 0, 0];
+    this.position = getLocalOffset(this.options.translation,this.options.translation)-getLocalOffset(this.options.translation,this.options.translation) || [0, 0, 0], //lol
     this.rotation = options.rotation || [0, 0, 0];
     this.scale = options.scale || [1, 1, 1];
   }

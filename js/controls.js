@@ -15,26 +15,28 @@ export function handleControls(delta, keys, camera, allowedSpaces) {
   const velocity = new THREE.Vector3();
 
   // Update velocity based on key input
-  if (keys['KeyW']) velocity.z -= speed * delta;
-  if (keys['KeyS']) velocity.z += speed * delta;
-  if (keys['KeyD']) velocity.x -= speed * delta;
-  if (keys['KeyA']) velocity.x += speed * delta;
-  if (keys['Space']) camera.position.y += speed * delta;
-  if (keys['ControlLeft'] || keys['ControlRight']) camera.position.y -= speed * delta;
+  if (keys['KeyW']) velocity.y += speed * delta; // Move north
+  if (keys['KeyS']) velocity.y -= speed * delta; // Move south
+  if (keys['KeyD']) velocity.x += speed * delta; // Move east
+  if (keys['KeyA']) velocity.x -= speed * delta; // Move west
+  if (keys['Space']) camera.position.z += speed * delta; // Move up
+  if (keys['ControlLeft'] || keys['ControlRight']) camera.position.z -= speed * delta; // Move down
+  
 
   // Get the forward direction (ignoring vertical component)
   const direction = new THREE.Vector3();
   camera.getWorldDirection(direction);
-  direction.y = 0;
+  direction.z = 0; // Remove vertical component in z (since z is up)
   direction.normalize();
+  
 
   // Calculate right vector
   const right = new THREE.Vector3();
-  right.crossVectors(camera.up, direction).normalize();
+  right.crossVectors(direction, camera.up).normalize();
 
   // Determine movement vector based on velocity in the camera's local space
   const move = new THREE.Vector3();
-  move.addScaledVector(direction, -velocity.z);
+  move.addScaledVector(direction, velocity.y);
   move.addScaledVector(right, velocity.x);
   camera.position.add(move);
 

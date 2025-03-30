@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import {getLocalOffset} from './global2local.js';
 import mqtt from 'mqtt';
 
 
@@ -230,10 +231,9 @@ class MQTTManager {
 let cube;
 const sceneManager = new SceneManager();
 // Scene Creation
-export function createSecondaryScene() {
-  //scene will be created based on the scene descriptor
+export function createSecondaryScene(clientCoordinateSpaceTranslation) {
+  //scene will be created based on the scene descriptor and translated to the client coordinate space (dictated by the background chosen)
   const scene = sceneManager.getScene();
-
   
   // Lights
   const lightManager = new LightManager(scene);
@@ -254,7 +254,10 @@ export function createSecondaryScene() {
   });
 
   cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-  cube.position.set(0, +2, 0);
+
+  ////lets say the cube is at [38.245105, 21.731640,2] in global (aka gps) coords 
+  let cubeSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, [38.245105, 21.731640,2]);
+  cube.position.set(cubeSceneCoords.x, cubeSceneCoords.y, cubeSceneCoords.z);;
   sceneManager.addObject(cube);
 
   //HERE IT STARTS THE OLD WORKING CODE
@@ -339,27 +342,27 @@ for (let asset of assets) {
 //////////////FIWARE CODE STOPS//////////////////
 
 ///////DEBUG/////////////////////////////////////////////////////////////////////
-  // Add arrow pointing vertically upward (to the sky)
+  // Add arrow pointing UP (to the sky)
   const arrowUp = new THREE.ArrowHelper(
-    new THREE.Vector3(0, 1, 0),  // direction
+    new THREE.Vector3(0, 0, 1),  // direction
     new THREE.Vector3(0, 0, 0),  // origin
     5,                           // length
     0xffff00                     // color (yellow)
   );
   scene.add(arrowUp);
 
-  // Add arrow pointing north (negative Z direction)
+  // Add arrow pointing NORTH (positive Y direction)
   const arrowNorth = new THREE.ArrowHelper(
-    new THREE.Vector3(0, 0, -1), // direction
+    new THREE.Vector3(0, 1, 0), // direction
     new THREE.Vector3(0, 0, 0),  // origin
     5,                           // length
     0xff0000                     // color (red)
   );
   scene.add(arrowNorth);
 
-  // Add arrow pointing west (negative X direction)
+  // Add arrow pointing east (positive X direction)
   const arrowWest = new THREE.ArrowHelper(
-    new THREE.Vector3(-1, 0, 0), // direction
+    new THREE.Vector3(1, 0, 0), // direction
     new THREE.Vector3(0, 0, 0),  // origin
     5,                           // length
     0x0000ff                     // color (blue)

@@ -17,7 +17,7 @@ let config = {
   background: {
     rendererType: 'gaussianSplats', // Default
     filePath: '', // Will be populated from scenes.json
-    position: [0, 0, 0],
+    translation: [0, 0, 0],
     rotation: [0, 0, 0],
     scale: [1, 1, 1],
     animate: false,
@@ -94,9 +94,11 @@ async function changeScene(sceneData) {
   
   // Merge options from scene data
   if (sceneData.options) {
+    //console.log(sceneData.options);
     for (const [key, value] of Object.entries(sceneData.options)) {
       config.background[key] = value;
     }
+    //console.log(config.background);
   }
   
   
@@ -133,6 +135,7 @@ async function changeScene(sceneData) {
   // Initialize the background viewer with the new config options
   try {
     await initViewer(config.background);
+
     
     // If this is the first initialization
     if (!isInitialized) {
@@ -140,7 +143,8 @@ async function changeScene(sceneData) {
       setupPointerLock();
     
       // Create secondary scene (e.g., a rotating cube, sign, etc.)
-      secondaryScene = createSecondaryScene();
+      //console.log(config.background.translation); 
+      //secondaryScene = createSecondaryScene(config.background.translation);
     
       // Unhide the viewer container
       showViewerContainer('flex');
@@ -168,6 +172,20 @@ async function changeScene(sceneData) {
         loadingOverlay.remove();
       }
     }
+
+  if (secondaryScene) {
+    // Optional: Remove old objects or dispose of the scene
+    while (secondaryScene.children.length > 0) {
+      const child = secondaryScene.children[0];
+      secondaryScene.remove(child);
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) child.material.dispose();
+    }
+  }
+  // Recreate secondary scene with the new configuration
+
+  console.log(config.background.translation);
+  secondaryScene = createSecondaryScene(config.background.translation);
     
     // Start the animation loop
     startAnimationLoop();
@@ -181,21 +199,24 @@ async function changeScene(sceneData) {
       loadingOverlay.remove();
     }
   }
+
+
 }
 
 // Set up pointer lock and keyboard/mouse event handling
 const container = document.getElementById('viewer-container');
 let keys = {};
-const rotationArray = [camera.rotation.x, camera.rotation.y, camera.rotation.z];
-let yaw = rotationArray[1];
-let pitch = rotationArray[0];
+// Initialize yaw (rotation around z) and pitch (rotation around x)
+let yaw = camera.rotation.z;
+let pitch = camera.rotation.x;
 
 document.addEventListener('mousemove', (event) => {
   if (document.pointerLockElement === container) {
-    yaw -= event.movementX * 0.002;
-    pitch -= event.movementY * 0.002;
-    pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
-    camera.rotation.set(pitch, yaw, rotationArray[2]);
+    yaw -= event.movementX * 0.002;   // Horizontal movement rotates around z
+    pitch -= event.movementY * 0.002;  // Vertical movement rotates around x
+    pitch = Math.max(0 , Math.min(Math.PI, pitch));
+    // With 'ZXY' order, set rotation.x to pitch and rotation.z to yaw (set rotation.y to 0 unless you need roll)
+    camera.rotation.set(pitch, 0, yaw);
   }
 });
 
