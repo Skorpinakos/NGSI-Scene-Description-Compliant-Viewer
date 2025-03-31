@@ -58,6 +58,7 @@ class Object{
   constructor(data,asset){
     //not initializing with a scene as we may want to add it in many scenes
     this.id=asset;
+    this.object=null;
     this.position=[data.geoPose.value.position.lat,data.geoPose.value.position.lon,data.geoPose.value.position.h];
     this.rotation=[data.geoPose.value.angles.yaw,data.geoPose.value.angles.pitch,data.geoPose.value.angles.roll];
     this.parent=data.refParent.value;
@@ -71,7 +72,7 @@ class Object{
     console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
   }
 
-  addObjRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
+  async addObjRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
 
     
     let resource = this.resourceLinks[0][0]; // Access the first resource
@@ -111,7 +112,8 @@ class Object{
   }
   
   //TODO based on the Scene Descriptor/ Object Descriptor I will create the signs here
-  createSigns(){
+  createSign(scene){
+    let sign1=new DynamicTextSign(scene,this.position,"42°C",this.object,{ x: 0, y: 0.5, z: 0 });
   }
   //TODO based on the Scene Descriptor/ Object Descriptor I will update the object here
   updateObject(){
@@ -156,7 +158,7 @@ class ObjectLoaderManager {
 
 // Dynamic Text Sign
 class DynamicTextSign {
-  constructor(scene, position, initialText, targetObject = null, offset = { x: 0, y: 0.5, z: 0 }, size = { width: 0.5, height: 0.2 }) {
+  constructor(scene, position, initialText, targetObject = null, offset = { x: 0, y: -2, z: 0 }, size = { width: 0.5, height: 0.2 }) {
     this.scene = scene;
     this.targetObject = targetObject; // Optional object to attach to
     this.offset = offset;
@@ -182,12 +184,14 @@ class DynamicTextSign {
     if (this.targetObject) {
       let bbox=new THREE.Box3().setFromObject(this.targetObject);
       let height=bbox.max.y-bbox.min.y;
+      console.log(this.targetObject.position.y,height);
       this.sign.position.set(
         this.targetObject.position.x + this.offset.x,
-        this.targetObject.position.y - height+this.offset.y, //TODO FIX THE - IN THE Y AXIS
+        this.targetObject.position.y + height+this.offset.y, //TODO FIX THE - IN THE Y AXIS
         this.targetObject.position.z + this.offset.z
       );
     } else {
+      console.log("here")
       this.sign.position.set(...position); // Fixed position if no target
     }
 
@@ -348,7 +352,8 @@ for (let asset of assets) {
     data => {
       let obj = new Object(data,asset);
       obj.addObjRepr(scene,clientCoordinateSpaceTranslation);
-      console.log(data.resourceLink.value.model);
+      obj.createSign(scene);
+      // console.log(data.resourceLink.value.model);
 
       // obj.addObjRepr(scene, data.resourceLink.value.model, data.resourceLink.value.textures, [2, 1, 0], [0.5, 0.5, 0.5], [0]);
     })

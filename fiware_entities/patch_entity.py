@@ -85,7 +85,7 @@ asset_descriptor = {
             },
             "angles": {
                 "yaw": 90,
-                "pitch": 0,
+                "pitch": 90,
                 "roll": 0
             }
         }
