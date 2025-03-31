@@ -19,4 +19,13 @@ def create_entity(data):
         print(f"Failed to create entity: {response.status_code}")
         print(response.json())
         return 1
-    
+
+def patch_entity(id,data):
+    response = requests.patch(f"{url}/{id}/attrs", json=data, headers=headers)
+    if response.status_code == 204:
+        print("Entity patched successfully!")
+        return 0
+    else:
+        print(f"Failed to patch entity: {response.status_code}")
+        print(response.json())
+        return 1

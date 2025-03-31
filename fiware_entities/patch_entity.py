@@ -1,0 +1,286 @@
+from init_entity import create_entity, patch_entity
+scene_descriptor = {
+    "id": "urn:ngsi-ld:SceneDescriptor:001",
+    "type": "SceneDescriptor",
+    "refAssets": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:Asset:001", "urn:ngsi-ld:Asset:002"]
+    },
+    "sceneSpace": {
+        #v1 only a Polygon
+        #TODO: v2 add MultiPolygon or Holes in Polygon
+        "type": "GeoProperty",
+        "value": {
+            "type": "MultiPolygon",
+            "coordinates": [
+            [[
+                [4.85, 45.76],
+                [4.86, 45.76],
+                [4.86, 45.77],
+                [4.85, 45.77],
+                [4.85, 45.76]
+            ]],
+            [[
+                [4.85, 45.76],
+                [4.86, 45.76],
+                [4.86, 45.77],
+                [4.85, 45.77],
+                [4.85, 45.76]
+            ]]
+            ]
+        }
+    },
+    "transformation": {
+        "type": "Property",
+        "value": {
+            "position": [1,1,1],
+            "rotation": [0,0,0],
+            "scale": [1,1,1]
+        }
+    },
+    "refBackground": {
+        "type": "Relationship",
+        "value": [
+            "urn:ngsi-ld:Bg:001"
+            ]
+    },
+    "refSemanticLayers": {
+        "type": "Relationship",
+        "value": [
+            "urn:ngsi-ld:SemanticLayer:001"
+        ]
+    }
+}
+
+asset_descriptor = {
+    # "id": "urn:ngsi-ld:Asset:001",
+    # "type": "Asset",
+    "refAssetData": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:AssetData:001"]
+    },
+    "resourceLink": {
+        "type": "Property",
+        "value": [
+            [   
+                {
+                    "type": "Mesh",
+                    "format": "obj",
+                    "model": './virtual_assets/ws/weather_station.obj',
+                    "textures": ['./virtual_assets/ws/weather_station.png'],
+                    "size": 0.912, #MB
+                    "scale": [0.5, 0.5, 0.5],
+                }
+            ]
+        ]
+    },
+    "geoPose": {
+        "type": "Property",
+        "value": {
+            #geopose protocol 6DOF
+            "position": {
+                "lat": 38.245268,
+                "lon":  21.731840,
+                "h": 1
+            },
+            "angles": {
+                "yaw": 90,
+                "pitch": 0,
+                "roll": 0
+            }
+        }
+  },
+  "updateSrc": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 #ms
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:AssetData:001"
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
+  },
+  "refSemanticRepresentation": {
+    "type": "Relationship",
+    "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
+  },
+  "refParent": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Asset:000"
+  },
+    "refChildren": {
+        "type": "Relationship",
+        "value": [
+            "urn:ngsi-ld:Asset:002"
+        ]
+    }
+}
+
+
+background_descriptor={
+    "id": "urn:ngsi-ld:Bg:001",
+    "type": "Background",
+    "resourceLink": {
+        "type": "Property",
+        "value": [
+            {
+                "type": "mesh", 
+                "format": "pcd",
+                "url": "https://example.com/backgrounds/bg001.jpg"
+            }
+        ]
+    },
+    "resourceFormat": {
+        "type": "Property",
+        "value": "Ply"
+    },
+    "resourceParams": {
+        "type": "Property",
+        "value": [
+            {
+            "opactiy": "0.4"
+            }
+        ]
+    },
+    "resourceProperties": {
+        "type": "Property",
+        "value": [
+            #fiels based on the Format field
+            {
+                "pointCount": "1000"
+            },
+            {
+                "triangleCount": "2000"
+            },
+            {
+                "harmonicsCount": "1000"
+            }
+        ]
+    },
+     "scale": {
+        "type": "Property",
+        "value": [1,1,1]
+    },
+    "geopose": {
+        "type": "Property",
+        "value": {
+            #geopose protocol 6DOF
+            "position": {
+                "lat": 38.245258,
+                "lon":  21.731860,
+                "h": 1
+            },
+            "angles": {
+                "yaw": 5.514456741060452,
+                "pitch": -0.43610515937237904,
+                "roll": 0.0
+            }
+        }
+    },
+    "reprOptions": {
+        # eg renderer/viewer
+        "type": "Property",
+        "value": [
+            {
+                "animate": False
+            },
+            {
+                "showLoadingUI": False
+            }
+        ]
+    }
+}
+
+asset_data={
+    "id": "urn:ngsi-ld:AssetData:001",
+    "type": "AssetData",
+    "refSource": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:Source:001"]
+    },
+    "refValue": {
+        "type": "Property",
+        "value": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
+    },
+    "description": {
+        "type": "Property",
+        "value": "Temperature dumpy sensor"
+    },
+    "valueRepr": {
+        "type": "Property",
+        "value": [
+            {
+                "type": "singularValue",
+                "unit": "Celsius",
+                "threshold": {
+                    "min": 0,
+                    "max": 45
+                }
+            }
+        ]
+    },
+    "updateSrc": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 #ms
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:Source:001" 
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
+  }
+}
+
+sensor={
+    "id": "urn:ngsi-ld:Source:001",
+    "type": "TempSensor",
+    "temperature": {
+        "type": "Property",
+        "value": 23.0
+    },
+    "location": {
+        "type": "GeoProperty",
+        "value": {
+            "type": "Point",
+            "coordinates": [4.85, 45.76]
+        }
+    },
+    "timestamp": {
+        "type": "DateTime",
+        "value": "2021-06-01T00:00:00Z"
+    }
+}
+
+# entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
+# for entity in entities:
+#     create_entity(entity)
+# create_entity(asset_descriptor)
+patch_entity("urn:ngsi-ld:Asset:001",asset_descriptor)

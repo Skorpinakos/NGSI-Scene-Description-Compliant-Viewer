@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import {getLocalOffset} from './global2local.js';
 import mqtt from 'mqtt';
+import { roughness } from 'three/tsl';
 
 
 // Scene Manager
@@ -54,31 +55,51 @@ class LightManager {
 
 
 class Object{
-  constructor(){
+  constructor(data,asset){
     //not initializing with a scene as we may want to add it in many scenes
-    this.object=null;
+    this.id=asset;
+    this.position=[data.geoPose.value.position.lat,data.geoPose.value.position.lon,data.geoPose.value.position.h];
+    this.rotation=[data.geoPose.value.angles.yaw,data.geoPose.value.angles.pitch,data.geoPose.value.angles.roll];
+    this.parent=data.refParent.value;
+    this.children=data.refChildren.value;
+    this.refAssetData=data.refAssetData.value;
+    this.refSemantic=data.refSemanticRepresentation.value
+    this.resourceLinks=data.resourceLink.value;
+    this.refupdateSrc=data.updateSrc.value;
     this.objLoader = new OBJLoader();
     this.textureLoader = new THREE.TextureLoader();
+    console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
   }
 
-  addObjRepr(scene,objSrc, textureSrc, position, scale, rotation,callback=null) {
-    const texture = textureSrc ? this.textureLoader.load(textureSrc) : null;
+  addObjRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
 
-    this.objLoader.load(objSrc, (object) => {
+    
+    let resource = this.resourceLinks[0][0]; // Access the first resource
+    let model = resource.model; // Extract the model path
+    let textures = resource.textures; // Extract the textures array
+    
+    this.objLoader.load(model, (object) => {
       object.traverse((child) => {
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
-            map: texture,
+            map: textures[0] ? this.textureLoader.load(textures[0]) : null,
             color: 0xffffff,
             roughness: 0.5,
             metalness: 0.2,
           });
         }
       });
-
-      object.position.set(...position);
-      object.scale.set(...scale);
-      object.rotation.y = rotation[0];
+      
+      let objSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, this.position);
+      object.position.set(objSceneCoords.x, objSceneCoords.y, objSceneCoords.z);
+      object.scale.set(...resource.scale); // Use the scale from the resource
+      //convert rptation from deg to rads
+      this.rotation[0]=this.rotation[0]*Math.PI/180;
+      this.rotation[1]=this.rotation[1]*Math.PI/180;
+      this.rotation[2]=this.rotation[2]*Math.PI/180;
+      object.rotation.set(this.rotation[0],this.rotation[1],this.rotation[2]) // Fix rotation references
+      object.scale.set(...resource.scale);
+      // object.rotation.y = rotation[0];
       // this.scene.add(object);
       this.object=object;
       scene.add(this.object);
@@ -258,7 +279,7 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
 
   ////lets say the cube is at [38.245105, 21.731640,2] in global (aka gps) coords 
   let cubeSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, [38.245105, 21.731640,2]);
-  cube.position.set(cubeSceneCoords.x, cubeSceneCoords.y, cubeSceneCoords.z);;
+  cube.position.set(cubeSceneCoords.x, cubeSceneCoords.y, cubeSceneCoords.z);
   sceneManager.addObject(cube);
   //38.288051, 21.788754
   cube2 = new THREE.Mesh(cubeGeometry, cubeMaterial);
@@ -325,9 +346,11 @@ for (let asset of assets) {
   })
   .then(
     data => {
-      let obj = new Object();
+      let obj = new Object(data,asset);
+      obj.addObjRepr(scene,clientCoordinateSpaceTranslation);
       console.log(data.resourceLink.value.model);
-      obj.addObjRepr(scene, data.resourceLink.value.model, data.resourceLink.value.textures, [2, 1, 0], [0.5, 0.5, 0.5], [0]);
+
+      // obj.addObjRepr(scene, data.resourceLink.value.model, data.resourceLink.value.textures, [2, 1, 0], [0.5, 0.5, 0.5], [0]);
     })
   .catch(error => { 
     console.error('Fetch error:', error);
