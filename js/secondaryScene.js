@@ -229,6 +229,7 @@ class MQTTManager {
 }
 
 let cube;
+let cube2;
 const sceneManager = new SceneManager();
 // Scene Creation
 export function createSecondaryScene(clientCoordinateSpaceTranslation) {
@@ -259,7 +260,11 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   let cubeSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, [38.245105, 21.731640,2]);
   cube.position.set(cubeSceneCoords.x, cubeSceneCoords.y, cubeSceneCoords.z);;
   sceneManager.addObject(cube);
-
+  //38.288051, 21.788754
+  cube2 = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  let cubeSceneCoords2=getLocalOffset(clientCoordinateSpaceTranslation, [38.288081, 21.788754,71.5]);
+  cube2.position.set(cubeSceneCoords2.x, cubeSceneCoords2.y, cubeSceneCoords2.z);;
+  sceneManager.addObject(cube2);
   //HERE IT STARTS THE OLD WORKING CODE
 
   // let ws=new Object();
@@ -379,5 +384,9 @@ export function updateSecondaryObjects(delta) {
   if (cube){
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
+  }
+  if (cube2){
+    cube2.rotation.x += 0.01;
+    cube2.rotation.y += 0.01;
   }
 }
