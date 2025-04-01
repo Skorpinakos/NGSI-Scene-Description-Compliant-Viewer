@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import {getLocalOffset} from './global2local.js';
 import mqtt from 'mqtt';
-import { roughness } from 'three/tsl';
+import { cameraFar, roughness } from 'three/tsl';
 
 
 // Scene Manager
@@ -69,6 +69,7 @@ class Object{
     this.refupdateSrc=data.updateSrc.value;
     this.objLoader = new OBJLoader();
     this.textureLoader = new THREE.TextureLoader();
+    this.scenePos=null;
     console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
   }
 
@@ -92,7 +93,9 @@ class Object{
       });
       
       let objSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, this.position);
+      this.scenePos=objSceneCoords;
       object.position.set(objSceneCoords.x, objSceneCoords.y, objSceneCoords.z);
+      console.log('position',objSceneCoords.x, objSceneCoords.y, objSceneCoords.z);
       object.scale.set(...resource.scale); // Use the scale from the resource
       //convert rptation from deg to rads
       this.rotation[0]=this.rotation[0]*Math.PI/180;
@@ -105,7 +108,7 @@ class Object{
       this.object=object;
       scene.add(this.object);
       
-      if (callback) callback(this.object);
+      if (callback) callback(this.object,this.scenePos);
     }, undefined, (error) => {
       console.error('Error loading model:', error);
     });
@@ -162,7 +165,7 @@ class DynamicTextSign {
     this.scene = scene;
     this.targetObject = targetObject; // Optional object to attach to
     this.offset = offset;
-    
+    this.height=null;
     this.textCanvas = document.createElement('canvas');
     this.textCanvas.width = 512;
     this.textCanvas.height = 192;
@@ -184,17 +187,17 @@ class DynamicTextSign {
     if (this.targetObject) {
       let bbox=new THREE.Box3().setFromObject(this.targetObject);
       let height=bbox.max.y-bbox.min.y;
-      console.log(this.targetObject.position.y,height);
+      this.height=height;
+      console.log(this.targetObject.position.x,this.targetObject.position.y,height);
       this.sign.position.set(
-        this.targetObject.position.x + this.offset.x,
-        this.targetObject.position.y + height+this.offset.y, //TODO FIX THE - IN THE Y AXIS
-        this.targetObject.position.z + this.offset.z
-      );
+        this.targetObject.position.x+this.offset.x,
+        this.targetObject.position.y+this.offset.y, //TODO FIX THE - IN THE Y AXIS
+        this.targetObject.position.z+this.offset.z+height)
     } else {
       console.log("here")
       this.sign.position.set(...position); // Fixed position if no target
     }
-
+    this.sign.rotation.x = Math.PI/2; // Rotate the sign to face the camera
     this.scene.add(this.sign);
     this.drawSignText(initialText);
   }
@@ -228,7 +231,7 @@ class DynamicTextSign {
       this.sign.position.set(
         this.targetObject.position.x + this.offset.x,
         this.targetObject.position.y + this.offset.y,
-        this.targetObject.position.z + this.offset.z
+        this.targetObject.position.z + this.offset.z+this.height
       );
     }
   }
@@ -312,7 +315,8 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   // // );
 
   // // Create Signs
-  // const sign1 = new DynamicTextSign(scene, [2, 1.75, 0], "42°C");
+  // let testloc=getLocalOffset(clientCoordinateSpaceTranslation,[38.245268,21.731840]);
+  // const sign1 = new DynamicTextSign(scene, [testloc.x, testloc.y, testloc.z], "42°C", null, { x: 0, y: 0.5, z: 0 });
   // const sign2 = new DynamicTextSign(scene, [2, 2, 0], "Cooling");
 
   // // MQTT for real-time updates
@@ -351,8 +355,12 @@ for (let asset of assets) {
   .then(
     data => {
       let obj = new Object(data,asset);
-      obj.addObjRepr(scene,clientCoordinateSpaceTranslation);
-      obj.createSign(scene);
+      obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject,position) => {
+        let testloc=getLocalOffset(clientCoordinateSpaceTranslation,[38.245268,21.731840]);
+        const sign1 = new DynamicTextSign(scene, [testloc.x, testloc.y, testloc.z], "42°C", loadedObject, { x: 0, y: 0, z: 0 });
+      });
+      
+      // obj.createSign(scene);
       // console.log(data.resourceLink.value.model);
 
       // obj.addObjRepr(scene, data.resourceLink.value.model, data.resourceLink.value.textures, [2, 1, 0], [0.5, 0.5, 0.5], [0]);
