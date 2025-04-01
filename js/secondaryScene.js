@@ -74,7 +74,7 @@ class Object{
     console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
   }
 
-  async addObjRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
+  addObjRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
 
     
     let resource = this.resourceLinks[0][0]; // Access the first resource
@@ -117,6 +117,7 @@ class Object{
   
   //TODO based on the Scene Descriptor/ Object Descriptor I will create the signs here
   createSign(scene){
+    //TODO here we will insert a check logic based on the asset_data entity and the valueRepresentation
     this.sign=new DynamicTextSign(scene,this.position,"42°C",this.object,{ x: 0, y: 0, z: 0 });
   }
   //TODO based on the Scene Descriptor/ Object Descriptor I will update the object here
@@ -124,41 +125,7 @@ class Object{
   }
 
 }
-// Object Loader
-class ObjectLoaderManager {
-  constructor(scene) {
-    this.scene = scene;
-    this.objLoader = new OBJLoader();
-    this.textureLoader = new THREE.TextureLoader();
-  }
 
-  addObject(objSrc, textureSrc, position, scale, rotation,callback=null) {
-    const texture = textureSrc ? this.textureLoader.load(textureSrc) : null;
-
-    this.objLoader.load(objSrc, (object) => {
-      object.traverse((child) => {
-        if (child.isMesh) {
-          child.material = new THREE.MeshStandardMaterial({
-            map: texture,
-            color: 0xffffff,
-            roughness: 0.5,
-            metalness: 0.2,
-          });
-        }
-      });
-
-      object.position.set(...position);
-      object.scale.set(...scale);
-      object.rotation.y = rotation[0];
-      this.scene.add(object);
-      //TODO ADD THE SIGN HERE MAYBE BASED ON THE FIWARE DESCRIPTOR
-      //TODO ESTABLISH HERE THE WAY THAT THE SIGN OR THE OBJECT CAN BE UPDATED 
-      if (callback) callback(object);
-    }, undefined, (error) => {
-      console.error('Error loading model:', error);
-    });
-  }
-}
 
 // Dynamic Text Sign
 class DynamicTextSign {
@@ -294,38 +261,7 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   let cubeSceneCoords2=getLocalOffset(clientCoordinateSpaceTranslation, [38.287965, 21.788608,71.5]);
   cube2.position.set(cubeSceneCoords2.x, cubeSceneCoords2.y, cubeSceneCoords2.z);;
   sceneManager.addObject(cube2);
-  //HERE IT STARTS THE OLD WORKING CODE
-
-  // let ws=new Object();
-  // ws.addObjRepr(scene,'./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, 1, 0], [0.5, 0.5, 0.5], [0]);
-  // // objectLoader.addObject('./virtual_assets/ws/weather_station.obj', './virtual_assets/ws/weather_station.png', [2, -1, 0], [0.5, -0.5, 0.5], [0]);
-  // // objectLoader.addObject('./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, -10, 0], [0.5, -0.5, 0.5], [Math.PI / 2]);
-  // let aircraft=new Object();
-  // aircraft.addObjRepr(scene,'./virtual_assets/aircraft/aircraft.obj', './virtual_assets/aircraft/steel.jpg', [-2, 10, 0], [0.5, 0.5, 0.5], [Math.PI / 2]);
   
-  // let man=new Object();
-  // man.addObjRepr(scene,'./virtual_assets/man/FinalBaseMesh.obj',null, [-3, 0.5, 0], [0.1, 0.1, 0.1], [0],(obj)=>{
-  //   const manSign=new DynamicTextSign(scene,[-3, 3, 0],"Person 1");
-  // }
-  // );
-
-
-  // // objectLoader.addObject('./virtual_assets/man/FinalBaseMesh.obj', null, [-3, -0.5, 0], [0.1, -0.1, 0.1], [0],(obj)=>{
-  // //   const manSign=new DynamicTextSign(scene,null,"Person 1",obj);
-  // // }
-  // // );
-
-  // // Create Signs
-  // let testloc=getLocalOffset(clientCoordinateSpaceTranslation,[38.245268,21.731840]);
-  // const sign1 = new DynamicTextSign(scene, [testloc.x, testloc.y, testloc.z], "42°C", null, { x: 0, y: 0.5, z: 0 });
-  // const sign2 = new DynamicTextSign(scene, [2, 2, 0], "Cooling");
-
-  // // MQTT for real-time updates
-  // new MQTTManager('wss://labserver.sense-campus.gr:9002', "ster/DT/temperature", (msg) => {
-  //   sign1.updateText(msg);
-  // });
-// WORKING CODE STOPS
-
 //////////////FIWARE CODE STARTS//////////////////
 
 //we will parse the scene to look for the assets
@@ -358,14 +294,7 @@ for (let asset of assets) {
       let obj = new Object(data,asset);
       obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
         obj.createSign(scene);
-        // let testloc=getLocalOffset(clientCoordinateSpaceTranslation,[38.245268,21.731840]);
-        // const sign1 = new DynamicTextSign(scene, [testloc.x, testloc.y, testloc.z], "42°C", loadedObject, { x: 0, y: 0, z: 0 });
       });
-      
-      // obj.createSign(scene);
-      // console.log(data.resourceLink.value.model);
-
-      // obj.addObjRepr(scene, data.resourceLink.value.model, data.resourceLink.value.textures, [2, 1, 0], [0.5, 0.5, 0.5], [0]);
     })
   .catch(error => { 
     console.error('Fetch error:', error);
@@ -376,11 +305,6 @@ for (let asset of assets) {
 .catch(error => {
   console.error('Fetch error:', error);
 });
-
-
-
-
-
 
 //////////////FIWARE CODE STOPS//////////////////
 
