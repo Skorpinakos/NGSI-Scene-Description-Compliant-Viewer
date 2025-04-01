@@ -70,7 +70,7 @@ def save_ply(filename, vertices):
 
 # Usage example:
 if __name__ == "__main__":
-    input_filename = 'background_assets/10000k_bridge/rc1_Model_3.ply'   # Replace with your input file name
+    input_filename = 'background_assets/10000k_parking/rec1_Model_5.ply'   # Replace with your input file name
     output_filename = 'output.ply'  # Replace with your desired output file name
 
     # Load vertices from the input PLY file.

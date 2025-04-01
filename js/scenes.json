@@ -125,6 +125,42 @@
             "rotation": [0, 0, 1.57]  
           }
         ]
+      },
+      {
+        "id": "parking_14000K_splat",
+        "name": "Parking (14M) - Gaussian Splats",
+        "type": "gaussianSplats",
+        "filePath": "./background_assets/14000k_parking_v3.ksplat",
+        "options": {
+          "translation": [38.287810, 21.788077,68],
+          "rotation": [-1.57, -0.31,0],
+          "scale":[1,1,1]
+        },
+        "movementBoundaries": [
+          {
+            "min": [-25, -12, 3],
+            "max": [15, 12, 9],
+            "rotation": [0, 0, 1.57]  
+          }
+        ]
+      },
+      {
+        "id": "parking_10000k_pcd",
+        "name": "Parking (10M) - Point Cloud",
+        "type": "ply",
+        "filePath": "./background_assets/10000k_parking/output.ply",
+        "options": {
+          "translation": [38.287810, 21.788077,68],
+          "rotation": [0, 0,0],
+          "scale":[1,1,1]
+        },
+        "movementBoundaries": [
+          {
+            "min": [-50, -50, 3],
+            "max": [50, 50, 15],
+            "rotation": [0, 0, 1.57]  
+          }
+        ]
       }
     ]
   }

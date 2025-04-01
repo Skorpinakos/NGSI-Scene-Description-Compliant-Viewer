@@ -6,5 +6,5 @@ def print_pointcloud_count(ply_file):
     print(f"Point count: {points}")
 
 if __name__ == "__main__":
-    ply_file = "background_assets/10000k_bridge/10000k_bridge_pcd.ply"
+    ply_file = "background_assets/10000k_parking/output.ply"
     print_pointcloud_count(ply_file)

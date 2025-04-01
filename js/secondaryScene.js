@@ -287,7 +287,7 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   sceneManager.addObject(cube);
   //38.288051, 21.788754
   cube2 = new THREE.Mesh(cubeGeometry, cubeMaterial);
-  let cubeSceneCoords2=getLocalOffset(clientCoordinateSpaceTranslation, [38.288081, 21.788754,71.5]);
+  let cubeSceneCoords2=getLocalOffset(clientCoordinateSpaceTranslation, [38.287965, 21.788608,71.5]);
   cube2.position.set(cubeSceneCoords2.x, cubeSceneCoords2.y, cubeSceneCoords2.z);;
   sceneManager.addObject(cube2);
   //HERE IT STARTS THE OLD WORKING CODE
