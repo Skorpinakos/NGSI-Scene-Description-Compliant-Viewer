@@ -11,16 +11,19 @@ import * as THREE from 'three';
  * @param {THREE.Box3[]} allowedSpaces - An array of allowed volumes (THREE.Box3 instances)
  */
 export function handleControls(delta, keys, camera, allowedSpaces) {
-  const speed = 6;
+  let speed = 4;
   const velocity = new THREE.Vector3();
+  //console.log(translation);
 
   // Update velocity based on key input
+  if (keys['ShiftLeft'] || keys['ShiftRight']) speed *= 4; // Sprinting
   if (keys['KeyW']) velocity.y += speed * delta; // Move north
   if (keys['KeyS']) velocity.y -= speed * delta; // Move south
   if (keys['KeyD']) velocity.x += speed * delta; // Move east
   if (keys['KeyA']) velocity.x -= speed * delta; // Move west
   if (keys['Space']) camera.position.z += speed * delta; // Move up
   if (keys['ControlLeft'] || keys['ControlRight']) camera.position.z -= speed * delta; // Move down
+   
   
 
   // Get the forward direction (ignoring vertical component)
