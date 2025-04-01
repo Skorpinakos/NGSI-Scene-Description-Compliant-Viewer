@@ -94,7 +94,7 @@ asset_descriptor = {
       "type": "Property",
       "value": {
           "http": {
-              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+              "url": "http://localhost:5000/proxy/urn:ngsi-ld:Source:001/attrs/temperature/value",
               "method": "GET",
               "headers": {
                   "Content-Type": "application/json"
@@ -206,15 +206,15 @@ background_descriptor={
 }
 
 asset_data={
-    "id": "urn:ngsi-ld:AssetData:001",
-    "type": "AssetData",
+    # "id": "urn:ngsi-ld:AssetData:001",
+    # "type": "AssetData",
     "refSource": {
         "type": "Relationship",
         "value": ["urn:ngsi-ld:Source:001"]
     },
     "refValue": {
         "type": "Property",
-        "value": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
+        "value": "http://localhost:5000/proxy/urn:ngsi-ld:Source:001/attrs/temperature/value"
     },
     "description": {
         "type": "Property",
@@ -283,4 +283,4 @@ sensor={
 # for entity in entities:
 #     create_entity(entity)
 # create_entity(asset_descriptor)
-patch_entity("urn:ngsi-ld:Asset:001",asset_descriptor)
+patch_entity("urn:ngsi-ld:AssetData:001",asset_data)

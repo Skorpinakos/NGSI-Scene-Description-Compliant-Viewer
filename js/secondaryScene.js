@@ -72,6 +72,14 @@ class Object{
     this.scenePos=null;
     this.sign=null;
     console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
+    // Set up periodic data updates based on the sampling period
+    if (this.refupdateSrc && this.refupdateSrc["http"] && this.refupdateSrc["http"]["samplingPeriod"]) {
+      const samplingPeriod = this.refupdateSrc["http"]["samplingPeriod"];
+      setInterval(() => {
+      this.dataHTTPUpdate(this.refAssetData[0], this.refupdateSrc["http"]["url"]);
+      }, samplingPeriod);
+    }
+    
   }
 
   addObjRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
@@ -115,6 +123,29 @@ class Object{
     });
   }
   
+  dataHTTPUpdate(asset_data,updateSrc){
+    fetch('http://localhost:5000/proxy/urn:ngsi-ld:AssetData:001')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log(data.refValue.value);
+      fetch(data.refValue.value)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        //update the object here based on the data received
+        this.sign.updateText(parseFloat(data).toFixed(2)+"°C");
+      })
+    })
+  }
   //TODO based on the Scene Descriptor/ Object Descriptor I will create the signs here
   createSign(scene){
     //TODO here we will insert a check logic based on the asset_data entity and the valueRepresentation
