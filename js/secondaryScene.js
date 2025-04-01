@@ -70,6 +70,7 @@ class Object{
     this.objLoader = new OBJLoader();
     this.textureLoader = new THREE.TextureLoader();
     this.scenePos=null;
+    this.sign=null;
     console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
   }
 
@@ -108,7 +109,7 @@ class Object{
       this.object=object;
       scene.add(this.object);
       
-      if (callback) callback(this.object,this.scenePos);
+      if (callback) callback(this.objects);
     }, undefined, (error) => {
       console.error('Error loading model:', error);
     });
@@ -116,7 +117,7 @@ class Object{
   
   //TODO based on the Scene Descriptor/ Object Descriptor I will create the signs here
   createSign(scene){
-    let sign1=new DynamicTextSign(scene,this.position,"42°C",this.object,{ x: 0, y: 0.5, z: 0 });
+    this.sign=new DynamicTextSign(scene,this.position,"42°C",this.object,{ x: 0, y: 0, z: 0 });
   }
   //TODO based on the Scene Descriptor/ Object Descriptor I will update the object here
   updateObject(){
@@ -355,9 +356,10 @@ for (let asset of assets) {
   .then(
     data => {
       let obj = new Object(data,asset);
-      obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject,position) => {
-        let testloc=getLocalOffset(clientCoordinateSpaceTranslation,[38.245268,21.731840]);
-        const sign1 = new DynamicTextSign(scene, [testloc.x, testloc.y, testloc.z], "42°C", loadedObject, { x: 0, y: 0, z: 0 });
+      obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
+        obj.createSign(scene);
+        // let testloc=getLocalOffset(clientCoordinateSpaceTranslation,[38.245268,21.731840]);
+        // const sign1 = new DynamicTextSign(scene, [testloc.x, testloc.y, testloc.z], "42°C", loadedObject, { x: 0, y: 0, z: 0 });
       });
       
       // obj.createSign(scene);
