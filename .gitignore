@@ -3,8 +3,5 @@ ssl
 *.ksplat
 *.zip
 .env
-background_assets/8700k_bodegas
+background_assets
 __pycache__
-background_assets/10000k_bridge
-2141k_bridge.ply
-background_assets/10000k_parking
