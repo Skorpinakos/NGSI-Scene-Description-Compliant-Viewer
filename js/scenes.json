@@ -2,7 +2,7 @@
     "scenes": [
       {
         "id": "bodegas_400k_pcd",
-        "name": "Bodegas (400k) - Point Cloud",
+        "name": "Bodegas (0.7M) - Point Cloud",
         "type": "ply",
         "filePath": "./background_assets/400k_bodegas.ply",
         "options": {
@@ -19,8 +19,26 @@
         ]
       },
       {
+        "id": "bodegas_8700k_pcd",
+        "name": "Bodegas (8.7M) - Point Cloud",
+        "type": "ply",
+        "filePath": "./background_assets/8700k_bodegas/8700k_bodegas_pcd.ply",
+        "options": {
+          "translation": [38.245318, 21.731943,0],
+          "rotation": [0, 0,1],
+          "scale":[1,1,1]
+        },
+        "movementBoundaries": [
+          {
+            "min": [-40, -18, 1],
+            "max": [20, -10, 9],
+            "rotation": [0, 0, 1]  
+          }
+        ]
+      },
+      {
         "id": "bodegas_555k_splat",
-        "name": "Bodegas (555k) - Gaussian Splats",
+        "name": "Bodegas (0.5M) - Gaussian Splats",
         "type": "gaussianSplats",
         "filePath": "./background_assets/555k_bodegas.ksplat",
         "options": {
@@ -55,28 +73,28 @@
         ]
       },
       {
-        "id": "bodegas_8700k_pcd",
-        "name": "Bodegas (8.7M) - Point Cloud",
-        "type": "ply",
-        "filePath": "./background_assets/8700k_bodegas/8700k_bodegas_pcd.ply",
-        "options": {
-          "translation": [38.245318, 21.731943,0],
-          "rotation": [0, 0,1],
-          "scale":[1,1,1]
-        },
-        "movementBoundaries": [
-          {
-            "min": [-40, -18, 1],
-            "max": [20, -10, 9],
-            "rotation": [0, 0, 1]  
-          }
-        ]
-      },
-      {
         "id": "bridge_2141k_pcd",
         "name": "Bridge (2.1M) - Point Cloud",
         "type": "ply",
         "filePath": "./background_assets/2141k_bridge.ply",
+        "options": {
+          "translation": [38.288051, 21.788754,68],
+          "rotation": [0, 0,0.31],
+          "scale":[1,1,1]
+        },
+        "movementBoundaries": [
+          {
+            "min": [-25, -12, 3],
+            "max": [15, 12, 9],
+            "rotation": [0, 0, 1.57]  
+          }
+        ]
+      },
+      {
+        "id": "bridge_10000k_pcd",
+        "name": "Bridge (10M) - Point Cloud",
+        "type": "ply",
+        "filePath": "./background_assets/10000k_bridge/10000k_bridge_pcd.ply",
         "options": {
           "translation": [38.288051, 21.788754,68],
           "rotation": [0, 0,0.31],
@@ -109,26 +127,62 @@
         ]
       },
       {
-        "id": "bridge_10000k_pcd",
-        "name": "Bridge (10M) - Point Cloud",
+        "id": "parking_707k_pcd",
+        "name": "Parking (0.7M) - Point Cloud",
         "type": "ply",
-        "filePath": "./background_assets/10000k_bridge/10000k_bridge_pcd.ply",
+        "filePath": "./background_assets/707k_parking.ply",
         "options": {
-          "translation": [38.288051, 21.788754,68],
-          "rotation": [0, 0,0.31],
+          "translation": [38.287810, 21.788077,68],
+          "rotation": [0, 0,-0.75],
           "scale":[1,1,1]
         },
         "movementBoundaries": [
           {
-            "min": [-25, -12, 3],
-            "max": [15, 12, 9],
-            "rotation": [0, 0, 1.57]  
+            "min": [-50, -50, -5],
+            "max": [50, 50, 15],
+            "rotation": [0, 0, 0]  
+          }
+        ]
+      },
+      {
+        "id": "parking_10000k_pcd",
+        "name": "Parking (10M) - Point Cloud",
+        "type": "ply",
+        "filePath": "./background_assets/10000k_parking_v4.ply",
+        "options": {
+          "translation": [38.287810, 21.788077,68],
+          "rotation": [0, 0,-0.75],
+          "scale":[1,1,1]
+        },
+        "movementBoundaries": [
+          {
+            "min": [-50, -50, -5],
+            "max": [50, 50, 15],
+            "rotation": [0, 0, 0]  
+          }
+        ]
+      },
+      {
+        "id": "parking_5500K_splat",
+        "name": "Parking (5.5M) - Gaussian Splats",
+        "type": "gaussianSplats",
+        "filePath": "./background_assets/5500k_parking.ksplat",
+        "options": {
+          "translation": [38.287810, 21.788077,68],
+          "rotation": [-1.57, 0.75,0],
+          "scale":[1,1,1]
+        },
+        "movementBoundaries": [
+          {
+            "min": [-50, -50, -50],
+            "max": [50, 50, 50],
+            "rotation": [0, 0, 0]  
           }
         ]
       },
       {
         "id": "parking_14000K_splat",
-        "name": "Parking (14M) - Gaussian Splats",
+        "name": "Avoid| Parking (14M) - Gaussian Splats",
         "type": "gaussianSplats",
         "filePath": "./background_assets/14000k_parking_v3.ksplat",
         "options": {
@@ -140,24 +194,6 @@
           {
             "min": [-25, -12, 3],
             "max": [15, 12, 9],
-            "rotation": [0, 0, 1.57]  
-          }
-        ]
-      },
-      {
-        "id": "parking_10000k_pcd",
-        "name": "Parking (10M) - Point Cloud",
-        "type": "ply",
-        "filePath": "./background_assets/10000k_parking/output.ply",
-        "options": {
-          "translation": [38.287810, 21.788077,68],
-          "rotation": [0, 0,0],
-          "scale":[1,1,1]
-        },
-        "movementBoundaries": [
-          {
-            "min": [-50, -50, 3],
-            "max": [50, 50, 15],
             "rotation": [0, 0, 1.57]  
           }
         ]
