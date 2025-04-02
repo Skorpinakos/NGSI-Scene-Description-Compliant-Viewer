@@ -11,9 +11,9 @@ def proxy_request():
     response = requests.get(target_url)
     return (response.text, response.status_code, response.headers.items())
 
-@app.route('/proxy/urn:ngsi-ld:Asset:001', methods=['GET'])
-def proxy_asset():
-    target_url="http://150.140.186.118:1026/v2/entities/urn:ngsi-ld:Asset:001/attrs"
+@app.route('/proxy/<entity_id>', methods=['GET'])
+def proxy_asset(entity_id):
+    target_url = f"http://150.140.186.118:1026/v2/entities/{entity_id}/attrs"
     response = requests.get(target_url)
     return (response.text, response.status_code, response.headers.items())
 

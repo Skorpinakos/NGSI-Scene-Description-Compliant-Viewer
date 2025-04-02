@@ -237,23 +237,6 @@ class DynamicTextSign {
 }
 
 
-// MQTT Manager
-class MQTTManager {
-  constructor(brokerUrl, topic, callback) {
-    this.client = mqtt.connect(brokerUrl);
-    this.topic = topic;
-
-    this.client.on('connect', () => {
-      console.log('MQTT connected to', brokerUrl);
-      this.client.subscribe(topic);
-    });
-
-    this.client.on('message', (topic, message) => {
-      console.log('MQTT message:', message.toString());
-      if (callback) callback(message.toString());
-    });
-  }
-}
 
 let cube;
 let cube2;
