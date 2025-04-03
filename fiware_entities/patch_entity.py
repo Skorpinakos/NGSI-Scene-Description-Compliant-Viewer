@@ -1,10 +1,10 @@
 from init_entity import create_entity, patch_entity
 scene_descriptor = {
-    "id": "urn:ngsi-ld:SceneDescriptor:001",
-    "type": "SceneDescriptor",
+    # "id": "urn:ngsi-ld:SceneDescriptor:001",
+    # "type": "SceneDescriptor",
     "refAssets": {
         "type": "Relationship",
-        "value": ["urn:ngsi-ld:Asset:001", "urn:ngsi-ld:Asset:002"]
+        "value": ["urn:ngsi-ld:Asset:001", "urn:ngsi-ld:Asset:002","urn:ngsi-ld:Asset:003"]
     },
     "sceneSpace": {
         #v1 only a Polygon
@@ -336,6 +336,83 @@ asset_descriptor_2 = {
     }
 }
 
+asset_descriptor_3 = {
+    # "id": "urn:ngsi-ld:Asset:003",
+    # "type": "Asset",
+    "refAssetData": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:AssetData:002"]
+    },
+    "resourceLink": {
+        "type": "Property",
+        "value": [
+            [   
+                {
+                    "type": "Mesh",
+                    "format": "obj",
+                    "model": './virtual_assets/parking_sensor_draft/parking_sensor_draft.obj',
+                    "textures": [''],
+                    "size": 9.8, #MB
+                    "scale": [0.1, 0.1, 0.1],
+                }
+            ]
+        ]
+    },
+    "geoPose": {
+        "type": "Property",
+        "value": {
+            #geopose protocol 6DOF
+            "position": {
+                "lat": 38.287814, 
+                "lon":  21.788506,
+                "h": 68.5
+            },
+            "angles": {
+                "yaw": 180,
+                "pitch": 0,
+                "roll": 0
+            }
+        }
+  },
+  "updateSrc": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 #ms
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:AssetData:001"
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
+  },
+  "refSemanticRepresentation": {
+    "type": "Relationship",
+    "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
+  },
+  "refParent": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Asset:000"
+  },
+    "refChildren": {
+        "type": "Relationship",
+        "value": [
+        ]
+    }
+}
+
 
 sensor={
     "id": "urn:ngsi-ld:Source:001",
@@ -361,4 +438,4 @@ sensor={
 # for entity in entities:
 #     create_entity(entity)
 # create_entity(asset_descriptor)
-patch_entity("urn:ngsi-ld:AssetData:001",asset_data)
+patch_entity("urn:ngsi-ld:Asset:003",asset_descriptor_3)

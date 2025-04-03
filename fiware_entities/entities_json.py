@@ -215,7 +215,7 @@ asset_descriptor_3 = {
     "type": "Asset",
     "refAssetData": {
         "type": "Relationship",
-        "value": ["urn:ngsi-ld:AssetData:001"]
+        "value": ["urn:ngsi-ld:AssetData:002"]
     },
     "resourceLink": {
         "type": "Property",
@@ -416,6 +416,60 @@ asset_data={
   }
 }
 
+
+asset_data_parking={
+    "id": "urn:ngsi-ld:AssetData:002",
+    "type": "AssetData",
+    "refSource": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:Source:002"]
+    },
+    "refValue": {
+        "type": "Property",
+        "value": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
+    },
+    "description": {
+        "type": "Property",
+        "value": "Temperature dumpy sensor"
+    },
+    "valueRepr": {
+        "type": "Property",
+        "value": [
+            {
+                "type": "boolean",
+                "states": {
+                    "occupied": False
+                }
+            }
+        ]
+    },
+    "updateSrc": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 #ms
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:Source:001" 
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
+  }
+}
+
+
 sensor={
     "id": "urn:ngsi-ld:Source:001",
     "type": "TempSensor",
@@ -439,5 +493,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_descriptor_3)
+create_entity(asset_data_parking)
 

@@ -147,9 +147,23 @@ class Object{
     })
   }
   //TODO based on the Scene Descriptor/ Object Descriptor I will create the signs here
-  createSign(scene){
-    //TODO here we will insert a check logic based on the asset_data entity and the valueRepresentation
-    this.sign=new DynamicTextSign(scene,this.position,"42°C",this.object,{ x: 0, y: 0, z: 0 });
+  async createSign(scene) {
+    try {
+      console.log(this.refAssetData[0]);
+      const response = await fetch(`http://localhost:5000/v2/entities/${this.refAssetData[0]}/attrs`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      const data = await response.json();
+      console.log(data);
+      let valueRepresentation = data.valueRepr.value[0].type;
+      console.log("valueRepresentation", valueRepresentation);
+      if (valueRepresentation === "singularValue") {
+        this.sign = new DynamicTextSign(scene, this.position, "42°C", this.object, { x: 0, y: 0, z: 0 });
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
   }
   //TODO based on the Scene Descriptor/ Object Descriptor I will update the object here
   updateObject(){
