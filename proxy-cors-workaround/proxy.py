@@ -1,34 +1,42 @@
-import flask_cors
-from flask import Flask, request, jsonify
+from flask import Flask, request, Response
 import requests
 
 app = Flask(__name__)
-flask_cors.CORS(app)
 
-@app.route('/proxy/scene', methods=['GET'])
-def proxy_request():
-    target_url = "http://150.140.186.118:1026/v2/entities/urn:ngsi-ld:SceneDescriptor:001"
-    response = requests.get(target_url)
-    return (response.text, response.status_code, response.headers.items())
+# Set the base URL of your context broker
+CONTEXT_BROKER_URL = 'http://150.140.186.118:1026'
 
-@app.route('/proxy/<entity_id>', methods=['GET'])
-def proxy_asset(entity_id):
-    target_url = f"http://150.140.186.118:1026/v2/entities/{entity_id}/attrs"
-    response = requests.get(target_url)
-    return (response.text, response.status_code, response.headers.items())
+@app.route('/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def proxy(path):
+    # Build the full URL
+    target_url = f"{CONTEXT_BROKER_URL}/{path}"
 
-@app.route('/proxy/urn:ngsi-ld:AssetData:001', methods=['GET'])
-def proxy_asset_data():
-    target_url="http://150.140.186.118:1026/v2/entities/urn:ngsi-ld:AssetData:001/attrs"
-    response = requests.get(target_url)
-    return (response.text, response.status_code, response.headers.items())
+    # Forward the request with method, headers, and data
+    response = requests.request(
+        method=request.method,
+        url=target_url,
+        headers={key: value for key, value in request.headers if key.lower() != 'host'},
+        params=request.args,
+        data=request.get_data(),
+        cookies=request.cookies,
+    )
 
-@app.route('/proxy/urn:ngsi-ld:Source:001/attrs/temperature/value')
-def get_value():
-    target_url = "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
-    response = requests.get(target_url)
-    return (response.text, response.status_code, response.headers.items())
+    # Build the response and add CORS headers
+    proxy_response = Response(response.content, response.status_code)
+    proxy_response.headers = dict(response.headers)
+    proxy_response.headers['Access-Control-Allow-Origin'] = '*'
+    proxy_response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH'
+    proxy_response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
 
+    return proxy_response
+
+@app.after_request
+def add_cors_headers(response):
+    # Ensures preflight OPTIONS requests also get CORS headers
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS, PATCH'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    return response
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, port=5000)

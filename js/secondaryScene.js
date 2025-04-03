@@ -124,7 +124,7 @@ class Object{
   }
   
   dataHTTPUpdate(asset_data,updateSrc){
-    fetch('http://localhost:5000/proxy/urn:ngsi-ld:AssetData:001')
+    fetch('http://localhost:5000/v2/entities/urn:ngsi-ld:AssetData:001/attrs')
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
@@ -286,7 +286,7 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
 //fetch from FIWARE the scene descriptor
 
 let assets=[];
-fetch('http://localhost:5000/proxy/scene')
+fetch('http://localhost:5000/v2/entities/urn:ngsi-ld:SceneDescriptor:001')
 .then(response => {
   if (!response.ok) {
     throw new Error('Network response was not ok ' + response.statusText);
@@ -300,7 +300,7 @@ fetch('http://localhost:5000/proxy/scene')
 
 for (let asset of assets) {
   console.log(asset)
-  fetch(`http://localhost:5000/proxy/${asset}`)
+  fetch(`http://localhost:5000/v2/entities/${asset}/attrs`)
   .then(response => {
     if (!response.ok) {
       throw new Error('Network response was not ok ' + response.statusText);
