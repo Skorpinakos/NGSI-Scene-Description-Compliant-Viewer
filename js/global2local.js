@@ -1,14 +1,31 @@
-// Import the standard geodesy module. The Cartesian functionality is available via LatLon.toCartesian().
-import LatLon from 'geodesy/latlon-ellipsoidal.js';
+/**
+ * Convert lat, lon, and altitude (from altitude maps) to ECEF coordinates 
+ * using a simple spherical Earth approximation.
+ * @param {number} lat - Latitude in degrees.
+ * @param {number} lon - Longitude in degrees.
+ * @param {number} h   - Altitude in meters (above mean sea level).
+ * @returns {Object} { x, y, z } in meters.
+ */
+function sphericalToECEF(lat, lon, h) {
+  const R = 6371000; // Average Earth radius in meters.
+  const latRad = lat * Math.PI / 180;
+  const lonRad = lon * Math.PI / 180;
+  const r = R + h; // Effective radius at the given altitude.
+  return {
+    x: r * Math.cos(latRad) * Math.cos(lonRad),
+    y: r * Math.cos(latRad) * Math.sin(lonRad),
+    z: r * Math.sin(latRad)
+  };
+}
 
 /**
  * Convert a difference in ECEF coordinates (in meters) to local ENU coordinates.
- * @param {number} refLon - Reference longitude (degrees)
- * @param {number} refLat - Reference latitude (degrees)
- * @param {number} dX - Difference in ECEF X (meters)
- * @param {number} dY - Difference in ECEF Y (meters)
- * @param {number} dZ - Difference in ECEF Z (meters)
- * @returns {Object} An object { e, n, u } with east, north, and up components in meters.
+ * @param {number} refLon - Reference longitude in degrees.
+ * @param {number} refLat - Reference latitude in degrees.
+ * @param {number} dX - Difference in ECEF X (meters).
+ * @param {number} dY - Difference in ECEF Y (meters).
+ * @param {number} dZ - Difference in ECEF Z (meters).
+ * @returns {Object} { e, n, u } with east, north, and up components in meters.
  */
 function ecefToEnu(refLon, refLat, dX, dY, dZ) {
   const lonRad = refLon * Math.PI / 180;
@@ -25,30 +42,27 @@ function ecefToEnu(refLon, refLat, dX, dY, dZ) {
 }
 
 /**
- * Compute the local ENU offset of an object relative to a scene.
- * Both positions are provided as arrays: [lon, lat, alt] (degrees, degrees, meters).
- * The scene becomes the origin (0,0,0) and the function returns { x, y, z } in meters.
+ * Compute the local ENU offset of an object relative to a scene using
+ * altitude values from simple altitude maps.
+ * Both positions are provided as arrays: [lat, lon, altitude] (degrees, degrees, meters).
  *
- * @param {number[]} scene  - Reference position [lon, lat, alt]
- * @param {number[]} object - Object position  [lon, lat, alt]
+ * @param {number[]} scene  - Reference position [lat, lon, altitude]
+ * @param {number[]} object - Object position  [lat, lon, altitude]
  * @returns {Object} { x, y, z } where x is east, y is north, and z is up.
  */
 function getLocalOffset(scene, object) {
-  // LatLon expects (lat, lon, height)
-  const sceneLL = new LatLon(scene[1], scene[0], scene[2]);
-  const objectLL = new LatLon(object[1], object[0], object[2]);
-
-  // Convert geodetic points to Cartesian (ECEF) coordinates.
-  const sceneCartesian = sceneLL.toCartesian();
-  const objectCartesian = objectLL.toCartesian();
+  // Convert geodetic positions to ECEF using the spherical model.
+  const sceneECEF = sphericalToECEF(scene[0], scene[1], scene[2]);
+  const objectECEF = sphericalToECEF(object[0], object[1], object[2]);
 
   // Compute differences in ECEF coordinates.
-  const dX = objectCartesian.x - sceneCartesian.x;
-  const dY = objectCartesian.y - sceneCartesian.y;
-  const dZ = objectCartesian.z - sceneCartesian.z;
+  const dX = objectECEF.x - sceneECEF.x;
+  const dY = objectECEF.y - sceneECEF.y;
+  const dZ = objectECEF.z - sceneECEF.z;
 
   // Convert the ECEF difference to local ENU coordinates.
-  const enu = ecefToEnu(scene[0], scene[1], dX, dY, dZ);
+  // Note: ecefToEnu expects (refLon, refLat, ...), so we pass scene[1] (lon) then scene[0] (lat).
+  const enu = ecefToEnu(scene[1], scene[0], dX, dY, dZ);
 
   return { x: enu.e, y: enu.n, z: enu.u };
 }

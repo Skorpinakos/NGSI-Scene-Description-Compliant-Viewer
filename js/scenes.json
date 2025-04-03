@@ -1,6 +1,24 @@
 {
     "scenes": [
       {
+        "id": "parking_707k_pcd_debug",
+        "name": "Parking (0.7M) - Point Cloud DBG",
+        "type": "ply",
+        "filePath": "./background_assets/707k_parking.ply",
+        "options": {
+          "translation": [38.287850, 21.788004,68],
+          "rotation": [0, 0,-0.75],
+          "scale":[1.91,1.91,1.91]
+        },
+        "movementBoundaries": [
+          {
+            "min": [-50, -50, -5],
+            "max": [50, 50, 15],
+            "rotation": [0, 0, 0]  
+          }
+        ]
+      },
+      {
         "id": "bodegas_400k_pcd",
         "name": "Bodegas (0.7M) - Point Cloud",
         "type": "ply",
@@ -78,7 +96,7 @@
         "type": "ply",
         "filePath": "./background_assets/2141k_bridge.ply",
         "options": {
-          "translation": [38.288051, 21.788754,68],
+          "translation": [38.288057, 21.788755,68],
           "rotation": [0, 0,0.31],
           "scale":[1,1,1]
         },
@@ -96,14 +114,14 @@
         "type": "ply",
         "filePath": "./background_assets/10000k_bridge/10000k_bridge_pcd.ply",
         "options": {
-          "translation": [38.288051, 21.788754,68],
+          "translation": [38.288049, 21.788751,68],
           "rotation": [0, 0,0.31],
-          "scale":[1,1,1]
+          "scale":[2,2,2]
         },
         "movementBoundaries": [
           {
-            "min": [-25, -12, 3],
-            "max": [15, 12, 9],
+            "min": [-60, -60, 3],
+            "max": [60, 60, 15],
             "rotation": [0, 0, 1.57]  
           }
         ]
@@ -114,14 +132,14 @@
         "type": "gaussianSplats",
         "filePath": "./background_assets/3500k_bridge.ksplat",
         "options": {
-          "translation": [38.288051, 21.788754,68],
+          "translation": [38.288057, 21.788755, 21.788754,68],
           "rotation": [-1.57, -0.31,0],
           "scale":[1,1,1]
         },
         "movementBoundaries": [
           {
             "min": [-25, -12, 3],
-            "max": [15, 12, 9],
+            "max": [15, 12, 15],
             "rotation": [0, 0, 1.57]  
           }
         ]
@@ -132,7 +150,7 @@
         "type": "ply",
         "filePath": "./background_assets/707k_parking.ply",
         "options": {
-          "translation": [38.287810, 21.788077,68],
+          "translation": [38.287846, 21.787992,68],
           "rotation": [0, 0,-0.75],
           "scale":[1,1,1]
         },
@@ -150,9 +168,9 @@
         "type": "ply",
         "filePath": "./background_assets/10000k_parking_v4.ply",
         "options": {
-          "translation": [38.287810, 21.788077,68],
+          "translation": [38.287846, 21.787992,68],
           "rotation": [0, 0,-0.75],
-          "scale":[1,1,1]
+          "scale":[2,2,2]
         },
         "movementBoundaries": [
           {
@@ -168,7 +186,7 @@
         "type": "gaussianSplats",
         "filePath": "./background_assets/5500k_parking.ksplat",
         "options": {
-          "translation": [38.287810, 21.788077,68],
+          "translation": [38.287846, 21.787992,68],
           "rotation": [-1.57, 0.75,0],
           "scale":[1,1,1]
         },
@@ -177,24 +195,6 @@
             "min": [-50, -50, -50],
             "max": [50, 50, 50],
             "rotation": [0, 0, 0]  
-          }
-        ]
-      },
-      {
-        "id": "parking_14000K_splat",
-        "name": "Avoid| Parking (14M) - Gaussian Splats",
-        "type": "gaussianSplats",
-        "filePath": "./background_assets/14000k_parking_v3.ksplat",
-        "options": {
-          "translation": [38.287810, 21.788077,68],
-          "rotation": [-1.57, -0.31,0],
-          "scale":[1,1,1]
-        },
-        "movementBoundaries": [
-          {
-            "min": [-25, -12, 3],
-            "max": [15, 12, 9],
-            "rotation": [0, 0, 1.57]  
           }
         ]
       }

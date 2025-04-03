@@ -252,7 +252,7 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   lightManager.addAmbientLight(); //always ambient light
 
   // Rotating Cube
-  const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+  const cubeGeometry = new THREE.BoxGeometry(0.1, 0.1, 8);
   const textureLoader = new THREE.TextureLoader();
   const cubeTexture = textureLoader.load('https://threejs.org/examples/textures/crate.gif');
   const cubeMaterial = new THREE.MeshStandardMaterial({
@@ -267,15 +267,19 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
   ////lets say the cube is at [38.245105, 21.731640,2] in global (aka gps) coords 
-  let cubeSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, [38.245105, 21.731640,2]);
+  let cubeSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, [38.287965, 21.788632,72]);
+  
   cube.position.set(cubeSceneCoords.x, cubeSceneCoords.y, cubeSceneCoords.z);
   sceneManager.addObject(cube);
   //38.288051, 21.788754
   cube2 = new THREE.Mesh(cubeGeometry, cubeMaterial);
-  let cubeSceneCoords2=getLocalOffset(clientCoordinateSpaceTranslation, [38.287965, 21.788608,71.5]);
+  let cubeSceneCoords2=getLocalOffset(clientCoordinateSpaceTranslation, [38.287826, 21.788487,72]);
   cube2.position.set(cubeSceneCoords2.x, cubeSceneCoords2.y, cubeSceneCoords2.z);;
   sceneManager.addObject(cube2);
   
+
+  console.log("coords1:",cubeSceneCoords);
+  console.log("coords2:",cubeSceneCoords2);
 //////////////FIWARE CODE STARTS//////////////////
 
 //we will parse the scene to look for the assets
@@ -323,6 +327,9 @@ for (let asset of assets) {
 //////////////FIWARE CODE STOPS//////////////////
 
 ///////DEBUG/////////////////////////////////////////////////////////////////////
+
+
+
   // Add arrow pointing UP (to the sky)
   const arrowUp = new THREE.ArrowHelper(
     new THREE.Vector3(0, 0, 1),  // direction
@@ -356,13 +363,15 @@ for (let asset of assets) {
 
 // Update function
 export function updateSecondaryObjects(delta) {
+  //debug
+  let cube_speed=0;
   sceneManager.update(delta);
   if (cube){
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    cube.rotation.x += 0.01*cube_speed;
+    cube.rotation.y += 0.01*cube_speed;
   }
   if (cube2){
-    cube2.rotation.x += 0.01;
-    cube2.rotation.y += 0.01;
+    cube2.rotation.x += 0.01*cube_speed;
+    cube2.rotation.y += 0.01*cube_speed;
   }
 }
