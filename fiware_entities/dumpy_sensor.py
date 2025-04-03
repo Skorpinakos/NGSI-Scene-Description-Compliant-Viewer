@@ -50,7 +50,7 @@ def fake_data():
 def __main__():
     while True:
         fake_data()
-        time.sleep(20)
+        time.sleep(2)
 
 __main__()
 # patch_measument(sensor)

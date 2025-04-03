@@ -79,9 +79,9 @@ asset_descriptor = {
         "value": {
             #geopose protocol 6DOF
             "position": {
-                "lat": 38.245268,
-                "lon":  21.731840,
-                "h": 1
+                "lat": 38.287829, 
+                "lon":  21.787812,
+                "h": 68.5
             },
             "angles": {
                 "yaw": 90,
@@ -361,4 +361,4 @@ sensor={
 # for entity in entities:
 #     create_entity(entity)
 # create_entity(asset_descriptor)
-patch_entity("urn:ngsi-ld:Asset:002",asset_descriptor_2)
+patch_entity("urn:ngsi-ld:Asset:001",asset_descriptor)
