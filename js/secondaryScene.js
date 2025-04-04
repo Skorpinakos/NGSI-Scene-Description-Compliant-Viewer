@@ -124,7 +124,7 @@ class Object{
   }
   
   dataHTTPUpdate(asset_data,updateSrc){
-    fetch('http://localhost:5000/v2/entities/urn:ngsi-ld:AssetData:001/attrs')
+    fetch(`http://localhost:5000/v2/entities/${asset_data}/attrs`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
@@ -142,7 +142,9 @@ class Object{
       })
       .then(data => {
         //update the object here based on the data received
+        if(this.sign){
         this.sign.updateText(parseFloat(data).toFixed(2)+"°C");
+        }
       })
     })
   }
@@ -159,8 +161,14 @@ class Object{
       let valueRepresentation = data.valueRepr.value[0].type;
       console.log("valueRepresentation", valueRepresentation);
       if (valueRepresentation === "singularValue") {
-        this.sign = new DynamicTextSign(scene, this.position, "42°C", this.object, { x: 0, y: 0, z: 0 });
+        console.log("singular value created");
+        this.sign = new DynamicTextSign(scene, this.position, "42°C",valueRepresentation, this.object, { x: 0, y: 0, z: 0 });
       }
+      else if (valueRepresentation === "boolean") {
+        console.log("boolean one created");
+        this.sign = new DynamicTextSign(scene, this.position, "Available",valueRepresentation, this.object, { x: 0, y: 0, z: 1.5 });
+      }
+
     } catch (error) {
       console.error('Fetch error:', error);
     }
@@ -174,7 +182,7 @@ class Object{
 
 // Dynamic Text Sign
 class DynamicTextSign {
-  constructor(scene, position, initialText, targetObject = null, offset = { x: 0, y: -2, z: 0 }, size = { width: 0.5, height: 0.2 }) {
+  constructor(scene, position, initialText,type, targetObject = null, offset = { x: 0, y: -2, z: 0 }, size = { width: 0.5, height: 0.2 }) {
     this.scene = scene;
     this.targetObject = targetObject; // Optional object to attach to
     this.offset = offset;
@@ -183,7 +191,7 @@ class DynamicTextSign {
     this.textCanvas.width = 512;
     this.textCanvas.height = 192;
     this.textContext = this.textCanvas.getContext('2d');
-
+    this.type=type;
     this.signTexture = new THREE.CanvasTexture(this.textCanvas);
     this.signTexture.flipY = true;
 
@@ -236,7 +244,14 @@ class DynamicTextSign {
   }
 
   updateText(newText) {
-    this.drawSignText(newText);
+    if (this.type==="singularValue"){
+      newText = parseFloat(newText).toFixed(2) + "°C";
+      this.drawSignText(newText);
+    }
+    else if (this.type==="boolean"){
+      newText = newText ? "Available" : "Occupied";
+      this.drawSignText(newText);
+    }
   }
 
   updatePosition() {

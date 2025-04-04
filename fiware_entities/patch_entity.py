@@ -351,7 +351,7 @@ asset_descriptor_3 = {
                     "type": "Mesh",
                     "format": "obj",
                     "model": './virtual_assets/parking_sensor_draft/parking_sensor_draft.obj',
-                    "textures": [''],
+                    "textures": ['./virtual_assets/parking_sensor_draft/parking_sensor_draft.png'],
                     "size": 9.8, #MB
                     "scale": [0.1, 0.1, 0.1],
                 }
@@ -363,9 +363,9 @@ asset_descriptor_3 = {
         "value": {
             #geopose protocol 6DOF
             "position": {
-                "lat": 38.287814, 
-                "lon":  21.788506,
-                "h": 68.5
+                "lat": 38.287813, 
+                "lon":  21.788504,
+                "h": 68.4
             },
             "angles": {
                 "yaw": 180,
@@ -413,6 +413,56 @@ asset_descriptor_3 = {
     }
 }
 
+asset_data_parking={
+    # "id": "urn:ngsi-ld:AssetData:002",
+    # "type": "AssetData",
+    "refSource": {
+        "type": "Relationship",
+        "value": ["uni_parking_001"]
+    },
+    "refValue": {
+        "type": "Property",
+        "value": "http://localhost:5000/v2/entities/uni_parking_001/attrs/status/value"
+    },
+    "description": {
+        "type": "Property",
+        "value": "Parking Sensor ECE - handicapped"
+    },
+    "valueRepr": {
+        "type": "Property",
+        "value": [
+            {
+                "type": "boolean",
+                "states": ["occupied", "free"],
+                "unit": "boolean"
+            }
+        ]
+    },
+    "updateSrc": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 #ms
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:Source:001" 
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
+  }
+}
 
 sensor={
     "id": "urn:ngsi-ld:Source:001",
@@ -438,4 +488,4 @@ sensor={
 # for entity in entities:
 #     create_entity(entity)
 # create_entity(asset_descriptor)
-patch_entity("urn:ngsi-ld:Asset:003",asset_descriptor_3)
+patch_entity("urn:ngsi-ld:AssetData:002",asset_data_parking)
