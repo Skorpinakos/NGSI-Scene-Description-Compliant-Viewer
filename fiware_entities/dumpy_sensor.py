@@ -43,7 +43,7 @@ def patch_measument( measurement,fiware_url=url, headers=headers): #for uploadin
     return 0
 
 def fake_data():
-    sensor["temperature"]["value"] = random.uniform(20, 30)
+    sensor["temperature"]["value"] = random.uniform(-5, 43)
     sensor["timestamp"]["value"] = datetime.datetime.now().isoformat()
     patch_measument(sensor)
 

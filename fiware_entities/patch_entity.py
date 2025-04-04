@@ -484,8 +484,42 @@ sensor={
     }
 }
 
+parking_sensor={
+        "category": {
+        "type": "Text",
+        "value": "OffStreet",
+        "metadata": {}
+        },
+        "dateModified": {
+        "type": "DateTime",
+        "value": "2025-04-04T08:02:22.000Z",
+        "metadata": {}
+        },
+        "location": {
+        "type": "geo:json",
+        "value": {
+        "type": "Point",
+        "coordinates": [
+        21.788438498,
+        38.287755788
+        ]
+        },
+        "metadata": {}
+        },
+        "refParkingSite": {
+        "type": "URL",
+        "value": "http://labserver.sense-campus.gr:1026/v2/entities/parkingsite_upatras_001",
+        "metadata": {}
+        },
+        "status": {
+        "type": "Number",
+        "value": 1,
+        "metadata": {}
+        }
+        }
+
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
 # create_entity(asset_descriptor)
-patch_entity("urn:ngsi-ld:AssetData:002",asset_data_parking)
+patch_entity("uni_parking_001",parking_sensor)

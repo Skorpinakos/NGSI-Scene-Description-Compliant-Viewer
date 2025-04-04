@@ -385,7 +385,7 @@ asset_data={
                 "unit": "Celsius",
                 "threshold": {
                     "min": 0,
-                    "max": 45
+                    "max": 40
                 }
             }
         ]
@@ -426,7 +426,7 @@ asset_data_parking={
     },
     "refValue": {
         "type": "Property",
-        "value": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
+        "value": "http://localhost:5000/v2/entities/uni_parking_001/attrs/status/value"
     },
     "description": {
         "type": "Property",

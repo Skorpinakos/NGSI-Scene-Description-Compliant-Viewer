@@ -162,11 +162,11 @@ class Object{
       console.log("valueRepresentation", valueRepresentation);
       if (valueRepresentation === "singularValue") {
         console.log("singular value created");
-        this.sign = new DynamicTextSign(scene, this.position, "42°C",valueRepresentation, this.object, { x: 0, y: 0, z: 0 });
+        this.sign = new DynamicTextSign(scene, this.position, "42°C",data.valueRepr.value[0], this.object, { x: 0, y: 0, z: 0 });
       }
       else if (valueRepresentation === "boolean") {
         console.log("boolean one created");
-        this.sign = new DynamicTextSign(scene, this.position, "Available",valueRepresentation, this.object, { x: 0, y: 0, z: 1.5 });
+        this.sign = new DynamicTextSign(scene, this.position, "Available",data.valueRepr.value[0], this.object, { x: 0, y: 0, z: 1.5 });
       }
 
     } catch (error) {
@@ -182,7 +182,7 @@ class Object{
 
 // Dynamic Text Sign
 class DynamicTextSign {
-  constructor(scene, position, initialText,type, targetObject = null, offset = { x: 0, y: -2, z: 0 }, size = { width: 0.5, height: 0.2 }) {
+  constructor(scene, position, initialText,properties, targetObject = null, offset = { x: 0, y: -2, z: 0 }, size = { width: 0.5, height: 0.2 }) {
     this.scene = scene;
     this.targetObject = targetObject; // Optional object to attach to
     this.offset = offset;
@@ -191,7 +191,8 @@ class DynamicTextSign {
     this.textCanvas.width = 512;
     this.textCanvas.height = 192;
     this.textContext = this.textCanvas.getContext('2d');
-    this.type=type;
+    this.properties=properties;
+    this.type=properties.type;
     this.signTexture = new THREE.CanvasTexture(this.textCanvas);
     this.signTexture.flipY = true;
 
@@ -223,7 +224,10 @@ class DynamicTextSign {
     this.drawSignText(initialText);
   }
 
+  //TODO Add parameters such as threshold, boolean etc to set the colors etc.
   drawSignText(text) {
+    
+
     this.textContext.clearRect(0, 0, this.textCanvas.width, this.textCanvas.height);
     this.textContext.fillStyle = 'rgba(20, 20, 30, 0.75)';
     this.textContext.fillRect(0, 0, this.textCanvas.width, this.textCanvas.height);
@@ -236,7 +240,28 @@ class DynamicTextSign {
     this.textContext.shadowColor = 'rgba(0, 255, 255, 0.8)';
     this.textContext.shadowBlur = 8;
 
-
+    if (this.type==="singularValue"){
+      let minThr=this.properties.threshold.min;
+      let maxThr=this.properties.threshold.max;
+      console.log("minThr",minThr);
+      if (parseFloat(text)<minThr){
+        this.textContext.fillStyle = 'rgba(0, 0, 255, 0.75)'; // Blue
+      }
+      else if (parseFloat(text)>maxThr){
+        this.textContext.fillStyle = 'rgba(255, 0, 0, 0.75)'; // Red
+      }
+      else{
+        this.textContext.fillStyle = 'rgba(0, 255, 0, 0.75)'; // Green
+      }
+    }
+    else if (this.type==="boolean"){
+      if (text==="Available"){
+        this.textContext.fillStyle = 'rgba(0, 255, 0, 0.75)'; // Green
+      }
+      else{
+        this.textContext.fillStyle = 'rgba(255, 0, 0, 0.75)'; // Red
+      }
+    }
     this.textContext.fillText(text, this.textCanvas.width / 2, this.textCanvas.height / 2);
     this.textContext.resetTransform();
 
