@@ -62,7 +62,7 @@ asset_descriptor = {
     },
     "resourceLink": {
         "type": "Property",
-        "value": [
+        "value": 
             [   
                 {
                     "type": "Mesh",
@@ -73,25 +73,38 @@ asset_descriptor = {
                     "scale": [0.5, 0.5, 0.5],
                 }
             ]
-        ]
     },
-    "geoPose": {
+    "spatialInfo": {
         "type": "Property",
         "value": {
-            #geopose protocol 6DOF
-            "position": {
-                "lat": 38.245268,
-                "lon":  21.731840,
-                "h": 1
+            "geoPose":
+            {
+                #geopose protocol 6DOF
+                "position": {
+                    "lat": 38.245268,
+                    "lon":  21.731840,
+                    "h": 1
+                },
+                "angles": {
+                    "yaw": 0,
+                    "pitch": 0,
+                    "roll": 0
+                }
             },
-            "angles": {
-                "yaw": 0,
-                "pitch": 0,
-                "roll": 0
+            "updateMethod":
+            {
+                "http": {
+                    "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                    "method": "GET",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "samplingPeriod": 1000 #ms
+                }
             }
         }
   },
-  "updateSrc": {
+  "updateMethod": {
       "type": "Property",
       "value": {
           "http": {
