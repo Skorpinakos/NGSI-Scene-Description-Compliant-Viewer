@@ -300,6 +300,92 @@ asset_descriptor_3 = {
     }
 }
 
+asset_car_descriptor = {
+    "id": "urn:ngsi-ld:Asset:004",
+    "type": "Asset",
+    "refAssetData": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:AssetData:003"]
+    },
+    "resourceLink": {
+        "type": "Property",
+        "value": [
+            [   
+                {
+                    "type": "Mesh",
+                    "format": "obj",
+                    "model": './virtual_assets/car/audi_car.obj',
+                    "textures": [''],
+                    "size": 98.6, #MB
+                    "scale": [0.5, 0.5, 0.5],
+                }
+            ]
+        ]
+    },
+    "spatialInfo": {
+        "type": "Property",
+        "value": {
+            "geoPose":
+            {
+                #geopose protocol 6DOF
+                "position": {
+                    "lat": 38.245268,
+                    "lon":  21.731840,
+                    "h": 1
+                },
+                "angles": {
+                    "yaw": 0,
+                    "pitch": 0,
+                    "roll": 0
+                }
+            },
+            "updateMethod":
+            {
+                "ws": {
+                    "url": "ws://localhost:6789/"
+            }
+        }
+  }
+},
+  "updateSrc": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 #ms
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:AssetData:001"
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
+  },
+  "refSemanticRepresentation": {
+    "type": "Relationship",
+    "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
+  },
+  "refParent": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Asset:000"
+  },
+    "refChildren": {
+        "type": "Relationship",
+        "value": [
+        ]
+    }
+}
+
 
 background_descriptor={
     "id": "urn:ngsi-ld:Bg:001",
@@ -506,5 +592,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_data_parking)
+create_entity(asset_car_descriptor)
 

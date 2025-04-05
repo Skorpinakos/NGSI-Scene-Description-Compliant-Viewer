@@ -59,8 +59,17 @@ class Object{
     //not initializing with a scene as we may want to add it in many scenes
     this.id=asset;
     this.object=null;
-    this.position=[data.geoPose.value.position.lat,data.geoPose.value.position.lon,data.geoPose.value.position.h];
-    this.rotation=[data.geoPose.value.angles.yaw,data.geoPose.value.angles.pitch,data.geoPose.value.angles.roll];
+    if(this.id=="urn:ngsi-ld:Asset:004"){
+      this.position=[data.spatialInfo.value.geoPose.position.lat,data.spatialInfo.value.geoPose.position.lon,data.spatialInfo.value.geoPose.position.h];
+      this.rotation=[data.spatialInfo.value.geoPose.angles.yaw,data.spatialInfo.value.geoPose.angles.pitch,data.spatialInfo.value.geoPose.angles.roll];
+      this.spatialInfo=data.spatialInfo.value;
+    }
+    else{
+      this.position=[data.geoPose.value.position.lat,data.geoPose.value.position.lon,data.geoPose.value.position.h];
+      this.rotation=[data.geoPose.value.angles.yaw,data.geoPose.value.angles.pitch,data.geoPose.value.angles.roll];
+    }
+    // this.position=[data.geoPose.value.position.lat,data.geoPose.value.position.lon,data.geoPose.value.position.h];
+    // this.rotation=[data.geoPose.value.angles.yaw,data.geoPose.value.angles.pitch,data.geoPose.value.angles.roll];
     this.parent=data.refParent.value;
     this.children=data.refChildren.value;
     this.refAssetData=data.refAssetData.value;
@@ -173,6 +182,54 @@ class Object{
       console.error('Fetch error:', error);
     }
   }
+
+  startWSPositionUpdates(clientCoordinateSpaceTranslation) {
+    // const spatialInfo = this.refAssetData ? this.spatialInfo : null;
+    console.log("spatialInfo",this.id,this.spatialInfo);
+    const wsInfo = this.spatialInfo.updateMethod.ws;
+    // wsInfo.url="ws://localhost:6789/"
+    if (!wsInfo || !wsInfo.url) {
+      console.warn("No WebSocket URL found for position updates.");
+      return;
+    }
+  
+    const ws = new WebSocket(wsInfo.url);
+  
+    ws.onopen = () => {
+      console.log("WebSocket connected for", this.id);
+    };
+  
+    ws.onmessage = (event) => {
+      try {
+        console.log("WebSocket message received:", event.data);
+        const data = JSON.parse(event.data);
+  
+        if (data.lat !== undefined && data.lon !== undefined) {
+          console.log("WS HERE")
+          const newPos = [data.lat, data.lon, 69];
+          const localPos = getLocalOffset(clientCoordinateSpaceTranslation, newPos);
+          console.log("localPos", localPos.x, localPos.y, localPos.z);
+          if (this.object) {
+            console.log("update object")
+            this.object.position.set(localPos.x, localPos.y, localPos.z);
+            console.log("object position",localPos.x, localPos.y, localPos.z);
+            if (this.sign) this.sign.updatePosition();
+          }
+        }
+      } catch (err) {
+        console.error("WebSocket message parse error:", err);
+      }
+    };
+  
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  
+    ws.onclose = () => {
+      console.warn("WebSocket closed for", this.id);
+    };
+  }
+
   //TODO based on the Scene Descriptor/ Object Descriptor I will update the object here
   updateObject(){
   }
@@ -366,7 +423,9 @@ for (let asset of assets) {
       let obj = new Object(data,asset);
       obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
         obj.createSign(scene);
+        obj.startWSPositionUpdates(clientCoordinateSpaceTranslation);
       });
+      
     })
   .catch(error => { 
     console.error('Fetch error:', error);
