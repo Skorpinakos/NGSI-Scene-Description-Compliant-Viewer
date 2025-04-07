@@ -58,24 +58,19 @@ class Object{
   constructor(data,asset){
     //not initializing with a scene as we may want to add it in many scenes
     this.id=asset;
-    this.object=null;
+    this.adapter=new EntityAdapter(asset,data);
+    this.position=this.adapter.getPosition();
+    this.rotation=this.adapter.getRotation();
     if(this.id=="urn:ngsi-ld:Asset:004"){
-      this.position=[data.spatialInfo.value.geoPose.position.lat,data.spatialInfo.value.geoPose.position.lon,data.spatialInfo.value.geoPose.position.h];
-      this.rotation=[data.spatialInfo.value.geoPose.angles.yaw,data.spatialInfo.value.geoPose.angles.pitch,data.spatialInfo.value.geoPose.angles.roll];
-      this.spatialInfo=data.spatialInfo.value;
+      this.spatialInfo=this.adapter.getSpatialInfo(); //this will be mandatory in the new version
     }
-    else{
-      this.position=[data.geoPose.value.position.lat,data.geoPose.value.position.lon,data.geoPose.value.position.h];
-      this.rotation=[data.geoPose.value.angles.yaw,data.geoPose.value.angles.pitch,data.geoPose.value.angles.roll];
-    }
-    // this.position=[data.geoPose.value.position.lat,data.geoPose.value.position.lon,data.geoPose.value.position.h];
-    // this.rotation=[data.geoPose.value.angles.yaw,data.geoPose.value.angles.pitch,data.geoPose.value.angles.roll];
-    this.parent=data.refParent.value;
-    this.children=data.refChildren.value;
-    this.refAssetData=data.refAssetData.value;
-    this.refSemantic=data.refSemanticRepresentation.value
-    this.resourceLinks=data.resourceLink.value;
-    this.refupdateSrc=data.updateSrc.value;
+    this.refAssetData=this.adapter.getRefAssetData();
+    this.refupdateSrc=this.adapter.getRefUpdateSrc();
+    this.resourceLinks=this.adapter.getResourceLinks();
+    this.parent=this.adapter.getParent();
+    this.children=this.adapter.getChildren();
+    this.refSemantic=this.adapter.getRefSemantic();
+    this.object=null;
     this.objLoader = new OBJLoader();
     this.textureLoader = new THREE.TextureLoader();
     this.scenePos=null;
@@ -83,6 +78,7 @@ class Object{
     this.prevPosition=null;
     console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
     // Set up periodic data updates based on the sampling period
+    //this will be implemented based on the updateMethod
     if (this.refupdateSrc && this.refupdateSrc["http"] && this.refupdateSrc["http"]["samplingPeriod"]) {
       const samplingPeriod = this.refupdateSrc["http"]["samplingPeriod"];
       setInterval(() => {
@@ -362,7 +358,57 @@ class DynamicTextSign {
   }
 }
 
+class EntityAdapter{
+  constructor(id,entityData){
+    this.rawdata=entityData;
+    this.id=id;
+  }
 
+  getPosition(){
+    if(this.id==="urn:ngsi-ld:Asset:004"){
+      return [this.rawdata.spatialInfo.value.geoPose.position.lat,this.rawdata.spatialInfo.value.geoPose.position.lon,this.rawdata.spatialInfo.value.geoPose.position.h];
+    }
+    else{
+      return [this.rawdata.geoPose.value.position.lat,this.rawdata.geoPose.value.position.lon,this.rawdata.geoPose.value.position.h];
+    }
+  }
+
+  getRotation(){
+    if(this.id==="urn:ngsi-ld:Asset:004"){
+      return [this.rawdata.spatialInfo.value.geoPose.angles.yaw,this.rawdata.spatialInfo.value.geoPose.angles.pitch,this.rawdata.spatialInfo.value.geoPose.angles.roll];
+    }
+    else{
+      return [this.rawdata.geoPose.value.angles.yaw,this.rawdata.geoPose.value.angles.pitch,this.rawdata.geoPose.value.angles.roll];
+    }
+  }
+  getParent(){
+    return this.rawdata.refParent.value;
+  }
+  getChildren(){
+    return this.rawdata.refChildren.value;
+  }
+  getRefAssetData(){
+    return this.rawdata.refAssetData.value;
+  }
+  getRefSemantic(){
+    return this.rawdata.refSemanticRepresentation.value;
+  }
+
+  getResourceLinks(){
+    return this.rawdata.resourceLink.value;
+  }
+
+  getRefUpdateSrc(){
+    return this.rawdata.updateSrc.value;
+  }
+
+  getSpatialInfo(){
+    return this.rawdata.spatialInfo.value;
+  }
+
+
+
+}
 
 let cube;
 let cube2;
