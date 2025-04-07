@@ -205,7 +205,7 @@ class Object{
         const data = JSON.parse(event.data);
     
         if (data.lat !== undefined && data.lon !== undefined) {
-          const newPos = [data.lat, data.lon, 68];
+          const newPos = [data.lat, data.lon, 68.5];
     
           const localPos = getLocalOffset(clientCoordinateSpaceTranslation, newPos);
     
