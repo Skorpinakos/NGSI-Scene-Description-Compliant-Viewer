@@ -80,6 +80,7 @@ class Object{
     this.textureLoader = new THREE.TextureLoader();
     this.scenePos=null;
     this.sign=null;
+    this.prevPosition=null;
     console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
     // Set up periodic data updates based on the sampling period
     if (this.refupdateSrc && this.refupdateSrc["http"] && this.refupdateSrc["http"]["samplingPeriod"]) {
@@ -201,18 +202,31 @@ class Object{
   
     ws.onmessage = (event) => {
       try {
-        console.log("WebSocket message received:", event.data);
         const data = JSON.parse(event.data);
-  
+    
         if (data.lat !== undefined && data.lon !== undefined) {
-          console.log("WS HERE")
-          const newPos = [data.lat, data.lon, 69];
+          const newPos = [data.lat, data.lon, 68];
+    
           const localPos = getLocalOffset(clientCoordinateSpaceTranslation, newPos);
-          console.log("localPos", localPos.x, localPos.y, localPos.z);
+    
           if (this.object) {
-            console.log("update object")
+            // Update position
             this.object.position.set(localPos.x, localPos.y, localPos.z);
-            console.log("object position",localPos.x, localPos.y, localPos.z);
+    
+            // Calculate yaw (only if there's a previous position to compare)
+            if (this.prevPosition) {
+              const prevLocal = getLocalOffset(clientCoordinateSpaceTranslation, this.prevPosition);
+              const deltaX = localPos.x - prevLocal.x;
+              const deltaY = localPos.y - prevLocal.y;
+    
+              const yaw = Math.atan2(deltaY, deltaX); // radians
+    
+              // Rotate the car to face direction of movement
+              this.object.rotation.y=yaw -  Math.PI / 2;; // or .y depending on your model orientation
+            }
+    
+            this.prevPosition = newPos; // Save current position for next time
+    
             if (this.sign) this.sign.updatePosition();
           }
         }
@@ -220,6 +234,7 @@ class Object{
         console.error("WebSocket message parse error:", err);
       }
     };
+    
   
     ws.onerror = (error) => {
       console.error("WebSocket error:", error);
