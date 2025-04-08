@@ -64,7 +64,7 @@ fetch('http://localhost:5000/v2/entities/urn:ngsi-ld:SceneDescriptor:001')
 })
 .then(data => {
   // console.log(data.refAssets.value);
-  console.log("hi2");
+  // console.log("hi2");
   assets.push(...data.refAssets.value);
   // create asset representation
 
@@ -79,7 +79,7 @@ for (let asset of assets) {
   })
   .then(
     data => {
-      console.log("hi3")
+      // console.log("hi3")
       let obj = new Object(data,asset);
       console.log(obj);
       sceneManager.addObject(clientCoordinateSpaceTranslation,obj);
@@ -89,17 +89,21 @@ for (let asset of assets) {
         // obj.startWSPositionUpdates(clientCoordinateSpaceTranslation);
         // sceneManager.addObject(obj) //TODO add this to a scene update method 
       // });
-      
     })
+  .then(() => {
+      let objects= sceneManager.getObjects();
+      console.log("objects",objects);
+  }
+  )
   .catch(error => { 
     console.error('Fetch error:', error);
   });
 }
-
 })
 .catch(error => {
   console.error('Fetch error:', error);
 });
+
 
 //////////////FIWARE CODE STOPS//////////////////
 

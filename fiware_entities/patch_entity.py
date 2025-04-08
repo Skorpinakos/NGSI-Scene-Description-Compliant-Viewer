@@ -336,7 +336,7 @@ asset_descriptor_2 = {
     }
 }
 
-asset_descriptor_3 = {
+asset_parking_sensor = {
     # "id": "urn:ngsi-ld:Asset:003",
     # "type": "Asset",
     "refAssetData": {
@@ -609,4 +609,4 @@ parking_sensor={
 # for entity in entities:
 #     create_entity(entity)
 # create_entity(asset_descriptor)
-patch_entity("urn:ngsi-ld:Asset:004",asset_car_descriptor)
+patch_entity("urn:ngsi-ld:Asset:003",asset_parking_sensor)

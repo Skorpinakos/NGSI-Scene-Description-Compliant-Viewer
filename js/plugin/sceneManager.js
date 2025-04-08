@@ -7,14 +7,15 @@ export class SceneManager {
   }
 
   addObject(clientCoordinateSpaceTranslation,object) {
-    console.log("test0",object);
+    // console.log("test0",object);
 
     // this.scene.add(object);
     object.addObjRepr(this.scene,clientCoordinateSpaceTranslation);
     // object.createSign(this.scene);
-    object.startWSPositionUpdates(clientCoordinateSpaceTranslation);
-    console.log("test2",object);
+    // object.startWSPositionUpdates(clientCoordinateSpaceTranslation);
+    // console.log("test2",object);
     this.objects.push(object);
+    console.log("Updated objects",this.objects);
   }
 
   removeObject(object) {
@@ -28,6 +29,11 @@ export class SceneManager {
         obj.update(delta);
       }
     });
+  }
+
+  getObjects() {
+    console.log("getObjects");
+    return this.objects;
   }
 
   getScene() {
