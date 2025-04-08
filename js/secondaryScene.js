@@ -12,8 +12,17 @@ class SceneManager {
     this.objects = [];
   }
 
-  addObject(object) {
-    this.scene.add(object);
+  addObject(clientCoordinateSpaceTranslation,object) {
+    console.log("test0",object);
+
+    // this.scene.add(object);
+    object.addObjRepr(this.scene,clientCoordinateSpaceTranslation,(loadedObject) => {
+      // loadedObject.createSign(this.scene);
+      console.log("test1",loadedObject);
+      
+    });
+    object.startWSPositionUpdates(clientCoordinateSpaceTranslation);
+    console.log("test2",object);
     this.objects.push(object);
   }
 
@@ -79,12 +88,12 @@ class Object{
     console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
     // Set up periodic data updates based on the sampling period
     //this will be implemented based on the updateMethod
-    if (this.refupdateSrc && this.refupdateSrc["http"] && this.refupdateSrc["http"]["samplingPeriod"]) {
-      const samplingPeriod = this.refupdateSrc["http"]["samplingPeriod"];
-      setInterval(() => {
-      this.dataHTTPUpdate(this.refAssetData[0], this.refupdateSrc["http"]["url"]);
-      }, samplingPeriod);
-    }
+    // if (this.refupdateSrc && this.refupdateSrc["http"] && this.refupdateSrc["http"]["samplingPeriod"]) {
+    //   const samplingPeriod = this.refupdateSrc["http"]["samplingPeriod"];
+    //   setInterval(() => {
+    //   this.dataHTTPUpdate(this.refAssetData[0], this.refupdateSrc["http"]["url"]);
+    //   }, samplingPeriod);
+    // }
     
   }
 
@@ -123,7 +132,7 @@ class Object{
       this.object=object;
       scene.add(this.object);
       
-      if (callback) callback(this.objects);
+      if (callback) callback(this.object);
     }, undefined, (error) => {
       console.error('Error loading model:', error);
     });
@@ -417,7 +426,7 @@ const sceneManager = new SceneManager();
 export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   //scene will be created based on the scene descriptor and translated to the client coordinate space (dictated by the background chosen)
   const scene = sceneManager.getScene();
-  
+  console.log("hi1");
   // Lights
   const lightManager = new LightManager(scene);
   lightManager.addPointLight(); //possible will be an asset in the scene
@@ -436,22 +445,22 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
     metalness: 0.3,
   });
 
-  cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  // cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
-  ////lets say the cube is at [38.245105, 21.731640,2] in global (aka gps) coords 
-  let cubeSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, [38.287965, 21.788632,72]);
+  // ////lets say the cube is at [38.245105, 21.731640,2] in global (aka gps) coords 
+  // let cubeSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, [38.287965, 21.788632,72]);
   
-  cube.position.set(cubeSceneCoords.x, cubeSceneCoords.y, cubeSceneCoords.z);
-  sceneManager.addObject(cube);
-  //38.288051, 21.788754
-  cube2 = new THREE.Mesh(cubeGeometry, cubeMaterial);
-  let cubeSceneCoords2=getLocalOffset(clientCoordinateSpaceTranslation, [38.287826, 21.788487,72]);
-  cube2.position.set(cubeSceneCoords2.x, cubeSceneCoords2.y, cubeSceneCoords2.z);;
-  sceneManager.addObject(cube2);
+  // cube.position.set(cubeSceneCoords.x, cubeSceneCoords.y, cubeSceneCoords.z);
+  // sceneManager.addObject(cube);
+  // //38.288051, 21.788754
+  // cube2 = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  // let cubeSceneCoords2=getLocalOffset(clientCoordinateSpaceTranslation, [38.287826, 21.788487,72]);
+  // cube2.position.set(cubeSceneCoords2.x, cubeSceneCoords2.y, cubeSceneCoords2.z);;
+  // sceneManager.addObject(cube2);
   
 
-  console.log("coords1:",cubeSceneCoords);
-  console.log("coords2:",cubeSceneCoords2);
+  // console.log("coords1:",cubeSceneCoords);
+  // console.log("coords2:",cubeSceneCoords2);
 //////////////FIWARE CODE STARTS//////////////////
 
 //we will parse the scene to look for the assets
@@ -467,6 +476,7 @@ fetch('http://localhost:5000/v2/entities/urn:ngsi-ld:SceneDescriptor:001')
 })
 .then(data => {
   // console.log(data.refAssets.value);
+  console.log("hi2");
   assets.push(...data.refAssets.value);
   // create asset representation
 
@@ -481,11 +491,16 @@ for (let asset of assets) {
   })
   .then(
     data => {
+      console.log("hi3")
       let obj = new Object(data,asset);
-      obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
-        obj.createSign(scene);
-        obj.startWSPositionUpdates(clientCoordinateSpaceTranslation);
-      });
+      console.log(obj);
+      sceneManager.addObject(clientCoordinateSpaceTranslation,obj);
+      // obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
+        //TODO: SCENE manages should create the objects
+        // obj.createSign(scene);
+        // obj.startWSPositionUpdates(clientCoordinateSpaceTranslation);
+        // sceneManager.addObject(obj) //TODO add this to a scene update method 
+      // });
       
     })
   .catch(error => { 
