@@ -1,4 +1,44 @@
-import * as THREE from 'three';
+import { EntityAdapter } from "./entityAdapter";
+export class AssetData {
+    constructor(id) {
+      this.id = id;
+      this.ready = this.fetchData(); // 🔁 now you can await it
+    }
+  
+    async fetchData() {
+      try {
+        const response = await fetch(`http://localhost:5000/v2/entities/${this.id}/attrs`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        const data = await response.json();
+        this.adapter = new EntityAdapter(this.id, data, "AssetData");
+        this.representations = this.adapter.getValueRepr();
+        this.sources = this.adapter.getSources();
+        this.refValueURL = this.adapter.getDirectURL();
+        this.description = this.adapter.getDescription();
+        this.updateMethod = this.adapter.getUpdateMethod();
+        console.log("AssetData Object Created", this.id, this.description);
+      } catch (error) {
+        console.error('Fetch error:', error);
+      }
+    }
+  
+    getInfo() {
+      return {
+        id: this.id,
+        description: this.description,
+        representations: this.representations,
+        sources: this.sources,
+        refValueURL: this.refValueURL,
+        updateMethod: this.updateMethod
+      };
+    }
+  }
+  
+
+
+  import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import {getLocalOffset} from '../global2local.js';
 import {EntityAdapter} from './entityAdapter.js';
@@ -19,9 +59,15 @@ export class Object{
       const assetDataEntity = new AssetData(assetData);
       return assetDataEntity;
     });
+
+    Promise.all(this.assetDataEntities.map(entity => entity.ready)).then(() => {
+      let test = this.assetDataEntities[0].getInfo();
+      console.log("TEST ENTITY CREATION", test);
+    });
+  
     
-    let test= this.assetDataEntities[0].getInfo();
-    console.log("TEST ENTITY CREATION",test)
+    // let test= this.assetDataEntities[0].getInfo();
+    // console.log("TEST ENTITY CREATION",test)
     // console.log(this.id,"MY ASSET DATA CHILDREM",this.assetDataEntities);
     // this.refupdateSrc = this.adapter.getRefUpdateSrc();
     this.resourceLinks=this.adapter.getResourceLinks();

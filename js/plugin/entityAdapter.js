@@ -69,13 +69,6 @@ export class EntityAdapter{
     return null;
   }
 
-  getSpatialInfo() {
-    if (this.type === "Asset") {
-      return this.rawdata.spatialInfo.value;
-    }
-    return null;
-  }
-
   getValueRepr(){
     if (this.type === "AssetData") {
       return this.rawdata.valueRepr.value;
@@ -104,5 +97,11 @@ export class EntityAdapter{
     return null;
   }
 
+  getDescription(){
+    if (this.type === "AssetData") {
+      return this.rawdata.description.value;
+    }
+    return null;
+  }
 
 }
