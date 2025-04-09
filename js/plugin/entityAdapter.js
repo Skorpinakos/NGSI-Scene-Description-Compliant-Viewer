@@ -104,4 +104,11 @@ export class EntityAdapter{
     return null;
   }
 
+  getRefAssets(){
+    if (this.type === "SceneDescriptor") {
+      return this.rawdata.refAssets.value;
+    }
+    return null;
+  }
+
 }
