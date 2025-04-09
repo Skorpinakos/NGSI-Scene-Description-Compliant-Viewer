@@ -6,34 +6,34 @@ export class SceneManager {
     this.scene = new THREE.Scene();
     this.clientCoordinateSpaceTranslation = clientCoordinateSpaceTranslation;
     this.refAssets = null;
-    this.objects = []; 
+    this.assets = []; 
     this.buildScene();
   }
 
-  addObject(object) {
+  addAsset(asset) {
 
-    object.addObjRepr(this.scene,this.clientCoordinateSpaceTranslation);
+    asset.addAssetRepr(this.scene,this.clientCoordinateSpaceTranslation);
     
-    this.objects.push(object);
-    console.log("Updated objects",this.objects);
+    this.assets.push(asset);
+    console.log("Updated assets",this.assets);
   }
 
-  removeObject(object) {
-    this.scene.remove(object);
-    this.objects = this.objects.filter(obj => obj !== object);
+  removeAsset(asset) {
+    this.scene.remove(asset);
+    this.assets = this.assets.filter(obj => obj !== asset);
   }
 
   update(delta) {
-    this.objects.forEach(obj => {
+    this.assets.forEach(obj => {
       if (typeof obj.update === 'function') {
         obj.update(delta);
       }
     });
   }
 
-  getObjects() {
-    console.log("getObjects");
-    return this.objects;
+  getAssets() {
+    console.log("getAssets");
+    return this.assets;
   }
 
   getScene() {
@@ -66,19 +66,19 @@ export class SceneManager {
           .then(
             data => {
               // console.log("hi3")
-              let obj = new Asset(data,asset);
-              console.log(obj);
-              this.addObject(obj);
+              let curr_asset = new Asset(data,asset);
+              console.log(curr_asset);
+              this.addAsset(curr_asset);
               // obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
                 //TODO: SCENE manages should create the objects
                 // obj.createSign(scene);
                 // obj.startWSPositionUpdates(clientCoordinateSpaceTranslation);
-                // sceneManager.addObject(obj) //TODO add this to a scene update method 
+                // sceneManager.addAsset(obj) //TODO add this to a scene update method 
               // });
             })
           .then(() => {
-              let objects= this.getObjects();
-              console.log("objects",objects);
+              let assets= this.getAssets();
+              console.log("assets",assets);
           }
           )
           .catch(error => { 

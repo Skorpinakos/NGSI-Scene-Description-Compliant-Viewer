@@ -46,7 +46,7 @@ export class Asset{
     
   }
 
-  addObjRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
+  addAssetRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
 
     
     let resource = this.resourceLinks[0]; // Access the first resource
