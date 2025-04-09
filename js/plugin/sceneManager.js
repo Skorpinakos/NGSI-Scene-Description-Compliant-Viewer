@@ -1,8 +1,11 @@
 import * as THREE from 'three';
 import { EntityAdapter } from './entityAdapter';
 import {Asset} from './asset.js';
+
+
 export class SceneManager {
-  constructor(clientCoordinateSpaceTranslation) {
+  constructor(id,clientCoordinateSpaceTranslation) {
+    this.id=id;
     this.scene = new THREE.Scene();
     this.clientCoordinateSpaceTranslation = clientCoordinateSpaceTranslation;
     this.refAssets = null;
@@ -41,7 +44,7 @@ export class SceneManager {
   }
 
   buildScene() {
-    fetch('http://localhost:5000/v2/entities/urn:ngsi-ld:SceneDescriptor:001')
+    fetch(`http://localhost:5000/v2/entities/${this.id}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok ' + response.statusText);

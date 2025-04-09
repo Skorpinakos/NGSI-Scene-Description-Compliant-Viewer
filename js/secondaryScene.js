@@ -13,7 +13,7 @@ let cube2;
 // Scene Creation
 export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   //scene will be created based on the scene descriptor and translated to the client coordinate space (dictated by the background chosen)
-  const sceneManager = new SceneManager(clientCoordinateSpaceTranslation);
+  const sceneManager = new SceneManager("urn:ngsi-ld:SceneDescriptor:001",clientCoordinateSpaceTranslation);
   const scene = sceneManager.getScene();
   console.log("hi1");
   // Lights

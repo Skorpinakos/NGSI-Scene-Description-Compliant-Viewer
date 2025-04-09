@@ -28,13 +28,11 @@ export class Asset{
     this.parent=this.adapter.getParent();
     this.children=this.adapter.getChildren();
     this.refSemantic=this.adapter.getRefSemantic();
-    this.object=null;
-    this.objLoader = new OBJLoader();
-    this.textureLoader = new THREE.TextureLoader();
+    this.asset=null;
     this.scenePos=null;
     // this.sign=null;
     this.prevPosition=null;
-    console.log("Object created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
+    console.log("asset created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
     // Set up periodic data updates based on the sampling period
     //this will be implemented based on the updateMethod
     // if (this.refupdateSrc && this.refupdateSrc["http"] && this.refupdateSrc["http"]["samplingPeriod"]) {
@@ -48,14 +46,15 @@ export class Asset{
 
   addAssetRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
 
-    
+    this.objLoader = new OBJLoader();
+    this.textureLoader = new THREE.TextureLoader();
     let resource = this.resourceLinks[0]; // Access the first resource
     console.log("resource scale",resource.scale);
     let model = resource.model; // Extract the model path
     let textures = resource.textures; // Extract the textures array
     
-    this.objLoader.load(model, (object) => {
-      object.traverse((child) => {
+    this.objLoader.load(model, (asset) => {
+      asset.traverse((child) => {
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
             map: textures[0] ? this.textureLoader.load(textures[0]) : null,
@@ -68,21 +67,21 @@ export class Asset{
       
       let objSceneCoords=getLocalOffset(clientCoordinateSpaceTranslation, this.position);
       this.scenePos=objSceneCoords;
-      object.position.set(objSceneCoords.x, objSceneCoords.y, objSceneCoords.z);
+      asset.position.set(objSceneCoords.x, objSceneCoords.y, objSceneCoords.z);
       console.log('position',objSceneCoords.x, objSceneCoords.y, objSceneCoords.z);
-      object.scale.set(...resource.scale); // Use the scale from the resource
+      asset.scale.set(...resource.scale); // Use the scale from the resource
       //convert rptation from deg to rads
       this.rotation[0]=this.rotation[0]*Math.PI/180;
       this.rotation[1]=this.rotation[1]*Math.PI/180;
       this.rotation[2]=this.rotation[2]*Math.PI/180;
-      object.rotation.set(this.rotation[0],this.rotation[1],this.rotation[2]) // Fix rotation references
-      object.scale.set(...resource.scale);
-      // object.rotation.y = rotation[0];
-      // this.scene.add(object);
-      this.object=object;
-      scene.add(this.object);
+      asset.rotation.set(this.rotation[0],this.rotation[1],this.rotation[2]) // Fix rotation references
+      asset.scale.set(...resource.scale);
+      // asset.rotation.y = rotation[0];
+      // this.scene.add(asset);
+      this.asset=asset;
+      scene.add(this.asset);
       
-      if (callback) callback(this.object);
+      if (callback) callback(this.asset);
     }, undefined, (error) => {
       console.error('Error loading model:', error);
     });
@@ -106,14 +105,14 @@ export class Asset{
         return response.json();
       })
       .then(data => {
-        //update the object here based on the data received
+        //update the asset here based on the data received
         if(this.sign){
         this.sign.updateText(parseFloat(data).toFixed(2)+"°C");
         }
       })
     })
   }
-  //TODO based on the Scene Descriptor/ Object Descriptor I will create the signs here
+  //TODO based on the Scene Descriptor/ asset Descriptor I will create the signs here
   async createSign(scene) {
     try {
       console.log(this.refAssetData[0]);
@@ -127,7 +126,7 @@ export class Asset{
       console.log("valueRepresentation", valueRepresentation);
       if (valueRepresentation === "singularValue") {
         console.log("singular value created");
-        this.sign = new DynamicTextSign(scene, this.position, "42°C",data.valueRepr.value[0], this.object, { x: 0, y: 0, z: 0 });
+        this.sign = new DynamicTextSign(scene, this.position, "42°C",data.valueRepr.value[0], this.asset, { x: 0, y: 0, z: 0 });
       }
       else if (valueRepresentation === "boolean") {
         console.log("boolean one created");
