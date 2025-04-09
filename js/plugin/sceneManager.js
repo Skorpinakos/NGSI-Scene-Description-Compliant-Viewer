@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { EntityAdapter } from './entityAdapter';
-
+import {Asset} from './asset.js';
 export class SceneManager {
   constructor(clientCoordinateSpaceTranslation) {
     this.scene = new THREE.Scene();
@@ -52,7 +52,39 @@ export class SceneManager {
         this.adapter = new EntityAdapter("urn:ngsi-ld:SceneDescriptor:001", data, "SceneDescriptor");
         this.refAssets = this.adapter.getRefAssets();
         console.log("SceneManager created", this.refAssets);
-        this.objects = []; // Initialize the objects array here
+        
+        //create the representation of the Asset 
+        for (let asset of this.refAssets) {
+          console.log(asset)
+          fetch(`http://localhost:5000/v2/entities/${asset}/attrs`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+          })
+          .then(
+            data => {
+              // console.log("hi3")
+              let obj = new Asset(data,asset);
+              console.log(obj);
+              this.addObject(obj);
+              // obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
+                //TODO: SCENE manages should create the objects
+                // obj.createSign(scene);
+                // obj.startWSPositionUpdates(clientCoordinateSpaceTranslation);
+                // sceneManager.addObject(obj) //TODO add this to a scene update method 
+              // });
+            })
+          .then(() => {
+              let objects= this.getObjects();
+              console.log("objects",objects);
+          }
+          )
+          .catch(error => { 
+            console.error('Fetch error:', error);
+          });
+        }
       })
       .catch(error => {
         console.error('Fetch error:', error);

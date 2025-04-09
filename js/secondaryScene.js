@@ -50,63 +50,7 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
 
   // console.log("coords1:",cubeSceneCoords);
   // console.log("coords2:",cubeSceneCoords2);
-//////////////FIWARE CODE STARTS//////////////////
 
-//we will parse the scene to look for the assets
-//fetch from FIWARE the scene descriptor
-
-let assets=[];
-fetch('http://localhost:5000/v2/entities/urn:ngsi-ld:SceneDescriptor:001')
-.then(response => {
-  if (!response.ok) {
-    throw new Error('Network response was not ok ' + response.statusText);
-  }
-  return response.json();
-})
-.then(data => {
-  // console.log(data.refAssets.value);
-  // console.log("hi2");
-  assets.push(...data.refAssets.value);
-  // create asset representation
-
-for (let asset of assets) {
-  console.log(asset)
-  fetch(`http://localhost:5000/v2/entities/${asset}/attrs`)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok ' + response.statusText);
-    }
-    return response.json();
-  })
-  .then(
-    data => {
-      // console.log("hi3")
-      let obj = new Asset(data,asset);
-      console.log(obj);
-      sceneManager.addObject(obj);
-      // obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
-        //TODO: SCENE manages should create the objects
-        // obj.createSign(scene);
-        // obj.startWSPositionUpdates(clientCoordinateSpaceTranslation);
-        // sceneManager.addObject(obj) //TODO add this to a scene update method 
-      // });
-    })
-  .then(() => {
-      let objects= sceneManager.getObjects();
-      console.log("objects",objects);
-  }
-  )
-  .catch(error => { 
-    console.error('Fetch error:', error);
-  });
-}
-})
-.catch(error => {
-  console.error('Fetch error:', error);
-});
-
-
-//////////////FIWARE CODE STOPS//////////////////
 
 ///////DEBUG/////////////////////////////////////////////////////////////////////
 
