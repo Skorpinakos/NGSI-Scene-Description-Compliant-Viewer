@@ -1,19 +1,18 @@
 import * as THREE from 'three';
+import { EntityAdapter } from './entityAdapter';
 
 export class SceneManager {
-  constructor() {
+  constructor(clientCoordinateSpaceTranslation) {
     this.scene = new THREE.Scene();
-    this.objects = [];
+    // this.adapter= new EntityAdapter("urn:ngsi-ld:SceneDescriptor:001",data,"SceneDescriptor");
+    // this.refAssets = getRefAssets();
+    this.clientCoordinateSpaceTranslation = clientCoordinateSpaceTranslation;
   }
 
-  addObject(clientCoordinateSpaceTranslation,object) {
-    // console.log("test0",object);
+  addObject(object) {
 
-    // this.scene.add(object);
-    object.addObjRepr(this.scene,clientCoordinateSpaceTranslation);
-    // object.createSign(this.scene);
-    // object.startWSPositionUpdates(clientCoordinateSpaceTranslation);
-    // console.log("test2",object);
+    object.addObjRepr(this.scene,this.clientCoordinateSpaceTranslation);
+    
     this.objects.push(object);
     console.log("Updated objects",this.objects);
   }

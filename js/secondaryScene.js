@@ -9,10 +9,11 @@ import {Object} from './plugin/object.js';
 
 let cube;
 let cube2;
-const sceneManager = new SceneManager();
+
 // Scene Creation
 export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   //scene will be created based on the scene descriptor and translated to the client coordinate space (dictated by the background chosen)
+  const sceneManager = new SceneManager(clientCoordinateSpaceTranslation);
   const scene = sceneManager.getScene();
   console.log("hi1");
   // Lights
@@ -82,7 +83,7 @@ for (let asset of assets) {
       // console.log("hi3")
       let obj = new Object(data,asset);
       console.log(obj);
-      sceneManager.addObject(clientCoordinateSpaceTranslation,obj);
+      sceneManager.addObject(obj);
       // obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
         //TODO: SCENE manages should create the objects
         // obj.createSign(scene);

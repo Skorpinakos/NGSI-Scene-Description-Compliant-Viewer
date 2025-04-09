@@ -259,7 +259,7 @@ function startAnimationLoop() {
     handleControls(delta, keys, camera, currentMovementBoundaries);
 
     // Update secondary scene animations
-    updateSecondaryObjects(delta);
+    // updateSecondaryObjects(delta);
 
     // Check if we need to update the background
     const timeSinceLastBackgroundUpdate = currentTime - lastBackgroundUpdateTime;
