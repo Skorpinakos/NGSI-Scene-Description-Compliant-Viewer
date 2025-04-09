@@ -5,7 +5,7 @@ import {EntityAdapter} from './entityAdapter.js';
 import {DynamicTextSign} from './DynamicTextSign.js';
 import {AssetData}  from './assetData.js';
 
-export class Object{
+export class Asset{
   constructor(data,asset){
     //not initializing with a scene as we may want to add it in many scenes
     this.id=asset;

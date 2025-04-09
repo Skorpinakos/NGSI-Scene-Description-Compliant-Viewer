@@ -5,7 +5,7 @@ import mqtt from 'mqtt';
 import { cameraFar, roughness } from 'three/tsl';
 import {SceneManager} from './plugin/sceneManager.js';
 import {LightManager} from './plugin/LightManager.js';
-import {Object} from './plugin/object.js';
+import {Asset} from './plugin/asset.js';
 
 let cube;
 let cube2;
@@ -81,7 +81,7 @@ for (let asset of assets) {
   .then(
     data => {
       // console.log("hi3")
-      let obj = new Object(data,asset);
+      let obj = new Asset(data,asset);
       console.log(obj);
       sceneManager.addObject(obj);
       // obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
