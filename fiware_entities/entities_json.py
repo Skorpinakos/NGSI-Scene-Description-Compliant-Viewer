@@ -74,37 +74,33 @@ asset_descriptor = {
                 }
             ]
     },
-    "spatialInfo": {
+    "GeoPose":{
         "type": "Property",
         "value": {
-            "geoPose":
-            {
-                #geopose protocol 6DOF
-                "position": {
-                    "lat": 38.245268,
-                    "lon":  21.731840,
-                    "h": 1
-                },
-                "angles": {
-                    "yaw": 0,
-                    "pitch": 0,
-                    "roll": 0
-                }
+            #geopose protocol 6DOF
+            "position": {
+                "lat": 38.245268,
+                "lon":  21.731840,
+                "h": 1
             },
-            "updateMethod":
-            {
-                "http": {
-                    "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
-                    "method": "GET",
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "samplingPeriod": 1000 #ms
-                }
+            "angles": {
+                "yaw": 0,
+                "pitch": 0,
+                "roll": 0
             }
         }
-  },
-  "updateMethod": {
+    },
+    "updateMethodSpatial":{
+        "type": "Property",
+        "value": {
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:AssetData:001"
+            }
+    }
+    },
+   "updateMethod": {
       "type": "Property",
       "value": {
           "http": {
@@ -146,7 +142,7 @@ asset_descriptor = {
 
 
 
-asset_descriptor_2 = {
+asset_descriptor_3 = {
     "id": "urn:ngsi-ld:Asset:002",
     "type": "Asset",
     "refAssetData": {
@@ -223,8 +219,8 @@ asset_descriptor_2 = {
     }
 }
 
-asset_descriptor_3 = {
-    "id": "urn:ngsi-ld:Asset:003",
+asset_descriptor_2 = {
+    "id": "urn:ngsi-ld:Asset:002",
     "type": "Asset",
     "refAssetData": {
         "type": "Relationship",
@@ -233,7 +229,6 @@ asset_descriptor_3 = {
     "resourceLink": {
         "type": "Property",
         "value": [
-            [   
                 {
                     "type": "Mesh",
                     "format": "obj",
@@ -242,10 +237,9 @@ asset_descriptor_3 = {
                     "size": 9.8, #MB
                     "scale": [0.5, 0.5, 0.5],
                 }
-            ]
         ]
     },
-    "geoPose": {
+    "GeoPose": {
         "type": "Property",
         "value": {
             #geopose protocol 6DOF
@@ -261,7 +255,17 @@ asset_descriptor_3 = {
             }
         }
   },
-  "updateSrc": {
+  "updateMethodSpatial":{
+        "type": "Property",
+        "value": {
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:AssetData:002"
+            }
+    }
+    },
+   "updateMethod": {
       "type": "Property",
       "value": {
           "http": {
@@ -270,7 +274,7 @@ asset_descriptor_3 = {
               "headers": {
                   "Content-Type": "application/json"
               },
-              "samplingPeriod": 1000 #ms
+              "samplingPeriod": 1000 
           },
             "mqtt": {
                 "broker": "150.140.186.118",
@@ -489,7 +493,7 @@ asset_data={
             }
         ]
     },
-    "updateSrc": {
+    "updateMethod": {
       "type": "Property",
       "value": {
           "http": {
@@ -592,5 +596,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_car_descriptor)
+create_entity(asset_descriptor_2)
 

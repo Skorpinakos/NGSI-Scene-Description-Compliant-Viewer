@@ -1,51 +1,108 @@
 export class EntityAdapter{
-  constructor(id,entityData){
+  constructor(id,entityData,entityType){
     this.rawdata=entityData;
     this.id=id;
+    this.type=entityType;
   }
 
-  getPosition(){
-    if(this.id==="urn:ngsi-ld:Asset:004"){
-      return [this.rawdata.spatialInfo.value.geoPose.position.lat,this.rawdata.spatialInfo.value.geoPose.position.lon,this.rawdata.spatialInfo.value.geoPose.position.h];
+  getPosition() {
+    if (this.type === "Asset") {
+      if (this.id === "urn:ngsi-ld:Asset:004") {
+        return [this.rawdata.spatialInfo.value.geoPose.position.lat, this.rawdata.spatialInfo.value.geoPose.position.lon, this.rawdata.spatialInfo.value.geoPose.position.h];
+      } else {
+        return [this.rawdata.GeoPose.value.position.lat, this.rawdata.GeoPose.value.position.lon, this.rawdata.GeoPose.value.position.h];
+      }
     }
-    else{
-      return [this.rawdata.geoPose.value.position.lat,this.rawdata.geoPose.value.position.lon,this.rawdata.geoPose.value.position.h];
+    return null;
+  }
+
+  getRotation() {
+    if (this.type === "Asset") {
+      if (this.id === "urn:ngsi-ld:Asset:004") {
+        return [this.rawdata.spatialInfo.value.geoPose.angles.yaw, this.rawdata.spatialInfo.value.geoPose.angles.pitch, this.rawdata.spatialInfo.value.geoPose.angles.roll];
+      } else {
+        return [this.rawdata.GeoPose.value.angles.yaw, this.rawdata.GeoPose.value.angles.pitch, this.rawdata.GeoPose.value.angles.roll];
+      }
     }
+    return null;
   }
 
-  getRotation(){
-    if(this.id==="urn:ngsi-ld:Asset:004"){
-      return [this.rawdata.spatialInfo.value.geoPose.angles.yaw,this.rawdata.spatialInfo.value.geoPose.angles.pitch,this.rawdata.spatialInfo.value.geoPose.angles.roll];
+  getParent() {
+    if (this.type === "Asset") {
+      return this.rawdata.refParent.value;
     }
-    else{
-      return [this.rawdata.geoPose.value.angles.yaw,this.rawdata.geoPose.value.angles.pitch,this.rawdata.geoPose.value.angles.roll];
+    return null;
+  }
+
+  getChildren() {
+    if (this.type === "Asset") {
+      return this.rawdata.refChildren.value;
     }
-  }
-  getParent(){
-    return this.rawdata.refParent.value;
-  }
-  getChildren(){
-    return this.rawdata.refChildren.value;
-  }
-  getRefAssetData(){
-    return this.rawdata.refAssetData.value;
-  }
-  getRefSemantic(){
-    return this.rawdata.refSemanticRepresentation.value;
+    return null;
   }
 
-  getResourceLinks(){
-    return this.rawdata.resourceLink.value;
+  getRefAssetData() {
+    if (this.type === "Asset") {
+      return this.rawdata.refAssetData.value;
+    }
+    return null;
   }
 
-  getRefUpdateSrc(){
-    return this.rawdata.updateSrc.value;
+  getRefSemantic() {
+    if (this.type === "Asset") {
+      return this.rawdata.refSemanticRepresentation.value;
+    }
+    return null;
   }
 
-  getSpatialInfo(){
-    return this.rawdata.spatialInfo.value;
+  getResourceLinks() {
+    if (this.type === "Asset") {
+      return this.rawdata.resourceLink.value;
+    }
+    return null;
   }
 
+  getRefUpdateSrc() {
+    if (this.type === "Asset") {
+      return this.rawdata.updateMethod.value;
+    }
+    return null;
+  }
+
+  getSpatialInfo() {
+    if (this.type === "Asset") {
+      return this.rawdata.spatialInfo.value;
+    }
+    return null;
+  }
+
+  getValueRepr(){
+    if (this.type === "AssetData") {
+      return this.rawdata.valueRepr.value;
+    }
+    return null;
+  } 
+
+  getSources(){
+    if (this.type === "AssetData") {
+      return this.rawdata.refSource.value;
+    }
+    return null;
+  }
+
+  getDirectURL(){
+    if (this.type === "AssetData") {
+      return this.rawdata.refValue.value;
+    }
+    return null;
+  }
+
+  getUpdateMethod(){
+    if (this.type === "AssetData") {
+      return this.rawdata.updateMethod.value;
+    }
+    return null;
+  }
 
 
 }

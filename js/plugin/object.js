@@ -8,7 +8,7 @@ export class Object{
   constructor(data,asset){
     //not initializing with a scene as we may want to add it in many scenes
     this.id=asset;
-    this.adapter=new EntityAdapter(asset,data);
+    this.adapter=new EntityAdapter(asset,data,"Asset");
     this.position=this.adapter.getPosition();
     this.rotation=this.adapter.getRotation();
     if(this.id=="urn:ngsi-ld:Asset:004"){
@@ -41,7 +41,8 @@ export class Object{
   addObjRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
 
     
-    let resource = this.resourceLinks[0][0]; // Access the first resource
+    let resource = this.resourceLinks[0]; // Access the first resource
+    console.log("resource scale",resource.scale);
     let model = resource.model; // Extract the model path
     let textures = resource.textures; // Extract the textures array
     

@@ -1,0 +1,53 @@
+{
+    "id": "urn:ngsi-ld:AssetData:001",
+    "type": "AssetData",
+    "refSource": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:Source:001"]
+    },
+    "refValue": {
+        "type": "Property",
+        "value": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
+    },
+    "description": {
+        "type": "Property",
+        "value": "Temperature dumpy sensor"
+    },
+    "valueRepr": {
+        "type": "Property",
+        "value": [
+            {
+                "type": "singularValue",
+                "unit": "Celsius",
+                "threshold": {
+                    "min": 0,
+                    "max": 40
+                }
+            }
+        ]
+    },
+    "updateMethod": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:Source:001" 
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
+  }
+}
