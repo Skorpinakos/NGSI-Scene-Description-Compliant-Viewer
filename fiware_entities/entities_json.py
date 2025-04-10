@@ -100,43 +100,34 @@ asset_descriptor = {
             }
     }
     },
-   "updateMethod": {
-      "type": "Property",
-      "value": {
-          "http": {
-              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
-              "method": "GET",
-              "headers": {
-                  "Content-Type": "application/json"
-              },
-              "samplingPeriod": 1000 #ms
-          },
-            "mqtt": {
-                "broker": "150.140.186.118",
-                "port": 1883,
-                "topic": "urn:ngsi-ld:AssetData:001"
-            },
-            "ws": {
-                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
-                "headers": {
-                    "Content-Type": "application/json"
-                }
-            }
-      }
-  },
+   "speed":{
+       "type": "Property",
+        "value": {
+              "speed": 0.5,
+              "unit": "m/s"
+         }       
+   },
   "refSemanticRepresentation": {
-    "type": "Relationship",
-    "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
   },
   "refParent": {
-    "type": "Relationship",
-    "value": "urn:ngsi-ld:Asset:000"
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Asset:000"
   },
     "refChildren": {
         "type": "Relationship",
         "value": [
             "urn:ngsi-ld:Asset:002"
         ]
+    },
+    "relOffset": {
+        "type": "Property",
+        "value": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
     }
 }
 
@@ -596,5 +587,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_descriptor_2)
+create_entity(asset_descriptor)
 
