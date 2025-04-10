@@ -52,7 +52,7 @@ scene_descriptor = {
     }
 }
 
-asset_descriptor = {
+asset_descriptor_ws = {
     # "id": "urn:ngsi-ld:Asset:001",
     # "type": "Asset",
     "refAssetData": {
@@ -61,7 +61,7 @@ asset_descriptor = {
     },
     "resourceLink": {
         "type": "Property",
-        "value": [
+        "value": 
             [   
                 {
                     "type": "Mesh",
@@ -72,9 +72,8 @@ asset_descriptor = {
                     "scale": [0.5, 0.5, 0.5],
                 }
             ]
-        ]
     },
-    "geoPose": {
+    "GeoPose":{
         "type": "Property",
         "value": {
             #geopose protocol 6DOF
@@ -89,44 +88,125 @@ asset_descriptor = {
                 "roll": 0
             }
         }
-  },
-  "updateSrc": {
-      "type": "Property",
-      "value": {
-          "http": {
-              "url": "http://localhost:5000/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
-              "method": "GET",
-              "headers": {
-                  "Content-Type": "application/json"
-              },
-              "samplingPeriod": 1000 #ms
-          },
+    },
+    "updateMethodSpatial":{
+        "type": "Property",
+        "value": {
             "mqtt": {
                 "broker": "150.140.186.118",
                 "port": 1883,
                 "topic": "urn:ngsi-ld:AssetData:001"
-            },
-            "ws": {
-                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
-                "headers": {
-                    "Content-Type": "application/json"
-                }
             }
-      }
-  },
+    }
+    },
+   "speed":{
+       "type": "Property",
+        "value": {
+              "speed": 0.5,
+              "unit": "m/s"
+         }       
+   },
   "refSemanticRepresentation": {
-    "type": "Relationship",
-    "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
   },
   "refParent": {
-    "type": "Relationship",
-    "value": "urn:ngsi-ld:Asset:000"
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Asset:000"
   },
     "refChildren": {
         "type": "Relationship",
         "value": [
             "urn:ngsi-ld:Asset:002"
         ]
+    },
+    "relOffset": {
+        "type": "Property",
+        "value": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    }
+}
+
+asset_descriptor_ws_aircraft_mod = {
+    # "id": "urn:ngsi-ld:Asset:001",
+    # "type": "Asset",
+    "refAssetData": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:AssetData:001"]
+    },
+    "resourceLink": {
+        "type": "Property",
+        "value": 
+            [   
+                {
+                    "type": "Mesh",
+                    "format": "obj",
+                    # "model": './virtual_assets/ws/weather_station.obj',
+                    # "textures": ['./virtual_assets/ws/weather_station.png'],
+                    "model": './virtual_assets/aircraft/aircraft.obj',
+                    "textures": ['./virtual_assets/aircraft/steel.jpg','./virtual_assets/aircraft/E-45_col3.jpg','./virtual_assets/aircraft/E-45_col2.jpg','./virtual_assets/aircraft/E-45_col.jpg','./virtual_assets/aircraft/E-45_glass_nor_.jpg','./virtual_assets/aircraft/E-45-nor_1.jpg','./virtual_assets/aircraft/E-45_REF 1.jpg'],
+                    "size": 0.912, #MB
+                    "scale": [0.5, 0.5, 0.5],
+                }
+            ]
+    },
+    "GeoPose":{
+        "type": "Property",
+        "value": {
+            #geopose protocol 6DOF
+            "position": {
+                "lat": 38.287829, 
+                "lon":  21.787812,
+                "h": 68.5
+            },
+            "angles": {
+                "yaw": 90,
+                "pitch": 90,
+                "roll": 0
+            }
+        }
+    },
+    "updateMethodSpatial":{
+        "type": "Property",
+        "value": {
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:AssetData:001"
+            }
+    }
+    },
+   "speed":{
+       "type": "Property",
+        "value": {
+              "speed": 0.5,
+              "unit": "m/s"
+         }       
+   },
+  "refSemanticRepresentation": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
+  },
+  "refParent": {
+        "type": "Relationship",
+        "value": "urn:ngsi-ld:Asset:000"
+  },
+    "refChildren": {
+        "type": "Relationship",
+        "value": [
+            "urn:ngsi-ld:Asset:002"
+        ]
+    },
+    "relOffset": {
+        "type": "Property",
+        "value": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
     }
 }
 
@@ -778,4 +858,6 @@ asset_descriptor_2 = {
 # for entity in entities:
 #     create_entity(entity)
 # create_entity(asset_descriptor)
-patch_entity("urn:ngsi-ld:Asset:001",ws_descriptor)
+
+patch_entity("urn:ngsi-ld:Asset:001",asset_descriptor_ws)
+# patch_entity("urn:ngsi-ld:Asset:001",asset_descriptor_ws_aircraft_mod)

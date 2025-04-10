@@ -33,6 +33,11 @@ export class Asset{
     // this.sign=null;
     this.prevPosition=null;
     console.log("asset created with",this.id,this.position,this.rotation,this.parent,this.children,this.refAssetData,this.refSemantic,this.resourceLinks,this.refupdateSrc);
+    
+    // Set up periodic updates for the object
+    setInterval(() => {
+      this.updateObject();
+    }, 5000);
     // Set up periodic data updates based on the sampling period
     //this will be implemented based on the updateMethod
     // if (this.refupdateSrc && this.refupdateSrc["http"] && this.refupdateSrc["http"]["samplingPeriod"]) {
@@ -45,7 +50,7 @@ export class Asset{
   }
 
   addAssetRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
-
+    this.scene=scene;
     this.objLoader = new OBJLoader();
     this.textureLoader = new THREE.TextureLoader();
     let resource = this.resourceLinks[0]; // Access the first resource
@@ -79,7 +84,7 @@ export class Asset{
       // asset.rotation.y = rotation[0];
       // this.scene.add(asset);
       this.asset=asset;
-      scene.add(this.asset);
+      this.scene.add(this.asset);
       
       if (callback) callback(this.asset);
     }, undefined, (error) => {
@@ -201,6 +206,81 @@ export class Asset{
 
   //TODO based on the Scene Descriptor/ Object Descriptor I will update the object here
   updateObject(){
+    if (this.id) {
+      console.log("updating object",this.id);
+      fetch(`http://localhost:5000/v2/entities/${this.id}/attrs`)
+      .then(response => {
+        if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        this.newAdapter=new EntityAdapter(this.id,data,"Asset");
+        let newResourceLinks=this.newAdapter.getResourceLinks();
+        console.log("new",typeof newResourceLinks ,newResourceLinks);
+        console.log("old" ,typeof this.resourceLinks ,this.resourceLinks);
+        // Check for changes in the asset attributes and update the asset accordingly
+        if (this.resourceLinks && newResourceLinks && JSON.stringify(this.resourceLinks) !== JSON.stringify(newResourceLinks)) {
+          this.resourceLinks = newResourceLinks;
+          this.replaceModel(newResourceLinks[0].model, newResourceLinks[0].textures, newResourceLinks[0].scale);
+          console.log(`Updated someAttribute to ${newResourceLinks}`);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching or updating asset data:', error);
+      });
+    }
+  }
+
+  updateObjectPosition(){
+
+  }
+
+  replaceModel(newModelPath, textures, scale) {
+    if (!this.objLoader) this.objLoader = new OBJLoader();
+    if (!this.textureLoader) this.textureLoader = new THREE.TextureLoader();
+  
+    const oldAsset = this.asset;
+  
+    this.objLoader.load(newModelPath, (newAsset) => {
+      newAsset.traverse((child) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            map: textures[0] ? this.textureLoader.load(textures[0]) : null,
+            color: 0xffffff,
+            roughness: 0.5,
+            metalness: 0.2,
+          });
+        }
+      });
+  
+      // Match previous transform and scene position
+      newAsset.position.copy(oldAsset.position);
+      newAsset.rotation.copy(oldAsset.rotation);
+      newAsset.scale.set(...scale);
+  
+      // Remove old mesh from scene and dispose
+      oldAsset.parent?.remove(oldAsset);
+      oldAsset.traverse((child) => {
+        if (child.isMesh) {
+          child.geometry.dispose();
+          if (child.material) child.material.dispose();
+        }
+      });
+  
+      // Replace reference and re-add
+      this.asset = newAsset;
+      this.scene.add(this.asset);
+      oldAsset.parent?.add(newAsset); // Or keep a reference to your main scene and add it there
+      
+      // Optional: update sign, position, or anything else tied to the old mesh
+      // if (this.sign) this.sign.object3D = newAsset;
+  
+      console.log("Model replaced successfully.");
+    }, undefined, (error) => {
+      console.error('Error loading new model:', error);
+    });
   }
 
 }
