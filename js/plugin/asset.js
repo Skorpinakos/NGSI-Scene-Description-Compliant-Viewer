@@ -220,7 +220,7 @@ export class Asset{
         let newResourceLinks=this.newAdapter.getResourceLinks();
         console.log("new",typeof newResourceLinks ,newResourceLinks);
         console.log("old" ,typeof this.resourceLinks ,this.resourceLinks);
-        // Check for changes in the asset attributes and update the asset accordingly
+        // only for 3d representation now
         if (this.resourceLinks && newResourceLinks && JSON.stringify(this.resourceLinks) !== JSON.stringify(newResourceLinks)) {
           this.resourceLinks = newResourceLinks;
           this.replaceModel(newResourceLinks[0].model, newResourceLinks[0].textures, newResourceLinks[0].scale);

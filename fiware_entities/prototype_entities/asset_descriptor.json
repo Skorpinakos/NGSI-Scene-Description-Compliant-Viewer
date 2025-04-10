@@ -45,7 +45,7 @@
     }
     },
    "speed":{
-       "tpe": "Property",
+       "type": "Property",
         "value": {
               "speed": 0.5,
               "unit": "m/s"
