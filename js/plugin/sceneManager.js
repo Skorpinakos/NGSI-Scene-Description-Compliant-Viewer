@@ -15,7 +15,7 @@ export class SceneManager {
 
   addAsset(asset) {
 
-    asset.addAssetRepr(this.scene,this.clientCoordinateSpaceTranslation);
+    asset.addAssetRepr(this.clientCoordinateSpaceTranslation);
     
     this.assets.push(asset);
     console.log("Updated assets",this.assets);
@@ -69,8 +69,8 @@ export class SceneManager {
           .then(
             data => {
               // console.log("hi3")
-              let curr_asset = new Asset(data,asset);
-              console.log(curr_asset);
+              let curr_asset = new Asset(data,asset,this.scene);
+              console.log("testestste",curr_asset);
               this.addAsset(curr_asset);
               // obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {
                 //TODO: SCENE manages should create the objects

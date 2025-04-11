@@ -2,26 +2,24 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import {getLocalOffset} from '../global2local.js';
 import {EntityAdapter} from './entityAdapter.js';
-import {DynamicTextSign} from './DynamicTextSign.js';
+import {DynamicTextSign} from './dynamicTextSign.js';
 import {AssetData}  from './assetData.js';
 
 export class Asset{
-  constructor(data,asset){
+  constructor(data,asset,scene){
     //not initializing with a scene as we may want to add it in many scenes
     this.id=asset;
     this.adapter=new EntityAdapter(asset,data,"Asset");
     this.position=this.adapter.getPosition();
     this.rotation=this.adapter.getRotation();
+    this.scene=scene
     this.refAssetData=this.adapter.getRefAssetData();
     //create the AssetData object here
     
-    this.assetDataEntities = this.refAssetData.map(assetData => {
-      const assetDataEntity = new AssetData(assetData);
-      return assetDataEntity;
-    });
     
-    let test= this.assetDataEntities[0].getInfo();
-    console.log("TEST ENTITY CREATION",test)
+    
+    // let test= this.assetDataEntities[0].getInfo();
+    // console.log("TEST ENTITY CREATION",test)
     // console.log(this.id,"MY ASSET DATA CHILDREM",this.assetDataEntities);
     // this.refupdateSrc = this.adapter.getRefUpdateSrc();
     this.resourceLinks=this.adapter.getResourceLinks();
@@ -49,8 +47,8 @@ export class Asset{
     
   }
 
-  addAssetRepr(scene,clientCoordinateSpaceTranslation,callback=null) {
-    this.scene=scene;
+  addAssetRepr(clientCoordinateSpaceTranslation,callback=null) {
+    // this.scene=scene;
     this.objLoader = new OBJLoader();
     this.textureLoader = new THREE.TextureLoader();
     let resource = this.resourceLinks[0]; // Access the first resource
@@ -85,7 +83,12 @@ export class Asset{
       // this.scene.add(asset);
       this.asset=asset;
       this.scene.add(this.asset);
-      
+      // console.log("ASSET: ",this.asset);
+      this.assetDataEntities = this.refAssetData.map(assetData => {
+        const assetDataEntity = new AssetData(assetData,this.asset,this.scene);
+        return assetDataEntity;
+      });
+
       if (callback) callback(this.asset);
     }, undefined, (error) => {
       console.error('Error loading model:', error);

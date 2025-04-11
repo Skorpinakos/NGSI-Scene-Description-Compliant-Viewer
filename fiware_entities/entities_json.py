@@ -537,7 +537,7 @@ asset_data_parking={
             }
         ]
     },
-    "updateSrc": {
+    "updateMethod": {
       "type": "Property",
       "value": {
           "http": {
@@ -587,5 +587,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_descriptor)
+create_entity(asset_data_parking)
 

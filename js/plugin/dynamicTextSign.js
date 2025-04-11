@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 export class DynamicTextSign {
   constructor(scene, position, initialText,properties, targetObject = null, offset = { x: 0, y: -2, z: 0 }, size = { width: 0.5, height: 0.2 }) {
+    console.log("DynamicTextSign created",position,initialText,properties,targetObject,offset,size);
     this.scene = scene;
     this.targetObject = targetObject; // Optional object to attach to
     this.offset = offset;
@@ -26,6 +27,7 @@ export class DynamicTextSign {
     this.sign = new THREE.Mesh(this.signGeometry, this.signMaterial);
 
     if (this.targetObject) {
+      console.log("Target object found",this.targetObject);
       let bbox=new THREE.Box3().setFromObject(this.targetObject);
       let height=bbox.max.y-bbox.min.y;
       this.height=height;
