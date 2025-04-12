@@ -7,7 +7,7 @@
     },
     "refValue": {
         "type": "Property",
-        "value": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
+        "value": "http://localhost:5000/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
     },
     "description": {
         "type": "Property",
@@ -30,7 +30,7 @@
       "type": "Property",
       "value": {
           "http": {
-              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+              "url": "http://localhost:5000/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
               "method": "GET",
               "headers": {
                   "Content-Type": "application/json"

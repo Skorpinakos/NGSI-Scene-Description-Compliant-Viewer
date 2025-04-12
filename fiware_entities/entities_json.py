@@ -300,7 +300,7 @@ asset_car_descriptor = {
     "type": "Asset",
     "refAssetData": {
         "type": "Relationship",
-        "value": ["urn:ngsi-ld:AssetData:002"]
+        "value": ["urn:ngsi-ld:AssetData:003"]
     },
     "resourceLink": {
         "type": "Property",
@@ -522,7 +522,7 @@ asset_data_parking={
     },
     "description": {
         "type": "Property",
-        "value": "Temperature dumpy sensor"
+        "value": "sensor of Uni Handicaped car parking spot"
     },
     "valueRepr": {
         "type": "Property",
@@ -561,6 +561,59 @@ asset_data_parking={
   }
 }
 
+asset_data_car={
+    "id": "urn:ngsi-ld:AssetData:003",
+    "type": "AssetData",
+    "refSource": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:Source:001"]
+    },
+    "refValue": {
+        "type": "Property",
+        "value": "http://localhost:5000/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
+    },
+    "description": {
+        "type": "Property",
+        "value": "Temperature dumpy sensor"
+    },
+    "valueRepr": {
+        "type": "Property",
+        "value": [
+            {
+                "type": "singularValue",
+                "unit": "km/h",
+                "threshold": {
+                    "min": 0,
+                    "max": 80
+                }
+            }
+        ]
+    },
+    "updateMethod": {
+      "type": "Property",
+      "value": {
+          "http": {
+              "url": "http://localhost:5000/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+              "method": "GET",
+              "headers": {
+                  "Content-Type": "application/json"
+              },
+              "samplingPeriod": 1000 
+          },
+            "mqtt": {
+                "broker": "150.140.186.118",
+                "port": 1883,
+                "topic": "urn:ngsi-ld:Source:001" 
+            },
+            "ws": {
+                "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                "headers": {
+                    "Content-Type": "application/json"
+                }
+            }
+      }
+  }
+}
 
 sensor={
     "id": "urn:ngsi-ld:Source:001",
@@ -585,5 +638,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_data_parking)
+create_entity(asset_car_descriptor)
 
