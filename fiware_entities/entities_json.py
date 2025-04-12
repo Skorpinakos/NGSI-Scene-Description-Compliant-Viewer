@@ -474,7 +474,7 @@ asset_data={
         "value": [
             {
                 "type": "singularValue",
-                "unit": "Celsius",
+                "unit": "°C",
                 "threshold": {
                     "min": 0,
                     "max": 40
@@ -539,7 +539,7 @@ asset_data_parking={
       "type": "Property",
       "value": {
           "http": {
-              "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+              "url": "http://localhost:5000/v2/entities/uni_parking_001/attrs/status/value",
               "method": "GET",
               "headers": {
                   "Content-Type": "application/json"
@@ -585,5 +585,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_data)
+create_entity(asset_data_parking)
 

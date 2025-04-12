@@ -21,6 +21,10 @@ def create_entity(data):
         return 1
 
 def patch_entity(id,data):
+    if(id=="uni_parking_001"):
+        headers={
+            "Content-Type": "application/json"
+        }
     response = requests.patch(f"{url}/{id}/attrs", json=data, headers=headers)
     if response.status_code == 204:
         print("Entity patched successfully!")

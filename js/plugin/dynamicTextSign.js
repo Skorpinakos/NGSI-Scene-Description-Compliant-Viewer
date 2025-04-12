@@ -92,10 +92,11 @@ export class DynamicTextSign {
   updateText(newText) {
     // console.log("here to update to",newText,this.type);
     if (this.type==="singularValue"){
-      newText = parseFloat(newText).toFixed(2) + "°C";
+      newText = parseFloat(newText).toFixed(2) + this.properties.unit;
       this.drawSignText(newText);
     }
     else if (this.type==="boolean"){
+      // console.log("boolean",newText);
       newText = newText ? "Available" : "Occupied";
       this.drawSignText(newText);
     }
