@@ -16,6 +16,12 @@ export class EntityAdapter{
     return null;
   }
 
+  getSpatialUpdateMethod(){
+    if( this.type === "Asset") {
+      return this.rawdata.updateMethodSpatial.value;
+    }
+  }
+
   getRotation() {
     if (this.type === "Asset") {
       if (this.id === "urn:ngsi-ld:Asset:004") {

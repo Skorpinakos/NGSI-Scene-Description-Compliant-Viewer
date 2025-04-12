@@ -4,6 +4,7 @@ import {getLocalOffset} from '../global2local.js';
 import {EntityAdapter} from './entityAdapter.js';
 import {DynamicTextSign} from './dynamicTextSign.js';
 import {AssetData}  from './assetData.js';
+import mqtt from 'mqtt';
 
 export class Asset{
   constructor(data,asset,scene){
@@ -11,8 +12,10 @@ export class Asset{
     this.id=asset;
     this.adapter=new EntityAdapter(asset,data,"Asset");
     this.position=this.adapter.getPosition();
+    this.spatialUpdate=this.adapter.getSpatialUpdateMethod(); 
+    console.log("Update method pos:", this.spatialUpdate);
     this.rotation=this.adapter.getRotation();
-    this.scene=scene
+    this.scene=scene;
     this.refAssetData=this.adapter.getRefAssetData();
     //create the AssetData object here
     
@@ -36,6 +39,10 @@ export class Asset{
     setInterval(() => {
       this.updateObject();
     }, 5000);
+
+    // Set up updates for the object position
+    // this.updateObjectPosition();
+
     // Set up periodic data updates based on the sampling period
     //this will be implemented based on the updateMethod
     // if (this.refupdateSrc && this.refupdateSrc["http"] && this.refupdateSrc["http"]["samplingPeriod"]) {
@@ -237,7 +244,31 @@ export class Asset{
   }
 
   updateObjectPosition(){
+      if (this.spatialUpdate && this.spatialUpdate.mqtt) {
+        const mqttInfo = this.spatialUpdate.mqtt;
+        const client = mqtt.connect(mqttInfo.broker+":"+mqttInfo.port);
 
+        client.on('connect', () => {
+          console.log('MQTT connected for', this.id);
+          client.subscribe(mqttInfo.topic, (err) => {
+        if (err) {
+          console.error('MQTT subscription error:', err);
+        }
+          });
+        });
+
+        client.on('message', (topic, message) => {
+          console.log('MQTT message received:', topic, message.toString());
+        });
+
+        client.on('error', (error) => {
+          console.error('MQTT error:', error);
+        });
+
+        client.on('close', () => {
+          console.warn('MQTT connection closed for', this.id);
+        });
+      }
   }
 
   replaceModel(newModelPath, textures, scale) {

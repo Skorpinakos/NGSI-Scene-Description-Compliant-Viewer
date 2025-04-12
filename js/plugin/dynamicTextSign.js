@@ -90,6 +90,7 @@ export class DynamicTextSign {
   }
 
   updateText(newText) {
+    // console.log("here to update to",newText,this.type);
     if (this.type==="singularValue"){
       newText = parseFloat(newText).toFixed(2) + "°C";
       this.drawSignText(newText);

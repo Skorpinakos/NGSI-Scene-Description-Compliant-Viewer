@@ -50,15 +50,46 @@ export class AssetData{
             this.representations.forEach(representation => {
                 console.log("Representation",representation);
                 if (representation.type === "singularValue") {
-                    let sign = new DynamicTextSign(this.scene, null,"42°C", representation.type,this.parentAsset, { x: 0, y: 0, z: 0 }, { width: 0.5, height: 0.2 });
+                    let sign = new DynamicTextSign(this.scene, null,"42°C", representation,this.parentAsset, { x: 0, y: 0, z: 0 }, { width: 0.5, height: 0.2 });
                     this.dataRepresentations.push(sign);
+                    this.update(sign);
                 }
                 else if (representation.type === "boolean") { //TODO this check of representation.type will be inside the dynamic text sign
-                    let sign1 = new DynamicTextSign(this.scene,null,"Available",representation.type, this.parentAsset, { x: 0, y: 0, z: 0 }, { width: 0.5, height: 0.2 });
+                    let sign1 = new DynamicTextSign(this.scene,null,"Available",representation, this.parentAsset, { x: 0, y: 0, z: 0 }, { width: 0.5, height: 0.2 });
+                    this.dataRepresentations.push(sign1);
                   }
             });
         } else {
             console.error("Representations are not properly defined or not an array.");
+        }
+    }
+
+    update(sign){
+        if (this.updateMethod?.http) {
+            const { url, samplingPeriod } = this.updateMethod.http;
+
+            if (url && samplingPeriod) {
+            setInterval(async () => {
+                try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                const value = await response.json();
+                // console.log("Fetched value:", value);
+
+                // Update the sign with the fetched value
+                if (sign && typeof sign.updateText === "function") {
+                    sign.updateText(value);
+                }
+                // sign.updateText(value);
+                } catch (error) {
+                console.error('Error fetching value:', error);
+                }
+            }, samplingPeriod);
+            } else {
+            console.error("Invalid URL or samplingPeriod in updateMethod.http");
+            }
         }
     }
 
