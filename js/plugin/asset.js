@@ -20,6 +20,11 @@ export class Asset{
     this.refAssetData=this.adapter.getRefAssetData();
     //create the AssetData object here
     
+    this.previousPosition = null;
+    this.targetPosition = null;
+    this.lerpDuration = 500; // milliseconds
+    this.lerpStartTime = null;
+    this.animating = false;
     
     
     // let test= this.assetDataEntities[0].getInfo();
@@ -244,75 +249,113 @@ export class Asset{
     }
   }
 
-  updateObjectPosition(){
-      if (this.spatialUpdate && this.spatialUpdate.mqttwss) {
-        const client = mqtt.connect(this.spatialUpdate.mqttwss.url); // Use your broker URL here
-
-        client.on('connect', () => {
-          console.log('Connected to MQTT over WebSocket');
-
-          // Subscribe to a topic
-          const topic = this.spatialUpdate.mqttwss.topic;
-          client.subscribe(topic, (err) => {
-            if (!err) {
-              console.log('Subscribed to topic:', topic);
-            } else {
-              console.error('Subscription error:', err);
-            }
-          });
+  updateObjectPosition() {
+    if (this.spatialUpdate && this.spatialUpdate.mqttwss) {
+      const client = mqtt.connect(this.spatialUpdate.mqttwss.url);
+  
+      client.on('connect', () => {
+        console.log('Connected to MQTT over WebSocket');
+  
+        const topic = this.spatialUpdate.mqttwss.topic;
+        client.subscribe(topic, (err) => {
+          if (!err) {
+            console.log('Subscribed to topic:', topic);
+          } else {
+            console.error('Subscription error:', err);
+          }
         });
-
-        client.on('message', (topic, message) => {
-          // message is a Buffer
-          console.log(`Received message on ${topic}: ${message.toString()}`);
-            try {
-            const parsedMessage = JSON.parse(message.toString());
-            const vehicleData = parsedMessage.data[0];
-            const lat = vehicleData.location.value.coordinates[1];
-            const lon = vehicleData.location.value.coordinates[0];
-            const speed = vehicleData.speed.value;
-            const angle=vehicleData.angle.value;
-            console.log(`Latitude: ${lat}, Longitude: ${lon}, Speed: ${speed}`);
-
-            // Update the object's position and any other properties here
-            const newPos = [lat, lon, 68];
-            const localPos = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);
-            if (vehicleData.angle !== undefined) {
-              const angleInRadians = angle * (Math.PI / 180); // Convert angle from degrees to radians
-              this.asset.rotation.y = -angleInRadians; // Adjusted to ensure correct rotation direction
+      });
+  
+      client.on('message', (topic, message) => {
+        try {
+          const parsedMessage = JSON.parse(message.toString());
+          const vehicleData = parsedMessage.data[0];
+          const lat = vehicleData.location.value.coordinates[1];
+          const lon = vehicleData.location.value.coordinates[0];
+          const speed = vehicleData.speed.value;
+          const angle = vehicleData.angle.value;
+  
+          const newPos = [lat, lon, 68];
+          const localPos = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);
+  
+          if (this.asset) {
+            // Save old and new position
+            this.previousPosition = this.asset.position.clone();
+            this.targetPosition = localPos;
+            this.lerpStartTime = performance.now();
+            this.animating = true;
+  
+            // Rotate asset immediately if angle is defined
+            if (angle !== undefined) {
+              const angleInRadians = angle * (Math.PI / 180);
+              this.asset.rotation.y = -angleInRadians;
             }
-
-            //THIS IS FOR SUMO BECAUSE IT GIVES THE ANGLES, IF I JUST HAVE THE LOCATION 
-            //LOOK AT THE PREVIOUS FUNCTION WITH THE WS IMPLEMENTATION WHICH CALCULATES THE YAW
-            if (this.asset) {
-              this.asset.position.set(localPos.x, localPos.y, localPos.z);
-               // Update the position of assetDataEntities and their dataRepresentations
-              if (this.assetDataEntities) {
-                this.assetDataEntities.forEach((entity) => {
-                  if (entity.dataRepresentations) {
-                    entity.dataRepresentations.forEach((representation) => {
-                      // Update the position of the representation
-                      representation.updatePosition();
-                      
-                      // Optionally update the text or other properties
-                      if (representation.updateText) {
-                        representation.updateText(`${speed.toFixed(2)}`);
-                      }
-                    });
-                  }
-                });
-              }
+  
+            // Start movement animation if not already running
+            if (!this.animationFrameId) {
+              this.animateMovement();
             }
-            } catch (err) {
-            console.error('Error parsing MQTT message:', err);
+  
+            // Update any associated text displays
+            if (this.assetDataEntities) {
+              this.assetDataEntities.forEach((entity) => {
+                if (entity.dataRepresentations) {
+                  entity.dataRepresentations.forEach((representation) => {
+                    representation.updatePosition(); 
+                    if (representation.updateText) {
+                      representation.updateText(`${speed.toFixed(2)}`);
+                    }
+                  });
+                }
+              });
             }
-        });
-
-        client.on('error', (err) => {
-          console.error('MQTT Error:', err);
-        });
+          }
+        } catch (err) {
+          console.error('Error parsing MQTT message:', err);
+        }
+      });
+  
+      client.on('error', (err) => {
+        console.error('MQTT Error:', err);
+      });
+    }
+  
+    // Animation logic for smooth movement
+    this.animateMovement = () => {
+      if (!this.animating || !this.previousPosition || !this.targetPosition || !this.asset) return;
+  
+      const now = performance.now();
+      const elapsed = now - this.lerpStartTime;
+      const t = Math.min(elapsed / this.lerpDuration, 1); // Clamp t between 0 and 1
+  
+      // Linear interpolation (lerp) between previous and target positions
+      const lerpedPos = {
+        x: this.previousPosition.x + (this.targetPosition.x - this.previousPosition.x) * t,
+        y: this.previousPosition.y + (this.targetPosition.y - this.previousPosition.y) * t,
+        z: this.previousPosition.z + (this.targetPosition.z - this.previousPosition.z) * t
+      };
+  
+      this.asset.position.set(lerpedPos.x, lerpedPos.y, lerpedPos.z);
+      // this.assetDataEntities.forEach((entity) => {
+      //   if (entity.dataRepresentations) {
+      //     entity.dataRepresentations.forEach((representation) => {
+      //       representation.updatePosition(); 
+      //       if (representation.updateText) {
+      //         representation.updateText(`${speed.toFixed(2)}`);
+      //       }
+      //     });
+      //   }
+      // });
+      if (t < 1) {
+        this.animationFrameId = requestAnimationFrame(this.animateMovement);
+      } else {
+        this.animating = false;
+        this.previousPosition = this.targetPosition;
+        this.animationFrameId = null;
       }
+    };
   }
+  
 
   replaceModel(newModelPath, textures, scale) {
     if (!this.objLoader) this.objLoader = new OBJLoader();
