@@ -84,7 +84,7 @@ asset_descriptor_ws = {
             },
             "angles": {
                 "yaw": 90,
-                "pitch": 90,
+                "pitch": 0,
                 "roll": 0
             }
         }
@@ -859,5 +859,5 @@ asset_descriptor_2 = {
 #     create_entity(entity)
 # create_entity(asset_descriptor)
 
-patch_entity("urn:ngsi-ld:SceneDescriptor:001",scene_descriptor)
+patch_entity("urn:ngsi-ld:Asset:001",asset_descriptor_ws)
 # patch_entity("urn:ngsi-ld:Asset:001",asset_descriptor_ws_aircraft_mod)

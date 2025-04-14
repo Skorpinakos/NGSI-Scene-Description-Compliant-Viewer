@@ -242,6 +242,29 @@ export class Asset{
           this.replaceModel(newResourceLinks[0].model, newResourceLinks[0].textures, newResourceLinks[0].scale);
           console.log(`Updated someAttribute to ${newResourceLinks}`);
         }
+        //check if ref AssetData has changed
+        let newRefAssetData=this.newAdapter.getRefAssetData();
+        // console.log("newRefAssetData",newRefAssetData);
+        // console.log("oldRefAssetData",this.refAssetData);
+        if (this.refAssetData && newRefAssetData && JSON.stringify(this.refAssetData) !== JSON.stringify(newRefAssetData)) {
+          this.refAssetData = newRefAssetData;
+          //update the asset data here
+            const oldIds = this.refAssetData || [];
+            const newIds = newRefAssetData || [];
+            
+            // Find IDs that are in newIds but not in oldIds
+            const addedIds = newIds.filter(newId => !oldIds.includes(newId));
+            console.log("addedIds",addedIds);
+            // Create new AssetData entities for the added IDs
+            addedIds.forEach((newId) => {
+              const newAssetDataEntity = new AssetData(newId, this.asset, this.scene);
+              this.assetDataEntities.push(newAssetDataEntity);
+            });
+            
+            // Update this.refAssetData to the new list
+            this.refAssetData = newRefAssetData;
+          console.log(`Updated someAttribute to ${newRefAssetData}`);
+        }
       })
       .catch(error => {
         console.error('Error fetching or updating asset data:', error);
