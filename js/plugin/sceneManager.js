@@ -69,7 +69,7 @@ export class SceneManager {
           .then(
             data => {
               // console.log("hi3")
-              let curr_asset = new Asset(data,asset,this.scene);
+              let curr_asset = new Asset(data,asset,this.scene,this.clientCoordinateSpaceTranslation);
               console.log("testestste",curr_asset);
               this.addAsset(curr_asset);
               // obj.addObjRepr(scene,clientCoordinateSpaceTranslation,(loadedObject) => {

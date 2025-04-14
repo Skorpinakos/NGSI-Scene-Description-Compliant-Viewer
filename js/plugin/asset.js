@@ -7,9 +7,10 @@ import {AssetData}  from './assetData.js';
 import mqtt from 'mqtt';
 
 export class Asset{
-  constructor(data,asset,scene){
+  constructor(data,asset,scene,clientCoordinateSpaceTranslation){
     //not initializing with a scene as we may want to add it in many scenes
     this.id=asset;
+    this.clientCoordinateSpaceTranslation=clientCoordinateSpaceTranslation;
     this.adapter=new EntityAdapter(asset,data,"Asset");
     this.position=this.adapter.getPosition();
     this.spatialUpdate=this.adapter.getSpatialUpdateMethod(); 
@@ -41,7 +42,7 @@ export class Asset{
     }, 5000);
 
     // Set up updates for the object position
-    // this.updateObjectPosition();
+    this.updateObjectPosition();
 
     // Set up periodic data updates based on the sampling period
     //this will be implemented based on the updateMethod
@@ -191,7 +192,7 @@ export class Asset{
               const yaw = Math.atan2(deltaY, deltaX); // radians
     
               // Rotate the car to face direction of movement
-              this.object.rotation.y=yaw -  Math.PI / 2;; // or .y depending on your model orientation
+              this.object.rotation.y=yaw -  Math.PI / 2; // or .y depending on your model orientation
             }
     
             this.prevPosition = newPos; // Save current position for next time
@@ -244,29 +245,71 @@ export class Asset{
   }
 
   updateObjectPosition(){
-      if (this.spatialUpdate && this.spatialUpdate.mqtt) {
-        const mqttInfo = this.spatialUpdate.mqtt;
-        const client = mqtt.connect(mqttInfo.broker+":"+mqttInfo.port);
+      if (this.spatialUpdate && this.spatialUpdate.mqttwss) {
+        const client = mqtt.connect(this.spatialUpdate.mqttwss.url); // Use your broker URL here
 
         client.on('connect', () => {
-          console.log('MQTT connected for', this.id);
-          client.subscribe(mqttInfo.topic, (err) => {
-        if (err) {
-          console.error('MQTT subscription error:', err);
-        }
+          console.log('Connected to MQTT over WebSocket');
+
+          // Subscribe to a topic
+          const topic = this.spatialUpdate.mqttwss.topic;
+          client.subscribe(topic, (err) => {
+            if (!err) {
+              console.log('Subscribed to topic:', topic);
+            } else {
+              console.error('Subscription error:', err);
+            }
           });
         });
 
         client.on('message', (topic, message) => {
-          console.log('MQTT message received:', topic, message.toString());
+          // message is a Buffer
+          console.log(`Received message on ${topic}: ${message.toString()}`);
+            try {
+            const parsedMessage = JSON.parse(message.toString());
+            const vehicleData = parsedMessage.data[0];
+            const lat = vehicleData.location.value.coordinates[1];
+            const lon = vehicleData.location.value.coordinates[0];
+            const speed = vehicleData.speed.value;
+            const angle=vehicleData.angle.value;
+            console.log(`Latitude: ${lat}, Longitude: ${lon}, Speed: ${speed}`);
+
+            // Update the object's position and any other properties here
+            const newPos = [lat, lon, 68];
+            const localPos = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);
+            if (vehicleData.angle !== undefined) {
+              const angleInRadians = angle * (Math.PI / 180); // Convert angle from degrees to radians
+              this.asset.rotation.y = -angleInRadians; // Adjusted to ensure correct rotation direction
+            }
+
+            //THIS IS FOR SUMO BECAUSE IT GIVES THE ANGLES, IF I JUST HAVE THE LOCATION 
+            //LOOK AT THE PREVIOUS FUNCTION WITH THE WS IMPLEMENTATION WHICH CALCULATES THE YAW
+            if (this.asset) {
+              this.asset.position.set(localPos.x, localPos.y, localPos.z);
+               // Update the position of assetDataEntities and their dataRepresentations
+              if (this.assetDataEntities) {
+                this.assetDataEntities.forEach((entity) => {
+                  if (entity.dataRepresentations) {
+                    entity.dataRepresentations.forEach((representation) => {
+                      // Update the position of the representation
+                      representation.updatePosition();
+                      
+                      // Optionally update the text or other properties
+                      if (representation.updateText) {
+                        representation.updateText(`${speed.toFixed(2)}`);
+                      }
+                    });
+                  }
+                });
+              }
+            }
+            } catch (err) {
+            console.error('Error parsing MQTT message:', err);
+            }
         });
 
-        client.on('error', (error) => {
-          console.error('MQTT error:', error);
-        });
-
-        client.on('close', () => {
-          console.warn('MQTT connection closed for', this.id);
+        client.on('error', (err) => {
+          console.error('MQTT Error:', err);
         });
       }
   }

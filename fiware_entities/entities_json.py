@@ -333,19 +333,9 @@ asset_car_descriptor = {
     "updateMethodSpatial":{
         "type": "Property",
         "value": {
-            "mqtt": {
-                "broker": "150.140.186.118",
-                "port": 1883,
-                "topic": "urn:ngsi-ld:AssetData:001"
-            },
-            "http": {
-                "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
-                "method": "GET",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "FIWARE-ServicePath": "/DT/test1"
-                },
-                "samplingPeriod": 1000 #ms
+            "mqttwss": {
+                "url": "wss://labserver.sense-campus.gr:9002",
+                "topic": "Vehicle:veh0"
             }
         }   
     },
