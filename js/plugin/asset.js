@@ -273,17 +273,13 @@ export class Asset{
           const lat = vehicleData.location.value.coordinates[1];
           const lon = vehicleData.location.value.coordinates[0];
           const speed = vehicleData.speed.value;
-          const angle = vehicleData.angle.value;
+          const angle = vehicleData.angle?.value;
   
           const newPos = [lat, lon, 68];
           const localPos = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);
   
           if (this.asset) {
-            // Save old and new position
-            this.previousPosition = this.asset.position.clone();
-            this.targetPosition = localPos;
-            this.lerpStartTime = performance.now();
-            this.animating = true;
+            this.targetPosition = new THREE.Vector3(localPos.x, localPos.y, localPos.z);
   
             // Rotate asset immediately if angle is defined
             if (angle !== undefined) {
@@ -291,17 +287,16 @@ export class Asset{
               this.asset.rotation.y = -angleInRadians;
             }
   
-            // Start movement animation if not already running
+            // Start animation loop if not already running
             if (!this.animationFrameId) {
               this.animateMovement();
             }
   
-            // Update any associated text displays
+            // Update text display (speed, etc.)
             if (this.assetDataEntities) {
               this.assetDataEntities.forEach((entity) => {
                 if (entity.dataRepresentations) {
                   entity.dataRepresentations.forEach((representation) => {
-                    representation.updatePosition(); 
                     if (representation.updateText) {
                       representation.updateText(`${speed.toFixed(2)}`);
                     }
@@ -320,39 +315,37 @@ export class Asset{
       });
     }
   
-    // Animation logic for smooth movement
+    // Smooth movement toward latest position (continuous animation loop)
     this.animateMovement = () => {
-      if (!this.animating || !this.previousPosition || !this.targetPosition || !this.asset) return;
+      if (!this.asset || !this.targetPosition) return;
   
-      const now = performance.now();
-      const elapsed = now - this.lerpStartTime;
-      const t = Math.min(elapsed / this.lerpDuration, 1); // Clamp t between 0 and 1
+      const currentPos = this.asset.position;
+      const distance = currentPos.distanceTo(this.targetPosition);
   
-      // Linear interpolation (lerp) between previous and target positions
-      const lerpedPos = {
-        x: this.previousPosition.x + (this.targetPosition.x - this.previousPosition.x) * t,
-        y: this.previousPosition.y + (this.targetPosition.y - this.previousPosition.y) * t,
-        z: this.previousPosition.z + (this.targetPosition.z - this.previousPosition.z) * t
-      };
+      const speed = 10; // units per second (tweak to fit your scene)
+      const delta = 1 / 60; // simulate 60 FPS
+      const moveDist = speed * delta;
   
-      this.asset.position.set(lerpedPos.x, lerpedPos.y, lerpedPos.z);
-      // this.assetDataEntities.forEach((entity) => {
-      //   if (entity.dataRepresentations) {
-      //     entity.dataRepresentations.forEach((representation) => {
-      //       representation.updatePosition(); 
-      //       if (representation.updateText) {
-      //         representation.updateText(`${speed.toFixed(2)}`);
-      //       }
-      //     });
-      //   }
-      // });
-      if (t < 1) {
-        this.animationFrameId = requestAnimationFrame(this.animateMovement);
-      } else {
-        this.animating = false;
-        this.previousPosition = this.targetPosition;
-        this.animationFrameId = null;
+      // Only move if we haven't reached target yet
+      if (distance > 0.01) {
+        // Lerp toward the target position (proportional step)
+        currentPos.lerp(this.targetPosition, Math.min(moveDist / distance, 1));
+  
+        // Update signs or visual extras
+        if (this.assetDataEntities) {
+          this.assetDataEntities.forEach((entity) => {
+            if (entity.dataRepresentations) {
+              entity.dataRepresentations.forEach((representation) => {
+                if (representation.updatePosition) {
+                  representation.updatePosition();
+                }
+              });
+            }
+          });
+        }
       }
+  
+      this.animationFrameId = requestAnimationFrame(this.animateMovement);
     };
   }
   

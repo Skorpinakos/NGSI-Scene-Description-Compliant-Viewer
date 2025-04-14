@@ -252,6 +252,7 @@ function startAnimationLoop() {
   function animate() {
     animationFrameId = requestAnimationFrame(animate);
     const delta = clock.getDelta();
+    // console.log("DELTA IS",delta);
     const currentTime = clock.elapsedTime;
 
     // Process keyboard movement controls using the scene-specific boundaries
