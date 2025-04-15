@@ -28,9 +28,6 @@ export class SceneManager {
 
   update(delta) {
     this.assets.forEach(obj => {
-      if (typeof obj.update === 'function') {
-        obj.update(delta);
-      }
     });
   }
 

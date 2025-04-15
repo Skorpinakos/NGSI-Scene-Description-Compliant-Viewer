@@ -556,22 +556,22 @@ asset_data_car={
     "type": "AssetData",
     "refSource": {
         "type": "Relationship",
-        "value": ["urn:ngsi-ld:Source:001"]
+        "value": ["Vehicle:veh0"]
     },
     "refValue": {
         "type": "Property",
-        "value": "http://localhost:5000/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value"
+        "value": "http://localhost:5000/v2/entities/Vehicle:veh0/attrs/speed/value"
     },
     "description": {
         "type": "Property",
-        "value": "Temperature dumpy sensor"
+        "value": "Car Speed sensor"
     },
     "valueRepr": {
         "type": "Property",
         "value": [
             {
                 "type": "singularValue",
-                "unit": "km/h",
+                "unit": "m/s",
                 "threshold": {
                     "min": 0,
                     "max": 80
@@ -583,7 +583,7 @@ asset_data_car={
       "type": "Property",
       "value": {
           "http": {
-              "url": "http://localhost:5000/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+              "url": "http://localhost:5000/v2/entities/Vehicle:veh0/attrs/speed/value",
               "method": "GET",
               "headers": {
                   "Content-Type": "application/json"
@@ -628,5 +628,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_car_descriptor)
+create_entity(asset_data_car)
 

@@ -371,6 +371,50 @@ export class Asset{
       this.animationFrameId = requestAnimationFrame(this.animateMovement);
     };
   }
+ 
+  
+  
+  //  updateObjectPosition() {
+  //   if (this.spatialUpdate && this.spatialUpdate.mqttwss) {
+  //     const client = mqtt.connect(this.spatialUpdate.mqttwss.url);
+  
+  //     client.on('connect', () => {
+  //       console.log('Connected to MQTT over WebSocket');
+  
+  //       const topic = this.spatialUpdate.mqttwss.topic;
+  //       client.subscribe(topic, (err) => {
+  //         if (!err) {
+  //           console.log('Subscribed to topic:', topic);
+  //         } else {
+  //           console.error('Subscription error:', err);
+  //         }
+  //       });
+  //     });
+  
+  //     client.on('message', (topic, message) => {
+  //       try {
+  //         const parsedMessage = JSON.parse(message.toString());
+  //         const vehicleData = parsedMessage.data[0];
+  //         const lat = vehicleData.location.value.coordinates[1];
+  //         const lon = vehicleData.location.value.coordinates[0];
+  //         const speed = vehicleData.speed.value;
+  //         const angle = vehicleData.angle?.value;
+  
+  //         const newPos = [lat, lon, 68];
+  //         const localPos = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);
+  //         console.log("Position updated from", this.position, "to", localPos);
+  //         this.position = localPos;
+          
+  //       } catch (err) {
+  //         console.error('Error parsing MQTT message:', err);
+  //       }
+  //     });
+  
+  //     client.on('error', (err) => {
+  //       console.error('MQTT Error:', err);
+  //     });
+  //   }
+  // }
   
 
   replaceModel(newModelPath, textures, scale) {
