@@ -50,12 +50,12 @@ export class AssetData{
             this.representations.forEach(representation => {
                 console.log("Representation",representation);
                 if (representation.type === "singularValue") {
-                    let sign = new DynamicTextSign(this.scene, null,"42°C", representation,this.parentAsset, { x: 0, y: 0, z: 0 }, { width: 0.5, height: 0.2 });
+                    let sign = new DynamicTextSign(this.scene, null,"42°C", representation,this.parentAsset, { x: 0, y: 0, z: 0.5 }, { width: 0.5, height: 0.2 });
                     this.dataRepresentations.push(sign);
                     this.update(sign);
                 }
                 else if (representation.type === "boolean") { //TODO this check of representation.type will be inside the dynamic text sign
-                    let sign1 = new DynamicTextSign(this.scene,null,"Available",representation, this.parentAsset, { x: 0, y: 0, z: 0 }, { width: 0.5, height: 0.2 });
+                    let sign1 = new DynamicTextSign(this.scene,null,"Available",representation, this.parentAsset, { x: 0, y: 0, z: 0.8 }, { width: 0.5, height: 0.2 });
                     this.dataRepresentations.push(sign1);
                     this.update(sign1);
                   }
