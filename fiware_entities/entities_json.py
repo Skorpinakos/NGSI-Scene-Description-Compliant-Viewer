@@ -70,7 +70,11 @@ asset_descriptor = {
                     "model": './virtual_assets/ws/weather_station.obj',
                     "textures": ['./virtual_assets/ws/weather_station.png'],
                     "size": 0.912, #MB
-                    "scale": [0.5, 0.5, 0.5],
+                    "transformation":{
+                        "rotation": [0,0,0], 
+                        "position": [0,0,0],
+                        "scale": [0.5, 0.5, 0.5]
+                    }
                 }
             ]
     },
@@ -226,7 +230,11 @@ asset_descriptor_2 = {
                     "model": './virtual_assets/parking_sensor_draft/parking_sensor_draft.obj',
                     "textures": [''],
                     "size": 9.8, #MB
-                    "scale": [0.5, 0.5, 0.5],
+                    "transformation":{
+                        "orientation": [0,0,0],
+                        "position": [0,0,0],
+                        "scale": [0.5, 0.5, 0.5]
+                    }
                 }
         ]
     },
@@ -311,7 +319,11 @@ asset_car_descriptor = {
                     "model": './virtual_assets/car/audi_car.obj',
                     "textures": [''],
                     "size": 98.6, #MB
-                    "scale": [0.5, 0.5, 0.5],
+                    "transformation":{
+                        "rotation": [0,0,0], 
+                        "position": [0,0,0],
+                        "scale": [0.5, 0.5, 0.5]
+                    }
                 }
         ]
     },
@@ -628,5 +640,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_data_car)
+create_entity(asset_descriptor_2)
 

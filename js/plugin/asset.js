@@ -12,10 +12,11 @@ export class Asset{
     this.id=asset;
     this.clientCoordinateSpaceTranslation=clientCoordinateSpaceTranslation;
     this.adapter=new EntityAdapter(asset,data,"Asset");
-    this.position=this.adapter.getPosition();
+    this.position=this.adapter.getPosition(); //always holds the pos in lat,lon,height
     this.spatialUpdate=this.adapter.getSpatialUpdateMethod(); 
     console.log("Update method pos:", this.spatialUpdate);
     this.rotation=this.adapter.getRotation();
+    this.speed=this.adapter.getSpeed();
     this.scene=scene;
     this.refAssetData=this.adapter.getRefAssetData();
     //create the AssetData object here
@@ -35,7 +36,7 @@ export class Asset{
     this.parent=this.adapter.getParent();
     this.children=this.adapter.getChildren();
     this.refSemantic=this.adapter.getRefSemantic();
-    this.asset=null;
+    this.asset=null; //asset.position has the scene pos
     this.scenePos=null;
     // this.sign=null;
     this.prevPosition=null;
@@ -65,7 +66,7 @@ export class Asset{
     this.objLoader = new OBJLoader();
     this.textureLoader = new THREE.TextureLoader();
     let resource = this.resourceLinks[0]; // Access the first resource
-    console.log("resource scale",resource.scale);
+    // console.log("resource scale",this.id,resource.transformation.scale);
     let model = resource.model; // Extract the model path
     let textures = resource.textures; // Extract the textures array
     
@@ -85,13 +86,13 @@ export class Asset{
       this.scenePos=objSceneCoords;
       asset.position.set(objSceneCoords.x, objSceneCoords.y, objSceneCoords.z);
       console.log('position',objSceneCoords.x, objSceneCoords.y, objSceneCoords.z);
-      asset.scale.set(...resource.scale); // Use the scale from the resource
+      asset.scale.set(...resource.transformation.scale); // Use the scale from the resource
       //convert rptation from deg to rads
       this.rotation[0]=this.rotation[0]*Math.PI/180;
       this.rotation[1]=this.rotation[1]*Math.PI/180;
       this.rotation[2]=this.rotation[2]*Math.PI/180;
       asset.rotation.set(this.rotation[0],this.rotation[1],this.rotation[2]) // Fix rotation references
-      asset.scale.set(...resource.scale);
+      asset.scale.set(...resource.transformation.scale);
       // asset.rotation.y = rotation[0];
       // this.scene.add(asset);
       this.asset=asset;
@@ -272,7 +273,11 @@ export class Asset{
     }
   }
 
-  updateObjectPosition() {
+ 
+ 
+  
+  
+   updateObjectPosition() {
     if (this.spatialUpdate && this.spatialUpdate.mqttwss) {
       const client = mqtt.connect(this.spatialUpdate.mqttwss.url);
   
@@ -299,35 +304,11 @@ export class Asset{
           const angle = vehicleData.angle?.value;
   
           const newPos = [lat, lon, 68];
-          const localPos = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);
-  
-          if (this.asset) {
-            this.targetPosition = new THREE.Vector3(localPos.x, localPos.y, localPos.z);
-  
-            // Rotate asset immediately if angle is defined
-            if (angle !== undefined) {
-              const angleInRadians = angle * (Math.PI / 180);
-              this.asset.rotation.y = -angleInRadians;
-            }
-  
-            // Start animation loop if not already running
-            if (!this.animationFrameId) {
-              this.animateMovement();
-            }
-  
-            // Update text display (speed, etc.)
-            if (this.assetDataEntities) {
-              this.assetDataEntities.forEach((entity) => {
-                if (entity.dataRepresentations) {
-                  entity.dataRepresentations.forEach((representation) => {
-                    if (representation.updateText) {
-                      representation.updateText(`${speed.toFixed(2)}`);
-                    }
-                  });
-                }
-              });
-            }
-          }
+          // const localPosdict = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);
+          // const localPos=[localPosdict.x, localPosdict.y, localPosdict.z];
+          console.log("Position updated from", this.position, "to", newPos);
+          this.position = newPos;
+          
         } catch (err) {
           console.error('Error parsing MQTT message:', err);
         }
@@ -337,86 +318,50 @@ export class Asset{
         console.error('MQTT Error:', err);
       });
     }
+  }
   
-    // Smooth movement toward latest position (continuous animation loop)
-    this.animateMovement = () => {
-      if (!this.asset || !this.targetPosition) return;
+  updateVisualPosition(delta) {
+   
+    if (!this.asset || !this.asset.position || !this.position) return;
+    console.log("UPDATE VISUAL","target",this.position,"current",this.asset.position);
+    const current = this.asset.position;
+    const current_rot= this.asset.rotation;
+    const visualspeed=this.speed*delta/1000;
+    // speed_vector=[x,y,z]
+    //calculate 
+    const target = this.position; 
+    // Convert target position to scene coordinates
+    const sceneTargetdict = getLocalOffset(this.clientCoordinateSpaceTranslation, target);
+    const sceneTarget =[sceneTargetdict.x, sceneTargetdict.y, sceneTargetdict.z];
+
+    // Lerp factor – controls how smooth the movement is
+    const lerpFactor = 0.1; // tweak as needed; 0.1 is smooth but not too slow
+    // Smoothly update position in scene coordinates
+    current.x+= (sceneTarget[0] - current.x) * lerpFactor;
+    current.y+= (sceneTarget[1] - current.y) * lerpFactor;
+    current.z+= (sceneTarget[2] - current.z) * lerpFactor;
   
-      const currentPos = this.asset.position;
-      const distance = currentPos.distanceTo(this.targetPosition);
-  
-      const speed = 10; // units per second (tweak to fit your scene)
-      const delta = 1 / 60; // simulate 60 FPS
-      const moveDist = speed * delta;
-  
-      // Only move if we haven't reached target yet
-      if (distance > 0.01) {
-        // Lerp toward the target position (proportional step)
-        currentPos.lerp(this.targetPosition, Math.min(moveDist / distance, 1));
-  
-        // Update signs or visual extras
-        if (this.assetDataEntities) {
-          this.assetDataEntities.forEach((entity) => {
-            if (entity.dataRepresentations) {
-              entity.dataRepresentations.forEach((representation) => {
-                if (representation.updatePosition) {
-                  representation.updatePosition();
-                }
-              });
+    const deltaX = sceneTarget[0] - current.x;
+    const deltaY = sceneTarget[1] - current.y
+
+    const yaw = Math.atan2(deltaY, deltaX); // radians
+
+    // Rotate the car to face direction of movement
+    this.asset.rotation.y=yaw -  Math.PI / 2; 
+    
+    if (this.assetDataEntities) {
+      this.assetDataEntities.forEach((entity) => {
+        if (entity.dataRepresentations) {
+          entity.dataRepresentations.forEach((representation) => {
+            if (representation.updatePosition) {
+              representation.updatePosition();
             }
           });
         }
-      }
-  
-      this.animationFrameId = requestAnimationFrame(this.animateMovement);
-    };
+      });
+    }
   }
- 
   
-  
-  //  updateObjectPosition() {
-  //   if (this.spatialUpdate && this.spatialUpdate.mqttwss) {
-  //     const client = mqtt.connect(this.spatialUpdate.mqttwss.url);
-  
-  //     client.on('connect', () => {
-  //       console.log('Connected to MQTT over WebSocket');
-  
-  //       const topic = this.spatialUpdate.mqttwss.topic;
-  //       client.subscribe(topic, (err) => {
-  //         if (!err) {
-  //           console.log('Subscribed to topic:', topic);
-  //         } else {
-  //           console.error('Subscription error:', err);
-  //         }
-  //       });
-  //     });
-  
-  //     client.on('message', (topic, message) => {
-  //       try {
-  //         const parsedMessage = JSON.parse(message.toString());
-  //         const vehicleData = parsedMessage.data[0];
-  //         const lat = vehicleData.location.value.coordinates[1];
-  //         const lon = vehicleData.location.value.coordinates[0];
-  //         const speed = vehicleData.speed.value;
-  //         const angle = vehicleData.angle?.value;
-  
-  //         const newPos = [lat, lon, 68];
-  //         const localPos = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);
-  //         console.log("Position updated from", this.position, "to", localPos);
-  //         this.position = localPos;
-          
-  //       } catch (err) {
-  //         console.error('Error parsing MQTT message:', err);
-  //       }
-  //     });
-  
-  //     client.on('error', (err) => {
-  //       console.error('MQTT Error:', err);
-  //     });
-  //   }
-  // }
-  
-
   replaceModel(newModelPath, textures, scale) {
     if (!this.objLoader) this.objLoader = new OBJLoader();
     if (!this.textureLoader) this.textureLoader = new THREE.TextureLoader();

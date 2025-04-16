@@ -16,6 +16,13 @@ export class EntityAdapter{
     return null;
   }
 
+  getSpeed(){
+    if (this.type === "Asset") {
+      return this.rawdata.speed.value.speed;
+    }
+    return null;
+  }
+
   getSpatialUpdateMethod(){
     if( this.type === "Asset") {
       return this.rawdata.updateMethodSpatial.value;

@@ -9,12 +9,13 @@ import {Asset} from './plugin/asset.js';
 
 let cube;
 let cube2;
-
+let sceneManager=null;
+let scene=null;
 // Scene Creation
 export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   //scene will be created based on the scene descriptor and translated to the client coordinate space (dictated by the background chosen)
-  const sceneManager = new SceneManager("urn:ngsi-ld:SceneDescriptor:001",clientCoordinateSpaceTranslation);
-  const scene = sceneManager.getScene();
+  sceneManager = new SceneManager("urn:ngsi-ld:SceneDescriptor:001",clientCoordinateSpaceTranslation);
+  scene = sceneManager.getScene();
   console.log("hi1");
   // Lights
   const lightManager = new LightManager(scene);
@@ -90,14 +91,14 @@ export function createSecondaryScene(clientCoordinateSpaceTranslation) {
 // Update function
 export function updateSecondaryObjects(delta) {
   //debug
-  let cube_speed=0;
+  // let cube_speed=0;
   sceneManager.update(delta);
-  if (cube){
-    cube.rotation.x += 0.01*cube_speed;
-    cube.rotation.y += 0.01*cube_speed;
-  }
-  if (cube2){
-    cube2.rotation.x += 0.01*cube_speed;
-    cube2.rotation.y += 0.01*cube_speed;
-  }
+  // if (cube){
+  //   cube.rotation.x += 0.01*cube_speed;
+  //   cube.rotation.y += 0.01*cube_speed;
+  // }
+  // if (cube2){
+  //   cube2.rotation.x += 0.01*cube_speed;
+  //   cube2.rotation.y += 0.01*cube_speed;
+  // }
 }

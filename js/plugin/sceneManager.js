@@ -11,6 +11,7 @@ export class SceneManager {
     this.refAssets = null;
     this.assets = []; 
     this.buildScene();
+    // setInterval(() => this.update(0), 10000);
   }
 
   addAsset(asset) {
@@ -27,9 +28,14 @@ export class SceneManager {
   }
 
   update(delta) {
-    this.assets.forEach(obj => {
+    this.assets.forEach(asset => {
+      if (asset && asset.asset) {
+        console.log("UPDATE CALLED")
+        asset.updateVisualPosition(delta); 
+      }
     });
   }
+  
 
   getAssets() {
     console.log("getAssets");
