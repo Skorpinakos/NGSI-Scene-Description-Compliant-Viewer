@@ -7,11 +7,7 @@ export class EntityAdapter{
 
   getPosition() {
     if (this.type === "Asset") {
-      if (this.id === "urn:ngsi-ld:Asset:004") {
-        return [this.rawdata.spatialInfo.value.geoPose.position.lat, this.rawdata.spatialInfo.value.geoPose.position.lon, this.rawdata.spatialInfo.value.geoPose.position.h];
-      } else {
         return [this.rawdata.GeoPose.value.position.lat, this.rawdata.GeoPose.value.position.lon, this.rawdata.GeoPose.value.position.h];
-      }
     }
     return null;
   }
@@ -37,6 +33,7 @@ export class EntityAdapter{
 
   getRotation() {
     if (this.type === "Asset") {
+      console.log("WTF",this.id,this.rawdata.resourceLink)
       return [this.rawdata.resourceLink.value[0].transformation.rotation[0], this.rawdata.resourceLink.value[0].transformation.rotation[1], this.rawdata.resourceLink.value[0].transformation.rotation[2]];
     }
     return null;

@@ -30,7 +30,7 @@ export class SceneManager {
   update(delta) {
     this.assets.forEach(asset => {
       if (asset && asset.asset) {
-        console.log("UPDATE CALLED")
+        // console.log("UPDATE CALLED")
         asset.updateVisualPosition(delta); 
       }
     });

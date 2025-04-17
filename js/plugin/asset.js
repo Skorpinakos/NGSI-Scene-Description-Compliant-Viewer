@@ -70,7 +70,7 @@ export class Asset{
     // console.log("resource scale",this.id,resource.transformation.scale);
     let model = resource.model; // Extract the model path
     let textures = resource.textures; // Extract the textures array
-    
+   
     this.objLoader.load(model, (asset) => {
       asset.traverse((child) => {
         if (child.isMesh) {
@@ -89,6 +89,7 @@ export class Asset{
       console.log('position',objSceneCoords.x, objSceneCoords.y, objSceneCoords.z);
       asset.scale.set(...resource.transformation.scale); // Use the scale from the resource
       //convert rptation from deg to rads
+      console.log(this.id,"rotation",this.rotation);
       this.rotation[0]=this.rotation[0]*Math.PI/180;
       this.rotation[1]=this.rotation[1]*Math.PI/180;
       this.rotation[2]=this.rotation[2]*Math.PI/180;
@@ -265,7 +266,7 @@ export class Asset{
   updateVisualPosition(delta) {
    
     if (!this.asset || !this.asset.position || !this.position) return;
-    console.log("UPDATE VISUAL","target",this.position,"current",this.asset.position);
+    // console.log("UPDATE VISUAL","target",this.position,"current",this.asset.position);
     const current = this.asset.position;
     const current_rot= this.asset.rotation;
     const visualspeed=this.speed*delta/1000;

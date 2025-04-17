@@ -382,6 +382,85 @@ asset_car_descriptor = {
 }
 
 
+asset_touareg_descriptor = {
+    "id": "urn:ngsi-ld:Asset:004",
+    "type": "Asset",
+    "refAssetData": {
+        "type": "Relationship",
+        "value": ["urn:ngsi-ld:AssetData:004"]
+    },
+    "resourceLink": {
+        "type": "Property",
+        "value": [
+                {
+                    "type": "Mesh",
+                    "format": "obj",
+                    "model": './virtual_assets/car_vw/Touareg.obj',
+                    "textures": [''],
+                    "size": 98.6, #MB
+                    "transformation":{
+                        "rotation": [90,0,0], #pitch, yaw, roll , MAYBE HERE NEED TO SPECIFY THAT IT SHOULD ALIGN WITH THE NORTH
+                        "position": [0,0,0],
+                        "scale": [0.5, 0.5, 0.5]
+                    }
+                }
+        ]
+    },
+    "GeoPose":{
+        "type": "Property",
+        "value": {
+            "position": {
+                "lat": 38.287829, 
+                "lon":  21.787812,
+                "h": 68
+            },
+            "angles": {
+                "yaw": 0,
+                "pitch": 0,
+                "roll": 0
+            }
+        }
+    },
+    "updateMethodSpatial":{
+        "type": "Property",
+        "value": {
+            "mqttwss": {
+                "url": "wss://labserver.sense-campus.gr:9002",
+                "topic": "test"
+            }
+        }   
+    },
+    "speed":{
+       "type": "Property",
+        "value": {
+              "speed": 0.5,
+              "unit": "m/s"
+         }       
+   },
+  "refSemanticRepresentation": {
+    "type": "Relationship",
+    "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
+  },
+  "refParent": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Asset:000"
+  },
+    "refChildren": {
+        "type": "Relationship",
+        "value": [
+        ]
+    },
+    "relOffset": {
+        "type": "Property",
+        "value": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    }
+}
+
+
 background_descriptor={
     "id": "urn:ngsi-ld:Bg:001",
     "type": "Background",
@@ -640,5 +719,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_car_descriptor)
+create_entity(asset_touareg_descriptor)
 
