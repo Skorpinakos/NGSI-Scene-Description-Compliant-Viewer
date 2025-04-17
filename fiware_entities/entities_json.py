@@ -71,7 +71,7 @@ asset_descriptor = {
                     "textures": ['./virtual_assets/ws/weather_station.png'],
                     "size": 0.912, #MB
                     "transformation":{
-                        "rotation": [0,0,0], 
+                        "rotation": [90,0,0], 
                         "position": [0,0,0],
                         "scale": [0.5, 0.5, 0.5]
                     }
@@ -320,7 +320,7 @@ asset_car_descriptor = {
                     "textures": [''],
                     "size": 98.6, #MB
                     "transformation":{
-                        "rotation": [0,0,0], 
+                        "rotation": [90,0,0], #pitch, yaw, roll , MAYBE HERE NEED TO SPECIFY THAT IT SHOULD ALIGN WITH THE NORTH
                         "position": [0,0,0],
                         "scale": [0.5, 0.5, 0.5]
                     }
@@ -336,8 +336,8 @@ asset_car_descriptor = {
                 "h": 68
             },
             "angles": {
-                "yaw": 90,
-                "pitch": 90,
+                "yaw": 0,
+                "pitch": 0,
                 "roll": 0
             }
         }
@@ -640,5 +640,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_descriptor_2)
+create_entity(asset_car_descriptor)
 

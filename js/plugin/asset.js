@@ -16,6 +16,7 @@ export class Asset{
     this.spatialUpdate=this.adapter.getSpatialUpdateMethod(); 
     console.log("Update method pos:", this.spatialUpdate);
     this.rotation=this.adapter.getRotation();
+    this.orientation=this.adapter.getAngle();
     this.speed=this.adapter.getSpeed();
     this.scene=scene;
     this.refAssetData=this.adapter.getRefAssetData();
@@ -160,67 +161,7 @@ export class Asset{
     }
   }
 
-  startWSPositionUpdates(clientCoordinateSpaceTranslation) {
-    // const spatialInfo = this.refAssetData ? this.spatialInfo : null;
-    console.log("spatialInfo",this.id,this.spatialInfo);
-    const wsInfo = this.spatialInfo.updateMethod.ws;
-    // wsInfo.url="ws://localhost:6789/"
-    if (!wsInfo || !wsInfo.url) {
-      console.warn("No WebSocket URL found for position updates.");
-      return;
-    }
-  
-    const ws = new WebSocket(wsInfo.url);
-  
-    ws.onopen = () => {
-      console.log("WebSocket connected for", this.id);
-    };
-  
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-    
-        if (data.lat !== undefined && data.lon !== undefined) {
-          const newPos = [data.lat, data.lon, 68  ];
-    
-          const localPos = getLocalOffset(clientCoordinateSpaceTranslation, newPos);
-    
-          if (this.object) {
-            // Update position
-            this.object.position.set(localPos.x, localPos.y, localPos.z);
-    
-            // Calculate yaw (only if there's a previous position to compare)
-            if (this.prevPosition) {
-              const prevLocal = getLocalOffset(clientCoordinateSpaceTranslation, this.prevPosition);
-              const deltaX = localPos.x - prevLocal.x;
-              const deltaY = localPos.y - prevLocal.y;
-    
-              const yaw = Math.atan2(deltaY, deltaX); // radians
-    
-              // Rotate the car to face direction of movement
-              this.object.rotation.y=yaw -  Math.PI / 2; // or .y depending on your model orientation
-            }
-    
-            this.prevPosition = newPos; // Save current position for next time
-    
-            if (this.sign) this.sign.updatePosition();
-          }
-        }
-      } catch (err) {
-        console.error("WebSocket message parse error:", err);
-      }
-    };
-    
-  
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-  
-    ws.onclose = () => {
-      console.warn("WebSocket closed for", this.id);
-    };
-  }
-
+ 
   //TODO based on the Scene Descriptor/ Object Descriptor I will update the object here
   updateObject(){
     if (this.id) {
@@ -273,10 +214,7 @@ export class Asset{
     }
   }
 
- 
- 
-  
-  
+
    updateObjectPosition() {
     if (this.spatialUpdate && this.spatialUpdate.mqttwss) {
       const client = mqtt.connect(this.spatialUpdate.mqttwss.url);
@@ -308,6 +246,10 @@ export class Asset{
           // const localPos=[localPosdict.x, localPosdict.y, localPosdict.z];
           console.log("Position updated from", this.position, "to", newPos);
           this.position = newPos;
+          this.speed = speed;
+          console.log("Orientation updated from", this.orientation, "to", angle);
+          this.orientation[1] = angle;
+          
           
         } catch (err) {
           console.error('Error parsing MQTT message:', err);
@@ -341,14 +283,21 @@ export class Asset{
     current.y+= (sceneTarget[1] - current.y) * lerpFactor;
     current.z+= (sceneTarget[2] - current.z) * lerpFactor;
   
-    const deltaX = sceneTarget[0] - current.x;
-    const deltaY = sceneTarget[1] - current.y
+    // Smoothly update rotation in scene coordinates
+    const targetRotation = this.orientation[1] * Math.PI / 180; // Convert to radians
+    const rotationLerpFactor = 0.1; // tweak as needed; 0.1 is smooth but not too slow
+    const adjustedOrientation = targetRotation - this.rotation[1]; // Adjust for alignment with north
+    current_rot.y += (-adjustedOrientation - current_rot.y) * rotationLerpFactor;
+    // //This is when we got no rotation data, then simply calculate it from the lat lon dif
+    // const deltaX = sceneTarget[0] - current.x;
+    // const deltaY = sceneTarget[1] - current.y
 
-    const yaw = Math.atan2(deltaY, deltaX); // radians
+    // const yaw = Math.atan2(deltaY, deltaX); // radians
 
-    // Rotate the car to face direction of movement
-    this.asset.rotation.y=yaw -  Math.PI / 2; 
-    
+    // // Rotate the car to face direction of movement
+    // this.asset.rotation.y=yaw -  Math.PI / 2; 
+    // //////////////////////////////////////////////////////////////////
+
     if (this.assetDataEntities) {
       this.assetDataEntities.forEach((entity) => {
         if (entity.dataRepresentations) {

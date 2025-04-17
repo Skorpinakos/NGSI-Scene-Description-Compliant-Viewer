@@ -16,6 +16,12 @@ export class EntityAdapter{
     return null;
   }
 
+  getAngle(){
+    if (this.type === "Asset") {
+      return [this.rawdata.GeoPose.value.angles.pitch,this.rawdata.GeoPose.value.angles.yaw,this.rawdata.GeoPose.value.angles.roll];
+    }
+    return null;
+  }
   getSpeed(){
     if (this.type === "Asset") {
       return this.rawdata.speed.value.speed;
@@ -31,11 +37,7 @@ export class EntityAdapter{
 
   getRotation() {
     if (this.type === "Asset") {
-      if (this.id === "urn:ngsi-ld:Asset:004") {
-        return [this.rawdata.spatialInfo.value.geoPose.angles.yaw, this.rawdata.spatialInfo.value.geoPose.angles.pitch, this.rawdata.spatialInfo.value.geoPose.angles.roll];
-      } else {
-        return [this.rawdata.GeoPose.value.angles.yaw, this.rawdata.GeoPose.value.angles.pitch, this.rawdata.GeoPose.value.angles.roll];
-      }
+      return [this.rawdata.resourceLink.value[0].transformation.rotation[0], this.rawdata.resourceLink.value[0].transformation.rotation[1], this.rawdata.resourceLink.value[0].transformation.rotation[2]];
     }
     return null;
   }
