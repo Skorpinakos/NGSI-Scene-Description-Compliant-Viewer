@@ -1,0 +1,898 @@
+[
+    {
+        "id": "urn:ngsi-ld:SceneDescriptor:001",
+        "type": "SceneDescriptor",
+        "refAssets": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:Asset:001",
+                "urn:ngsi-ld:Asset:002",
+                "urn:ngsi-ld:Asset:003",
+                "urn:ngsi-ld:Asset:004"
+            ],
+            "metadata": {}
+        },
+        "refBackground": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:Bg:001"
+            ],
+            "metadata": {}
+        },
+        "refSemanticLayers": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:SemanticLayer:001"
+            ],
+            "metadata": {}
+        },
+        "sceneSpace": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                    [
+                        [
+                            [
+                                4.85,
+                                45.76
+                            ],
+                            [
+                                4.86,
+                                45.76
+                            ],
+                            [
+                                4.86,
+                                45.77
+                            ],
+                            [
+                                4.85,
+                                45.77
+                            ],
+                            [
+                                4.85,
+                                45.76
+                            ]
+                        ]
+                    ],
+                    [
+                        [
+                            [
+                                4.85,
+                                45.76
+                            ],
+                            [
+                                4.86,
+                                45.76
+                            ],
+                            [
+                                4.86,
+                                45.77
+                            ],
+                            [
+                                4.85,
+                                45.77
+                            ],
+                            [
+                                4.85,
+                                45.76
+                            ]
+                        ]
+                    ]
+                ]
+            },
+            "metadata": {}
+        },
+        "transformation": {
+            "type": "Property",
+            "value": {
+                "position": [
+                    1,
+                    1,
+                    1
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "scale": [
+                    1,
+                    1,
+                    1
+                ]
+            },
+            "metadata": {}
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Source:001",
+        "type": "TempSensor",
+        "location": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "Point",
+                "coordinates": [
+                    38.245258,
+                    21.73186
+                ]
+            },
+            "metadata": {}
+        },
+        "temperature": {
+            "type": "Property",
+            "value": 22.856713674,
+            "metadata": {}
+        },
+        "timestamp": {
+            "type": "DateTime",
+            "value": "2025-04-15T21:13:49.928Z",
+            "metadata": {}
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:AssetData:001",
+        "type": "AssetData",
+        "description": {
+            "type": "Property",
+            "value": "Temperature dumpy sensor",
+            "metadata": {}
+        },
+        "refSource": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:Source:001"
+            ],
+            "metadata": {}
+        },
+        "refValue": {
+            "type": "Property",
+            "value": "http://localhost:5000/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+            "metadata": {}
+        },
+        "updateMethod": {
+            "type": "Property",
+            "value": {
+                "http": {
+                    "url": "http://localhost:5000/v2/entities/urn:ngsi-ld:Source:001/attrs/temperature/value",
+                    "method": "GET",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "samplingPeriod": 1000
+                },
+                "mqtt": {
+                    "broker": "150.140.186.118",
+                    "port": 1883,
+                    "topic": "urn:ngsi-ld:Source:001"
+                },
+                "ws": {
+                    "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    }
+                }
+            },
+            "metadata": {}
+        },
+        "valueRepr": {
+            "type": "Property",
+            "value": [
+                {
+                    "type": "singularValue",
+                    "unit": "°C",
+                    "threshold": {
+                        "min": 0,
+                        "max": 40
+                    }
+                }
+            ],
+            "metadata": {}
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:AssetData:002",
+        "type": "AssetData",
+        "description": {
+            "type": "Property",
+            "value": "Temperature dumpy sensor",
+            "metadata": {}
+        },
+        "refSource": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:Source:002"
+            ],
+            "metadata": {}
+        },
+        "refValue": {
+            "type": "Property",
+            "value": "http://localhost:5000/v2/entities/uni_parking_001/attrs/status/value",
+            "metadata": {}
+        },
+        "updateMethod": {
+            "type": "Property",
+            "value": {
+                "http": {
+                    "url": "http://localhost:5000/v2/entities/uni_parking_001/attrs/status/value",
+                    "method": "GET",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "samplingPeriod": 1000
+                },
+                "mqtt": {
+                    "broker": "150.140.186.118",
+                    "port": 1883,
+                    "topic": "urn:ngsi-ld:Source:001"
+                },
+                "ws": {
+                    "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    }
+                }
+            },
+            "metadata": {}
+        },
+        "valueRepr": {
+            "type": "Property",
+            "value": [
+                {
+                    "type": "boolean",
+                    "states": {
+                        "occupied": false
+                    }
+                }
+            ],
+            "metadata": {}
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:AssetData:003",
+        "type": "AssetData",
+        "description": {
+            "type": "Property",
+            "value": "Car Speed sensor",
+            "metadata": {}
+        },
+        "refSource": {
+            "type": "Relationship",
+            "value": [
+                "Vehicle:veh0"
+            ],
+            "metadata": {}
+        },
+        "refValue": {
+            "type": "Property",
+            "value": "http://localhost:5000/v2/entities/Vehicle:veh0/attrs/speed/value",
+            "metadata": {}
+        },
+        "updateMethod": {
+            "type": "Property",
+            "value": {
+                "http": {
+                    "url": "http://localhost:5000/v2/entities/Vehicle:veh0/attrs/speed/value",
+                    "method": "GET",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "samplingPeriod": 1000
+                },
+                "mqtt": {
+                    "broker": "150.140.186.118",
+                    "port": 1883,
+                    "topic": "urn:ngsi-ld:Source:001"
+                },
+                "ws": {
+                    "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    }
+                }
+            },
+            "metadata": {}
+        },
+        "valueRepr": {
+            "type": "Property",
+            "value": [
+                {
+                    "type": "singularValue",
+                    "unit": "m/s",
+                    "threshold": {
+                        "min": 0,
+                        "max": 80
+                    }
+                }
+            ],
+            "metadata": {}
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Asset:002",
+        "type": "Asset",
+        "GeoPose": {
+            "type": "Property",
+            "value": {
+                "position": {
+                    "lat": 38.287813,
+                    "lon": 21.788504,
+                    "h": 68.4
+                },
+                "angles": {
+                    "yaw": 0,
+                    "pitch": 0,
+                    "roll": 0
+                }
+            },
+            "metadata": {}
+        },
+        "refAssetData": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:AssetData:002"
+            ],
+            "metadata": {}
+        },
+        "refChildren": {
+            "type": "Relationship",
+            "value": [],
+            "metadata": {}
+        },
+        "refParent": {
+            "type": "Relationship",
+            "value": "urn:ngsi-ld:Asset:000",
+            "metadata": {}
+        },
+        "refSemanticRepresentation": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:SemanticRepresentation:001"
+            ],
+            "metadata": {}
+        },
+        "resourceLink": {
+            "type": "Property",
+            "value": [
+                {
+                    "type": "Mesh",
+                    "format": "obj",
+                    "model": "./virtual_assets/parking_sensor_draft/parking_sensor_draft.obj",
+                    "textures": [
+                        "./virtual_assets/parking_sensor_draft/parking_sensor_draft.png"
+                    ],
+                    "size": 9.8,
+                    "transformation": {
+                        "rotation": [
+                            0,
+                            180,
+                            0
+                        ],
+                        "position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            0.1,
+                            0.1,
+                            0.1
+                        ]
+                    }
+                }
+            ],
+            "metadata": {}
+        },
+        "speed": {
+            "type": "Property",
+            "value": {
+                "speed": 0.5,
+                "unit": "m/s"
+            },
+            "metadata": {}
+        },
+        "updateMethod": {
+            "type": "Property",
+            "value": {
+                "http": {
+                    "url": "http://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                    "method": "GET",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "samplingPeriod": 1000
+                },
+                "mqtt": {
+                    "broker": "150.140.186.118",
+                    "port": 1883,
+                    "topic": "urn:ngsi-ld:AssetData:001"
+                },
+                "ws": {
+                    "url": "ws://labserver.sense-campus.gr:1026/v2/entities/urn:ngsi-ld:Source:001/attrs/location/value",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    }
+                }
+            },
+            "metadata": {}
+        },
+        "updateMethodSpatial": {
+            "type": "Property",
+            "value": {
+                "mqtt": {
+                    "broker": "150.140.186.118",
+                    "port": 1883,
+                    "topic": "urn:ngsi-ld:AssetData:002"
+                }
+            },
+            "metadata": {}
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Asset:001",
+        "type": "Asset",
+        "GeoPose": {
+            "type": "Property",
+            "value": {
+                "position": {
+                    "lat": 38.287829,
+                    "lon": 21.787812,
+                    "h": 68.5
+                },
+                "angles": {
+                    "yaw": 90,
+                    "pitch": 0,
+                    "roll": 0
+                }
+            },
+            "metadata": {}
+        },
+        "refAssetData": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:AssetData:001"
+            ],
+            "metadata": {}
+        },
+        "refChildren": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:Asset:002"
+            ],
+            "metadata": {}
+        },
+        "refParent": {
+            "type": "Relationship",
+            "value": "urn:ngsi-ld:Asset:000",
+            "metadata": {}
+        },
+        "refSemanticRepresentation": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:SemanticRepresentation:001"
+            ],
+            "metadata": {}
+        },
+        "relOffset": {
+            "type": "Property",
+            "value": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "metadata": {}
+        },
+        "resourceLink": {
+            "type": "Property",
+            "value": [
+                {
+                    "type": "Mesh",
+                    "format": "obj",
+                    "model": "./virtual_assets/ws/weather_station.obj",
+                    "textures": [
+                        "./virtual_assets/ws/weather_station.png"
+                    ],
+                    "size": 0.912,
+                    "transformation": {
+                        "rotation": [
+                            90,
+                            0,
+                            0
+                        ],
+                        "position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            0.5,
+                            0.5,
+                            0.5
+                        ]
+                    }
+                }
+            ],
+            "metadata": {}
+        },
+        "speed": {
+            "type": "Property",
+            "value": {
+                "speed": 0.5,
+                "unit": "m/s"
+            },
+            "metadata": {}
+        },
+        "updateMethodSpatial": {
+            "type": "Property",
+            "value": {
+                "mqtt": {
+                    "broker": "150.140.186.118",
+                    "port": 1883,
+                    "topic": "urn:ngsi-ld:AssetData:001"
+                }
+            },
+            "metadata": {}
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Asset:003",
+        "type": "Asset",
+        "GeoPose": {
+            "type": "Property",
+            "value": {
+                "position": {
+                    "lat": 38.287829,
+                    "lon": 21.787812,
+                    "h": 68
+                },
+                "angles": {
+                    "yaw": 0,
+                    "pitch": 0,
+                    "roll": 0
+                }
+            },
+            "metadata": {}
+        },
+        "refAssetData": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:AssetData:003"
+            ],
+            "metadata": {}
+        },
+        "refChildren": {
+            "type": "Relationship",
+            "value": [],
+            "metadata": {}
+        },
+        "refParent": {
+            "type": "Relationship",
+            "value": "urn:ngsi-ld:Asset:000",
+            "metadata": {}
+        },
+        "refSemanticRepresentation": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:SemanticRepresentation:001"
+            ],
+            "metadata": {}
+        },
+        "relOffset": {
+            "type": "Property",
+            "value": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "metadata": {}
+        },
+        "resourceLink": {
+            "type": "Property",
+            "value": [
+                {
+                    "type": "Mesh",
+                    "format": "obj",
+                    "model": "./virtual_assets/car/audi_car.obj",
+                    "textures": [
+                        ""
+                    ],
+                    "size": 98.6,
+                    "transformation": {
+                        "rotation": [
+                            90,
+                            0,
+                            0
+                        ],
+                        "position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            0.5,
+                            0.5,
+                            0.5
+                        ]
+                    }
+                }
+            ],
+            "metadata": {}
+        },
+        "speed": {
+            "type": "Property",
+            "value": {
+                "speed": 0.5,
+                "unit": "m/s"
+            },
+            "metadata": {}
+        },
+        "updateMethodSpatial": {
+            "type": "Property",
+            "value": {
+                "mqttwss": {
+                    "url": "wss://labserver.sense-campus.gr:9002",
+                    "topic": "Vehicle:veh0"
+                }
+            },
+            "metadata": {}
+        }
+    },
+    {
+        "id": "urn:ngsi-ld:Asset:004",
+        "type": "Asset",
+        "GeoPose": {
+            "type": "Property",
+            "value": {
+                "position": {
+                    "lat": 38.287813,
+                    "lon": 21.788504,
+                    "h": 68.2
+                },
+                "angles": {
+                    "yaw": 0,
+                    "pitch": 0,
+                    "roll": 0
+                }
+            },
+            "metadata": {}
+        },
+        "refAssetData": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:AssetData:004"
+            ],
+            "metadata": {}
+        },
+        "refChildren": {
+            "type": "Relationship",
+            "value": [],
+            "metadata": {}
+        },
+        "refParent": {
+            "type": "Relationship",
+            "value": "urn:ngsi-ld:Asset:000",
+            "metadata": {}
+        },
+        "refSemanticRepresentation": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:SemanticRepresentation:001"
+            ],
+            "metadata": {}
+        },
+        "relOffset": {
+            "type": "Property",
+            "value": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "metadata": {}
+        },
+        "resourceLink": {
+            "type": "Property",
+            "value": [
+                {
+                    "type": "Mesh",
+                    "format": "obj",
+                    "model": "./virtual_assets/car/audi_car.obj",
+                    "textures": [
+                        ""
+                    ],
+                    "size": 98.6,
+                    "transformation": {
+                        "rotation": [
+                            90,
+                            0,
+                            0
+                        ],
+                        "position": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "scale": [
+                            0.5,
+                            0.5,
+                            0.5
+                        ]
+                    }
+                }
+            ],
+            "metadata": {}
+        },
+        "speed": {
+            "type": "Property",
+            "value": {
+                "speed": 0.5,
+                "unit": "m/s"
+            },
+            "metadata": {}
+        },
+        "updateMethodSpatial": {
+            "type": "Property",
+            "value": {
+                "mqttwss": {
+                    "url": "wss://labserver.sense-campus.gr:9002",
+                    "topic": "test"
+                }
+            },
+            "metadata": {}
+        }
+    },
+    {
+        "id": "GPSTracker:tracker0",
+        "type": "GPSTracker",
+        "GeoPose": {
+            "type": "Property",
+            "value": {
+                "position": {
+                    "lat": 0,
+                    "lon": 0,
+                    "h": 0
+                },
+                "angles": {
+                    "yaw": 2.66644,
+                    "pitch": -0.75764,
+                    "roll": 14.48112
+                }
+            },
+            "metadata": {}
+        },
+        "rawtime": {
+            "type": "Property",
+            "value": 1744913346893,
+            "metadata": {}
+        },
+        "speed": {
+            "type": "Number",
+            "value": 0,
+            "metadata": {}
+        },
+        "timestamp": {
+            "type": "DateTime",
+            "value": "2025-04-17T18:09:07.000Z",
+            "metadata": {}
+        },
+        "trackerid": {
+            "type": "String",
+            "value": "test",
+            "metadata": {}
+        }
+    },
+    {
+        "id": "test",
+        "type": "GPSTracker",
+        "GeoPose": {
+            "type": "Property",
+            "value": {
+                "position": {
+                    "lat": 38.30548,
+                    "lon": 21.79206,
+                    "h": 40.6
+                },
+                "angles": {
+                    "yaw": -1.55422,
+                    "pitch": 0.61572,
+                    "roll": 26.29721
+                }
+            },
+            "metadata": {}
+        },
+        "rawtime": {
+            "type": "Property",
+            "value": 1744974932585,
+            "metadata": {}
+        },
+        "speed": {
+            "type": "Number",
+            "value": 0,
+            "metadata": {}
+        },
+        "timestamp": {
+            "type": "DateTime",
+            "value": "2025-04-18T11:15:33.000Z",
+            "metadata": {}
+        }
+    },
+    {
+        "id": "Vehicle:veh1",
+        "type": "SumoVehicle",
+        "GeoPose": {
+            "type": "Property",
+            "value": {
+                "position": {
+                    "lat": 38.287821241,
+                    "lon": 21.787705075,
+                    "h": 68.2
+                },
+                "angles": {
+                    "yaw": 269.523609545,
+                    "pitch": 0,
+                    "roll": 0
+                }
+            },
+            "metadata": {}
+        },
+        "acceleration": {
+            "type": "Number",
+            "value": 1.136196184,
+            "metadata": {}
+        },
+        "angle": {
+            "type": "Number",
+            "value": 0,
+            "metadata": {}
+        },
+        "speed": {
+            "type": "Number",
+            "value": 5.62689312,
+            "metadata": {}
+        },
+        "timestamp": {
+            "type": "DateTime",
+            "value": "2025-04-18T16:36:37.000Z",
+            "metadata": {}
+        }
+    },
+    {
+        "id": "Vehicle:veh0",
+        "type": "SumoVehicle",
+        "GeoPose": {
+            "type": "Property",
+            "value": {
+                "position": {
+                    "lat": 38.287663227,
+                    "lon": 21.787566049,
+                    "h": 68.2
+                },
+                "angles": {
+                    "yaw": 179.340768031,
+                    "pitch": 0,
+                    "roll": 0
+                }
+            },
+            "metadata": {}
+        },
+        "acceleration": {
+            "type": "Number",
+            "value": -0.707947764,
+            "metadata": {}
+        },
+        "angle": {
+            "type": "Number",
+            "value": 0,
+            "metadata": {}
+        },
+        "speed": {
+            "type": "Number",
+            "value": 4.690194881,
+            "metadata": {}
+        },
+        "timestamp": {
+            "type": "DateTime",
+            "value": "2025-04-18T17:12:54.000Z",
+            "metadata": {}
+        }
+    }
+]
