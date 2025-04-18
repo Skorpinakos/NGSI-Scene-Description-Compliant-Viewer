@@ -235,12 +235,14 @@ export class Asset{
   
       client.on('message', (topic, message) => {
         try {
+          console.log(this.id,"MQTT message received:");
           const parsedMessage = JSON.parse(message.toString());
           const vehicleData = parsedMessage.data[0];
-          const lat = vehicleData.location.value.coordinates[1];
-          const lon = vehicleData.location.value.coordinates[0];
+          console.log("vehicleData",vehicleData);
+          const lat = vehicleData.GeoPose.value.position.lat;
+          const lon = vehicleData.GeoPose.value.position.lon;
           const speed = vehicleData.speed.value;
-          const angle = vehicleData.angle?.value;
+          const angle = vehicleData.GeoPose.value.angles.yaw;
   
           const newPos = [lat, lon, 68];
           // const localPosdict = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);

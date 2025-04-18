@@ -12,13 +12,21 @@ headers={
 create_payload = {
     "id": "Vehicle:veh0",
     "type": "SumoVehicle",
-    "location": {
-        "type": "geo:json",
+    "GeoPose":{
+        "type": "Property",
         "value": {
-            "type": "Point",
-            "coordinates": [0.0, 0.0]
+            "position": {
+                "lat": 38.287813, 
+                "lon":  21.788504,
+                "h": 68.2
+            },
+            "angles": {
+                "yaw": 0,
+                "pitch": 0,
+                "roll": 0
+            }
         }
-    },
+        },
     "speed": {"type": "Number", "value": 0.0},
     "acceleration": {"type": "Number", "value": 0.0},
     "angle": {"type": "Number", "value": 0.0},
@@ -42,29 +50,27 @@ def create_entity(data):
 
 def build_patch_payload(lat, lon, speed, accel, angle):
     payload = {
-        "location": {
-            "type": "geo:json",
-            "value": {
-                "type": "Point",
-                "coordinates": [lon, lat]
+        "GeoPose":{
+        "type": "Property",
+        "value": {
+            "position": {
+                "lat": lat, 
+                "lon":  lon,
+                "h": 68.2
+            },
+            "angles": {
+                "yaw": angle,
+                "pitch": 0,
+                "roll": 0
             }
-        },
-        "speed": {
-            "type": "Number",
-            "value": speed
-        },
-        "acceleration": {
-            "type": "Number",
-            "value": accel
-        },
-        "angle": {
-            "type": "Number",
-            "value": angle
-        },
-        "timestamp": {
-            "type": "DateTime",
-            "value": datetime.utcnow().isoformat(timespec="seconds") + "Z"
         }
+        },
+    "speed": {"type": "Number", "value": speed},
+    "acceleration": {"type": "Number", "value": accel},
+    "timestamp": {
+        "type": "DateTime",
+        "value": datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    }
     }
     return payload
 
@@ -78,6 +84,6 @@ def patch_entity(id,data):
         print(response.json())
         return 1
     
-# # create_entity(create_payload)
+create_entity(create_payload)
 # data=build_patch_payload(38.287821244,21.787692352,0.0,0.0,0.0)
 # patch_entity("Vehicle:veh0",data)
