@@ -4,7 +4,7 @@ import busio
 import adafruit_bno055
 import requests
 from datetime import datetime
-
+from getlocationandmodifyit import *
 # --- BNO055 Setup ---
 i2c = busio.I2C(board.SCL, board.SDA)
 sensor = adafruit_bno055.BNO055_I2C(i2c)
@@ -17,9 +17,12 @@ headers = {
     "FIWARE-ServicePath": "/DT/test1"
 }
 
+serial_port = "/dev/ttyUSB2"
+baud_rate=115200
+
 # --- Create Entity Payload (once) ---
 create_payload = {
-    "id": "Vehicle:veh0",
+    "id": "RPi:tracker",
     "type": "SumoVehicle",
     "GeoPose": {
         "type": "Property",
@@ -54,14 +57,18 @@ def create_entity(data):
         print(response.json())
 
 def build_patch_payload(lat, lon, yaw, pitch, roll):
+    gps_info=get_gps_location(serial_port, baud_rate)
+    if gps_info.get("error"):
+        print("Error getting GPS data:", gps_info["error"])
+        return None
     payload = {
         "GeoPose": {
             "type": "Property",
             "value": {
                 "position": {
-                    "lat": lat,
-                    "lon": lon,
-                    "h": 68.2
+                    "lat": gps_info.get("latitude"),
+                    "lon": gps_info.get("longitude"),
+                    "h": gps_info.get("altitude")
                 },
                 "angles": {
                     "yaw": yaw,
@@ -70,7 +77,7 @@ def build_patch_payload(lat, lon, yaw, pitch, roll):
                 }
             }
         },
-        "speed": {"type": "Number", "value": 0.0},
+        "speed": {"type": "Number", "value": gps_info.get("speed")},
         "acceleration": {"type": "Number", "value": 0.0},
         "timestamp": {
             "type": "DateTime",
@@ -97,7 +104,7 @@ try:
         if euler is not None:
             roll, pitch, yaw = euler
             data = build_patch_payload(38.287813, 21.788504, yaw, pitch, roll)
-            patch_entity("Vehicle:veh0", data)
+            patch_entity("RPi:tracker", data)
         else:
             print("Waiting for valid BNO055 data...")
         time.sleep(1.0)
