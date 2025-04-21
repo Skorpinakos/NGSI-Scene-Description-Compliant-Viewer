@@ -23,7 +23,7 @@ baud_rate=115200
 # --- Create Entity Payload (once) ---
 create_payload = {
     "id": "RPi:tracker",
-    "type": "SumoVehicle",
+    "type": "Vehicle",
     "GeoPose": {
         "type": "Property",
         "value": {
