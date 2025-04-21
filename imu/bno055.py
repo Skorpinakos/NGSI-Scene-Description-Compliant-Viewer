@@ -8,7 +8,13 @@ i2c = busio.I2C(board.SCL, board.SDA)
 try:
     sensor = adafruit_bno055.BNO055_I2C(i2c)
     print("Sensor initialized!")
-    print("Temperature:", sensor.temperature)
-    print("Euler angles:", sensor.euler)
+    
+    while True:
+        try:
+            print("Euler angles:", sensor.euler)
+            time.sleep(1)
+        except KeyboardInterrupt:
+            print("Exiting loop.")
+            break
 except Exception as e:
     print("Failed to connect to BNO055:", e)
