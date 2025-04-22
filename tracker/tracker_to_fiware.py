@@ -37,7 +37,9 @@ def on_message(client, userdata, msg):
     # Parse the message payload (assuming it's in JSON format)
     payload = msg.payload.decode()
     csv_data = payload[1:-1].split(",")
-    
+    # Write the message to a CSV file
+    with open("messages.csv", "a") as file:
+        file.write(payload + "\n")
     # Extract the data from the payload (assuming it's a JSON string)
     try:
         lat, lon, alt = float(csv_data[0]), float(csv_data[1]), float(csv_data[2])
