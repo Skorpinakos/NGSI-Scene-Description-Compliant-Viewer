@@ -28,8 +28,8 @@ def on_message(client, userdata, msg):
     global last_update_time
     current_time = time.time()
     
-    if current_time - last_update_time < 2:
-        # Skip this message, too soon
+    if current_time - last_update_time < 1:
+        # Skip this message, too 
         return
 
     last_update_time = current_time
@@ -37,21 +37,22 @@ def on_message(client, userdata, msg):
     # Parse the message payload (assuming it's in JSON format)
     payload = msg.payload.decode()
     csv_data = payload[1:-1].split(",")
+    print(csv_data)
     # Write the message to a CSV file
     with open("messages.csv", "a") as file:
-        file.write(payload + "\n")
+        file.write(f"{float(csv_data[0])},{float(csv_data[1])},{float(csv_data[2])},{float(csv_data[3])},{float(csv_data[4])},{float(csv_data[5])},{float(csv_data[6])},{str(csv_data[7])},{int(csv_data[8])}\n")
     # Extract the data from the payload (assuming it's a JSON string)
     try:
         lat, lon, alt = float(csv_data[0]), float(csv_data[1]), float(csv_data[2])
         speed = float(csv_data[3])
-        roll, pitch, yaw = float(csv_data[4]), float(csv_data[5]), float(csv_data[6])
+        yaw, pitch, roll = float(csv_data[4]), float(csv_data[5]), float(csv_data[6])
         tracker_id = str(csv_data[7])
         rawtime = int(csv_data[8])
 
         current_rawtime=get_current_rawtime(tracker_id)
-        if(rawtime<=current_rawtime):
-            print("rawtime is not updated")
-            return
+        # if(rawtime<=current_rawtime):
+        #     print("rawtime is not updated")
+        #     return
         # Check if the entity with tracker_id exists
         response = requests.get(f"{url}/{tracker_id}", headers={"FIWARE-ServicePath": "/DT/test1"})
         if response.status_code == 404:

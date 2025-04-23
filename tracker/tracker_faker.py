@@ -39,7 +39,7 @@ port = 1883
 client.connect(broker, port, 60)
 
 for i in random_coords:
-    data_str = f"[{i[1]}, {i[0]}, 68, 5, 0, 90, 0,test, {int(time.time())}]"
+    data_str = f"[{i[1]}, {i[0]}, 68, 5, 0, 90, 0,test, {int(time.time())*1000}]"
     client.publish("gpsapp", data_str)
     time.sleep(2)
 
