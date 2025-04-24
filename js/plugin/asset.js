@@ -289,7 +289,7 @@ export class Asset{
   
     // Smoothly update rotation in scene coordinates
     const targetRotation = this.orientation[1] * Math.PI / 180; // Convert to radians
-    const rotationLerpFactor = 0.1; // tweak as needed; 0.1 is smooth but not too slow
+    const rotationLerpFactor = 1; // tweak as needed; 0.1 is smooth but not too slow
     const adjustedOrientation = targetRotation - this.rotation[1]; // Adjust for alignment with north
     current_rot.y += (-adjustedOrientation - current_rot.y) * rotationLerpFactor;
     // //This is when we got no rotation data, then simply calculate it from the lat lon dif
