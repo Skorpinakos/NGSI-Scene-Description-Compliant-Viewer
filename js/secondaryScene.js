@@ -14,7 +14,7 @@ let scene=null;
 // Scene Creation
 export function createSecondaryScene(clientCoordinateSpaceTranslation) {
   //scene will be created based on the scene descriptor and translated to the client coordinate space (dictated by the background chosen)
-  sceneManager = new SceneManager("urn:ngsi-ld:SceneDescriptor:001",clientCoordinateSpaceTranslation);
+  sceneManager = new SceneManager(import.meta.env.VITE_SCENE_DESCRIPTOR,clientCoordinateSpaceTranslation);
   scene = sceneManager.getScene();
   console.log("hi1");
   // Lights
