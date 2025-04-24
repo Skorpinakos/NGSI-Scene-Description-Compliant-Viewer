@@ -6,7 +6,7 @@
         "type": "ply",
         "filePath": "./background_assets/707k_parking.ply",
         "options": {
-          "translation": [38.287850, 21.788004,68],
+          "translation": [38.287850, 21.788004,92],
           "rotation": [0, 0,-0.75],
           "scale":[1.91,1.91,1.91]
         },
@@ -96,7 +96,7 @@
         "type": "ply",
         "filePath": "./background_assets/2141k_bridge.ply",
         "options": {
-          "translation": [38.288057, 21.788755,68],
+          "translation": [38.288057, 21.788755,92],
           "rotation": [0, 0,0.31],
           "scale":[1,1,1]
         },
@@ -114,7 +114,7 @@
         "type": "ply",
         "filePath": "./background_assets/10000k_bridge/10000k_bridge_pcd.ply",
         "options": {
-          "translation": [38.288049, 21.788751,68],
+          "translation": [38.288049, 21.788751,92],
           "rotation": [0, 0,0.31],
           "scale":[2,2,2]
         },
@@ -132,7 +132,7 @@
         "type": "gaussianSplats",
         "filePath": "./background_assets/3500k_bridge.ksplat",
         "options": {
-          "translation": [38.288057, 21.788755, 21.788754,68],
+          "translation": [38.288057, 21.788755, 21.788754,92],
           "rotation": [-1.57, -0.31,0],
           "scale":[1,1,1]
         },
@@ -150,7 +150,7 @@
         "type": "ply",
         "filePath": "./background_assets/707k_parking.ply",
         "options": {
-          "translation": [38.287850, 21.788004,68],
+          "translation": [38.287850, 21.788004,92],
           "rotation": [0, 0,-0.75],
           "scale":[1.91,1.91,1.91]
         },
@@ -168,7 +168,7 @@
         "type": "ply",
         "filePath": "./background_assets/10000k_parking_v4.ply",
         "options": {
-          "translation": [38.287850, 21.788004,68],
+          "translation": [38.287850, 21.788004,92],
           "rotation": [0, 0,-0.75],
           "scale":[1.91,1.91,1.91]
         },
@@ -186,7 +186,7 @@
         "type": "gaussianSplats",
         "filePath": "./background_assets/5500k_parking.ksplat",
         "options": {
-          "translation": [38.287850, 21.788004,68],
+          "translation": [38.287850, 21.788004,92],
           "rotation": [-1.57, 0.75,0],
           "scale":[1.91,1.91,1.91]
         },
