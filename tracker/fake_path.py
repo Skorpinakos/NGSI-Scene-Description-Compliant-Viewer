@@ -24,7 +24,7 @@ broker = "labserver.sense-campus.gr"
 port = 1883
 client.connect(broker, port, 60)
 # Load data from the CSV file and publish it as-is
-with open('tracker/faker/route.csv', mode='r') as file:
+with open('tracker/faker/timestamps_15sec_uniform.csv', mode='r') as file:
     csv_reader = csv.reader(file)
     next(csv_reader)  # Skip the header if present
     for i,row in enumerate(csv_reader): # Join the row elements into a single string
