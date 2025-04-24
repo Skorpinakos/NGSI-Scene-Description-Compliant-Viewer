@@ -8,10 +8,10 @@ start_lon = 21.788005
 end_lat = 38.287862
 end_lon = 21.787801
 start_time = 1745413233823  # Unix timestamp in ms
-n_points = 5  # from t=0 to t=10 seconds
+n_points = 12  # from t=0 to t=12 seconds
 
 # Time array (in ms)
-timestamps = start_time + np.arange(n_points) * 2000
+timestamps = start_time + np.arange(n_points) * 1000
 
 # Compute step increments
 step_lat = (end_lat - start_lat) / (n_points - 1)
@@ -51,11 +51,11 @@ for i in range(n_points):
     lats.append(lat)
     lons.append(lon)
     
-    # Altitude around 93m ±0.5%
-    alts.append(93 * (1 + np.random.uniform(-0.005, 0.005)))
+    # Altitude around 93m ±0.2%
+    alts.append(93 * (1 + np.random.uniform(-0.002, 0.002)))
     
-    # Speed around base_speed ±0.5%
-    speeds.append(base_speed * (1 + np.random.uniform(-0.05, 0.05)))
+    # Speed around base_speed ±1%
+    speeds.append(base_speed * (1 + np.random.uniform(-0.1, 0.1)))
     
     # Pitch and roll ±5 degrees
     pitches.append(np.random.uniform(-5, 5))
@@ -77,12 +77,12 @@ for i in range(n_points):
 df = pd.DataFrame({
     'lat': lats,
     'lon': lons,
-    'alt': alts,
+    'alt': 92.5,
     'speed': speeds,
     'yaw': yaws,
     'pitch': pitches,
     'roll': rolls,
-    'id': ids,
+    'id': "test",
     'timestamp': timestamps
 })
 

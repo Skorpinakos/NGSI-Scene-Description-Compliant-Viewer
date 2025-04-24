@@ -4,7 +4,7 @@ import math
 from folium.features import DivIcon
 
 # 1. Load the CSV
-df = pd.read_csv('tracker/faker/route.csv')
+df = pd.read_csv('tracker/faker/multi_leg_route.csv')
 
 # 2. Compute map centre & create Map
 center = [df['lat'].mean(), df['lon'].mean()]
@@ -55,7 +55,7 @@ for row in df.itertuples():
     # (optional) keep your info‐marker too
     folium.Marker(
         location=(lat, lon),
-        popup=f"id: {int(idx)}\ntime: {int(ts)}",
+        popup=f"id: {str(idx)}\ntime: {int(ts)}",
         icon=folium.Icon(color='red', icon='info-sign')
     ).add_to(m)
 
