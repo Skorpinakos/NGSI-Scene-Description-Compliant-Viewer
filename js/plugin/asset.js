@@ -241,10 +241,11 @@ export class Asset{
           console.log("vehicleData",vehicleData);
           const lat = vehicleData.GeoPose.value.position.lat;
           const lon = vehicleData.GeoPose.value.position.lon;
+          const alt = vehicleData.GeoPose.value.position.h;
           const speed = vehicleData.speed.value;
           const angle = vehicleData.GeoPose.value.angles.yaw;
   
-          const newPos = [lat, lon, 68];
+          const newPos = [lat, lon, alt];
           // const localPosdict = getLocalOffset(this.clientCoordinateSpaceTranslation, newPos);
           // const localPos=[localPosdict.x, localPosdict.y, localPosdict.z];
           console.log("Position updated from", this.position, "to", newPos);
