@@ -56,7 +56,7 @@ def build_patch_payload(lat, lon, speed, accel, angle):
             "position": {
                 "lat": lat, 
                 "lon":  lon,
-                "h": 68.2
+                "h": 92
             },
             "angles": {
                 "yaw": angle,

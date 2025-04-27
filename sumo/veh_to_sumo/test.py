@@ -3,11 +3,11 @@ import traci
 import json
 from sumolib.net import readNet
 import time
-from car_sim_fiware import build_patch_payload, patch_entity
+# from car_sim_fiware import build_patch_payload, patch_entity
 # === CONFIGURATION ===
-NET_FILE = "sumo/draft1/map.net.xml"
-ROUTE_FILE = "sumo/draft1/map.rou.xml"
-SUMO_BINARY = "sumo"
+NET_FILE = "test.net.xml"
+ROUTE_FILE = "test.rou.xml"
+SUMO_BINARY = "sumo-gui"
 OUTPUT_DIR = "vehicle_traces"
 
 # # === Prepare output folder ===
@@ -43,8 +43,8 @@ while traci.simulation.getMinExpectedNumber() > 0:
         })
     #update fiware entity
         
-        new_payload = build_patch_payload(lat, lon, traci.vehicle.getSpeed(veh_id), traci.vehicle.getAcceleration(veh_id), traci.vehicle.getAngle(veh_id))
-        patch_entity("Vehicle:veh0", new_payload)
+        # new_payload = build_patch_payload(lat, lon, traci.vehicle.getSpeed(veh_id), traci.vehicle.getAcceleration(veh_id), traci.vehicle.getAngle(veh_id))
+        # patch_entity("Vehicle:veh0", new_payload)
     # Simulate real-time by sleeping for a short duration
     time.sleep(1)  # Adjust the sleep duration as needed (e.g., 0.1 seconds for 10 FPS)
     step += 1
