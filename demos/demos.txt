@@ -1,4 +1,10 @@
 Simple Sumo Simulator moving arround parking:
-    1) python run.py
-    2) tracker/tracker_to_fiware.py
-    3) sumo/draft1/test.py
+    1) env: SceneDescriptor
+    2) python run.py
+    3) tracker/tracker_to_fiware.py
+    4) sumo/draft1/test.py
+
+Robot:
+    1) env: demoSceneDescriptor
+    2) python run.py
+    3) tracker/fake_path.py
