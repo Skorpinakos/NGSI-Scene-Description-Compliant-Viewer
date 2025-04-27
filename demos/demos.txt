@@ -1,0 +1,4 @@
+Simple Sumo Simulator moving arround parking:
+    1) python run.py
+    2) tracker/tracker_to_fiware.py
+    3) sumo/draft1/test.py
