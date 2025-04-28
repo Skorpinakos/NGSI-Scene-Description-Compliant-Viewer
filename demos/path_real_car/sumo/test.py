@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+# mqtt_sumo_freeze.py  – Option 1: snap + freeze at each GPS fix
+import time
+import paho.mqtt.client as mqtt
+import traci
+from   sumolib.net import readNet
+from   car_sim_fiware import build_patch_payload, patch_entity
+
+# ─── CONFIGURATION ────────────────────────────────────────────────────────────
+NET_FILE   = "sumo/draft1/map.net.xml"
+SUMO_BIN   = "sumo-gui"          # use "sumo" for headless
+STEP_LEN   = 0.1                 # seconds per SUMO step (GUI refresh)
+BROKER     = "labserver.sense-campus.gr"
+PORT       = 1883
+TOPIC      = "gpsapp"
+ENTITY_ID  = "Vehicle:veh0"      # vehicle id in SUMO and FIWARE
+# ──────────────────────────────────────────────────────────────────────────────
+
+net = readNet(NET_FILE)
+
+# dummy edge + route (we teleport anyway)
+DUMMY_EDGE = net.getEdges()[0].getID()
+ROUTE_ID   = "dummy"
+
+# ─── coordinate helpers ──────────────────────────────────────────────────────
+def lonlat_to_xy(lon, lat):
+    return net.convertLonLat2XY(lon, lat)
+
+def ensure_vehicle(vid):
+    if vid not in traci.vehicle.getIDList():
+        traci.vehicle.add(vid, ROUTE_ID)
+        traci.vehicle.setSpeedMode(vid, 0)  # disable SUMO’s controller
+
+def place_vehicle_frozen(vid, lat, lon, yaw):
+    """Snap veh to (lat,lon), set yaw, freeze speed to 0."""
+    x, y = lonlat_to_xy(lon, lat)
+    traci.vehicle.moveToXY(vid, "", 0, x, y, angle=yaw, keepRoute=2)
+    traci.vehicle.setSpeed(vid, 0)          # frozen until next GPS fix
+
+# ─── SUMO start ───────────────────────────────────────────────────────────────
+traci.start([SUMO_BIN, "-n", NET_FILE,
+             "--step-length", str(STEP_LEN),
+             "--start", "--quit-on-end"])
+if ROUTE_ID not in traci.route.getIDList():
+    traci.route.add(ROUTE_ID, [DUMMY_EDGE])
+
+# ─── MQTT callbacks ──────────────────────────────────────────────────────────
+def on_connect(cli, userdata, flags, rc):
+    print("MQTT connected" if rc == 0 else f"MQTT error {rc}")
+    cli.subscribe(TOPIC)
+
+def on_message(cli, userdata, msg):
+    """
+    Expected payload format:
+      {lat,lon,alt,speed,yaw,pitch,roll,id,timestamp}
+    Only lat, lon, yaw are used; speed is ignored (we freeze to 0).
+    """
+    try:
+        vals = msg.payload.decode().strip("{}").split(",")
+        lat, lon, *_ = vals                     # get lat & lon as strings
+        yaw        = float(vals[4])
+        lat, lon   = float(lat), float(lon)
+        vid        = vals[7] if len(vals) > 7 and vals[7] else ENTITY_ID
+
+        ensure_vehicle(vid)
+        place_vehicle_frozen(vid, lat, lon, yaw)
+
+        # patch FIWARE once per GPS fix
+        patch_entity(
+            ENTITY_ID,
+            build_patch_payload(lat, lon, 0.0, 0.0, yaw)
+        )
+    except Exception as e:
+        print("parse error:", e)
+
+# ─── MQTT client ─────────────────────────────────────────────────────────────
+mqttc = mqtt.Client()
+mqttc.on_connect = on_connect
+mqttc.on_message = on_message
+mqttc.connect(BROKER, PORT, keepalive=60)
+
+# ─── main loop ────────────────────────────────────────────────────────────────
+try:
+    while True:
+        mqttc.loop(0)              # process MQTT
+        traci.simulationStep()     # advance SUMO
+        time.sleep(STEP_LEN)
+except KeyboardInterrupt:
+    pass
+finally:
+    traci.close()
+    mqttc.disconnect()
