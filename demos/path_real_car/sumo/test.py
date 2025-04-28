@@ -8,8 +8,9 @@ from   car_sim_fiware import build_patch_payload, patch_entity
 
 # ─── CONFIGURATION ────────────────────────────────────────────────────────────
 NET_FILE   = "sumo/draft1/map.net.xml"
+CFG_FILE   = "sumo/draft1/map.sumocfg"
 SUMO_BIN   = "sumo-gui"          # use "sumo" for headless
-STEP_LEN   = 0.1                 # seconds per SUMO step (GUI refresh)
+STEP_LEN   = 1                 # seconds per SUMO step (GUI refresh)
 BROKER     = "labserver.sense-campus.gr"
 PORT       = 1883
 TOPIC      = "gpsapp"
@@ -34,11 +35,12 @@ def ensure_vehicle(vid):
 def place_vehicle_frozen(vid, lat, lon, yaw):
     """Snap veh to (lat,lon), set yaw, freeze speed to 0."""
     x, y = lonlat_to_xy(lon, lat)
+    traci.vehicle.setColor(vid, (0, 0, 255))  # blue for frozen
     traci.vehicle.moveToXY(vid, "", 0, x, y, angle=yaw, keepRoute=2)
     traci.vehicle.setSpeed(vid, 0)          # frozen until next GPS fix
 
 # ─── SUMO start ───────────────────────────────────────────────────────────────
-traci.start([SUMO_BIN, "-n", NET_FILE,
+traci.start([SUMO_BIN, "-c", CFG_FILE,
              "--step-length", str(STEP_LEN),
              "--start", "--quit-on-end"])
 if ROUTE_ID not in traci.route.getIDList():
