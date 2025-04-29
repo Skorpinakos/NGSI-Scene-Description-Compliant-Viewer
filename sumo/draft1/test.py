@@ -33,6 +33,8 @@ while traci.simulation.getMinExpectedNumber() > 0:
         lat, lon = sumo_to_geo(x, y)
         if veh_id not in vehicle_traces:
             vehicle_traces[veh_id] = []
+        if veh_id=="test":
+            pass
         vehicle_traces[veh_id].append({
             "step": step,
             "lat": lat,

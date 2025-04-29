@@ -9,3 +9,9 @@ Robot:
     2) python run.py
     3) tracker/fake_path.py
     
+Simple car tracker and simple sumo sim on viewer:
+    1) env: SceneDescriptor
+    2) python run.py
+    3) demos/path_real_car/sumo/test.py
+    4) demos/path_real_car/fake_path.py
+     
