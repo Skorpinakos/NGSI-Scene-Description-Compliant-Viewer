@@ -27,24 +27,24 @@ client.connect(broker, port, 60)
 with open('demos/path_real_car/points_with_speed.csv', mode='r') as file:
     csv_reader = csv.reader(file)
     next(csv_reader)  # Skip the header if present
-    for i,row in enumerate(csv_reader): # Join the row elements into a single string
-        try:
+    while True:
+        for i, row in enumerate(csv_reader):  # Join the row elements into a single string
+            try:
+                if i == 0:
+                    prev_row = row
+                    continue
 
-            if i==0:
-                prev_row=row
-                continue
-            
-            formatted_row = ",".join(prev_row)
-            send="{"+formatted_row+"}"
-            client.publish("gpsapp", send)
-            print(f"Publishing: {send}")
-            # print(f"Publishing: {row}")
-            
-            #print(i)
-            time.sleep(0.001*(float(row[-1])-float(prev_row[-1])))
-            prev_row=row
-        except:
-            pass
+                formatted_row = ",".join(prev_row)
+                send = "{" + formatted_row + "}"
+                client.publish("gpsapp", send)
+                print(f"Publishing: {send}")
+
+                time.sleep(0.001 * (float(row[-1]) - float(prev_row[-1])))
+                prev_row = row
+            except:
+                pass
+        file.seek(0)  # Reset file pointer to the beginning
+        next(csv_reader)  # Skip the header again
 
 # Start the network loop
 # client.loop_forever()
