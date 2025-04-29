@@ -7,7 +7,7 @@ from car_sim_fiware import build_patch_payload, patch_entity
 # === CONFIGURATION ===
 NET_FILE = "sumo/draft1/map.net.xml"
 ROUTE_FILE = "sumo/draft1/map.rou.xml"
-SUMO_BINARY = "sumo"
+SUMO_BINARY = "sumo-gui"
 OUTPUT_DIR = "vehicle_traces"
 
 # # === Prepare output folder ===

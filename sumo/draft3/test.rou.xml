@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2025-04-25 18:41:22 by Eclipse SUMO netedit Version 1.22.0
+<!-- generated on 2025-04-29 12:45:16 by Eclipse SUMO netedit Version 1.22.0
 -->
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
     <!-- Vehicles, persons and containers (sorted by depart) -->
-    <vehicle id="v_0" depart="0.00">
-        <route edges="-1008226672#2 32085402#0 32085402#1 32085402#2 32085402#3"/>
-        <stop lane="32085402#3_0" duration="60" parking="true"/>
-    </vehicle>
-    <flow id="f_0" begin="0.00" from="-32085402#3" to="-32085402#0" via="-32085402#1" end="3600.00" vehsPerHour="400"/>
+    <flow id="f_0" begin="0.00" from="159932585#0" to="410671094#3" via="1008226672#1 1008226672#2 -32085402#3 -32085402#1 -32085402#0 -1008226672#1 159932585#2 410671094#0 410671094#1 410671094#2" end="3600.00" vehsPerHour="300"/>
+    <flow id="f_1" begin="0.00" from="1289093285#0" to="-159932585#0" via="1289093285#1 -159932585#2 1008226672#1 1008226672#2 -32085402#3 -32085402#1 -32085402#0 -1008226672#1" end="3600.00" vehsPerHour="300"/>
+    <flow id="f_2" begin="0.00" from="-1289093286#2" to="-159932585#0" via="-1289093286#1 -159932585#2" end="3600.00" vehsPerHour="300"/>
+    <flow id="f_3" begin="0.00" from="32281159#1" to="32281159#4" via="32281159#2 32281159#3" end="3600.00" vehsPerHour="300"/>
+    <flow id="f_4" begin="0.00" from="32281159#1" to="1289093286#2" via="32281159#2" end="3600.00" vehsPerHour="400"/>
+    <flow id="f_5" begin="0.00" from="32281159#1" to="410671094#0" via="32281159#2 -1289093286#0 -159932585#3 -159932585#2 1008226672#1 1008226672#2 -32085402#3 -32085402#1 -32085402#0 -1008226672#1 159932585#2" end="3600.00" vehsPerHour="100"/>
 </routes>
