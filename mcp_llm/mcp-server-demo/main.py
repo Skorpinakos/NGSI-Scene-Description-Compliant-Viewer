@@ -2,6 +2,7 @@
 from mcp.server.fastmcp import FastMCP
 from typing import Optional
 import requests
+import json
 # Create an MCP server
 mcp = FastMCP("Demo")
 
@@ -14,8 +15,7 @@ def gen_asset_entity(
     refChildren_ids: list,
     refsemantic_rep_ids: list,
     GeoPose: dict,
-    model_path: str,
-    texture_paths: list,
+    resoureLink:list,
     speed: float
 ) -> dict:
     """Generate a FIWARE entity"""
@@ -117,14 +117,37 @@ def gen_GeoPose(
     return geo_pose
 
 @mcp.tool()
-def gen_asset_repr()->list:
-    """Generate a 3D asset representation based on the prompt"""
+def gen_asset_repr(prompt:str)->list:
+    """Generate a 3D asset representation based on the prompt that the user provides
+    Args:
+        prompt (str): The prompt that the user provides to generate the 3D asset.
+    Returns:
+        the json of resource link to be used for the fiware asset descriptor
+    """
     #get the prompt from the user
 
     #call the api of shap-e to generate the 3D asset
+    # Get the prompt from the user
+    # prompt = "Enter your prompt here"  # Replace with actual user input
 
+    # Call the API of shap-e to generate the 3D asset
+    url = "http://localhost:5000/generate"
+    headers = {"Content-Type": "application/json"}
+    body = {"prompt": prompt}
+
+    response = requests.post(url, headers=headers, data=json.dumps(body))
+    if response.status_code != 200:
+        return {"error": "Failed to generate 3D asset"}
+
+    response_data = response.json()
+    if response_data.get("status") != "success":
+        return {"error": "3D asset generation failed"}
+
+    obj_filename = response_data.get("filename")
+    if not obj_filename:
+        return {"error": "No filename returned from the server"}
     #take the link of the generated 3D asset and return it to the user
-    obj_filename = "generated_asset.obj"
+    
     #create the resource link json and return it to the user
     repr={
         "type": "3d",
