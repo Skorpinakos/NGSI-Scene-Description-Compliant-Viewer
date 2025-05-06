@@ -1,0 +1,35 @@
+{
+    "id": "uni_parking_001",
+    "type": "ParkingSpot Ground Sensor",
+    "category": {
+        "type": "Text",
+        "value": "OffStreet",
+        "metadata": {}
+    },
+    "dateModified": {
+        "type": "DateTime",
+        "value": "2025-05-06T03:59:41.000Z",
+        "metadata": {}
+    },
+    "location": {
+        "type": "geo:json",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                21.788438498,
+                38.287755788
+            ]
+        },
+        "metadata": {}
+    },
+    "refParkingSite": {
+        "type": "URL",
+        "value": "http://labserver.sense-campus.gr:1026/v2/entities/parkingsite_upatras_001",
+        "metadata": {}
+    },
+    "status": {
+        "type": "Number",
+        "value": 0,
+        "metadata": {}
+    }
+    }

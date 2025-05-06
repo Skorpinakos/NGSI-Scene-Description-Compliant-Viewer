@@ -16,12 +16,159 @@ def gen_asset_entity(
     refsemantic_rep_ids: list,
     GeoPose: dict,
     resoureLink:list,
-    speed: float
+    speed: float,
+    updateMethodSpatial: dict #irellevant if static asset
 ) -> dict:
-    """Generate a FIWARE entity"""
-
+    """Generate a FIWARE entity with everything that is needed, such as 3d representation, geoPose, asset data, etc."""
+    # Create the FIWARE entity
+    entity = {
+        "id": f"urn:ngsi-ld:Asset:{asset_id}",
+        "type": "Asset",
+        "refAssetData": {
+            "type": "Relationship",
+            "value": refAsset_data_ids
+        },
+        "resourceLink": {
+            "type": "Property",
+            "value": resoureLink
+        },
+        "GeoPose": {
+            "type": "Property",
+            "value": GeoPose
+        },
+        "updateMethodSpatial": {
+            "type": "Property",
+            "value": updateMethodSpatial
+        },
+        "speed": {
+            "type": "Property",
+            "value": {
+                "speed": speed,
+                "unit": "m/s"
+            }
+        },
+        "refSemanticRepresentation": {
+            "type": "Relationship",
+            "value": refsemantic_rep_ids
+        },
+        "refParent": {
+            "type": "Relationship",
+            "value": f"urn:ngsi-ld:Asset:{parent_id}"
+        },
+        "refChildren": {
+            "type": "Relationship",
+            "value": refChildren_ids
+        },
+    }
 
     return "FIWARE entity generated"
+
+@mcp.tool()
+def gen_asset_data(
+    id:str,
+    type:str,
+    refSource:list,
+    refValue:str,
+    description:str,
+    valueRepr:list,
+    updateMethod:dict)->dict:
+    """Based on the data that the sensor of the prompt provides create a Asset Data entity.\
+        for example if the sensor measures temperature and humidity create\
+        a temperature and humidity Asset data entity
+    
+        Args:
+            id (str): The id of the asset data entity
+            type (str): The type of the asset data entity
+            refSource (list): The source of the asset data entity (fiware entity id)
+            refValue (str): The direct link to the value of the asset data entity, http link to fiware entity to the exact attr value
+            description (str): The description of the asset data entity
+            valueRepr (list): The representation of the asset data entity
+            updateMethod (dict): The update method of the asset data entity
+    """
+    
+    asset_data_entity = {
+        "id": f"urn:ngsi-ld:AssetData:{id}",
+        "type": type,
+        "refSource": {
+            "type": "Relationship",
+            "value": refSource
+        },
+        "refValue": {
+            "type": "Property",
+            "value": refValue
+        },
+        "description": {
+            "type": "Property",
+            "value": description
+        },
+        "valueRepr": {
+            "type": "Property",
+            "value": valueRepr
+        },
+        "updateMethod": {
+            "type": "Property",
+            "value": updateMethod
+        }
+    }
+    
+    return asset_data_entity
+
+@mcp.tool()
+def gen_updateMethod(
+    url: str,
+    method: str,
+    samplingPeriod: Optional[int] = None
+)->dict:
+    """Generate the update method for the asset data entity, always with sampling and http in the fiware entity\
+        but it can also have a mqtt or a ws if the user specifies it"""
+   
+    dict={
+        "http": {
+            "url": url,
+            "method": method,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "samplingPeriod": samplingPeriod
+        }
+    }
+    
+    return dict
+
+@mcp.tool()
+def gen_valueRepr(
+    type: str,
+    unit: str,
+    threshold: dict,
+    states: Optional[list] = None
+)->dict:
+    """Generate a description for the value representation of the asset data entity\
+        Args:
+            type (str): The type of the value representation
+            unit (str): The unit of the value representation
+            threshold (float): The threshold of the value representation
+            states (list): The states of the value representation
+    """
+    if(type=="singularValue"):
+        dict={
+            "type": type,
+            "unit": unit,
+            "threshold": {
+                "min": threshold,
+                "max": threshold
+            }
+        }
+    elif(type=="boolean" or type=="binary"):
+        dict={
+            "type": type,
+            "states": {
+                "value": states
+            }
+        }
+
+    
+    return [dict]
+    
 
 @mcp.tool()
 def gen_GeoPose(
@@ -131,7 +278,7 @@ def gen_asset_repr(prompt:str)->list:
     # prompt = "Enter your prompt here"  # Replace with actual user input
 
     # Call the API of shap-e to generate the 3D asset
-    url = "http://localhost:5000/generate"
+    url = "http://labserver.sense-campus.gr:7300/generate"
     headers = {"Content-Type": "application/json"}
     body = {"prompt": prompt}
 
@@ -152,7 +299,7 @@ def gen_asset_repr(prompt:str)->list:
     repr={
         "type": "3d",
         "format": "obj",
-        "model": "https://localhost:5000/download/"+obj_filename,
+        "model": "http://labserver.sense-campus.gr:7300/download/"+obj_filename,
         "textures":["https://localhost:5000/download/texture1.png"],
         "size": 1.0,
         "transformation":{
