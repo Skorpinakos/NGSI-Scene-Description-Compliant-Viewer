@@ -589,6 +589,36 @@ asset_data={
   }
 }
 
+parking_llm={
+    "id": "uni_parking_demo_001",
+    "type": "ParkingSensor",
+    "category": {
+        "type": "Text",
+        "value": "OffStreet"
+    },
+    "dateModified": {
+        "type": "DateTime",
+        "value": "2025-05-06T03:59:41.000Z"
+    },
+    "location": {
+        "type": "Property",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                21.788438498,
+                38.287755788
+            ]
+        }
+    },
+    "refParkingSite": {
+        "type": "Text",
+        "value": "http://labserver.sense-campus.gr:1026/v2/entities/parkingsite_upatras_001"
+    },
+    "status": {
+        "type": "Number",
+        "value": 0
+    }
+    }
 
 asset_data_parking={
     "id": "urn:ngsi-ld:AssetData:002",
@@ -719,5 +749,5 @@ sensor={
 # entities = [scene_descriptor, asset_descriptor, background_descriptor, asset_data, sensor]
 # for entity in entities:
 #     create_entity(entity)
-create_entity(asset_touareg_descriptor)
+create_entity(parking_llm)
 
