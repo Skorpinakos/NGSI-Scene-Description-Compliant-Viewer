@@ -15,7 +15,7 @@ def haversine(lat1, lon1, lat2, lon2):
 
 def generate_route(raw_waypoints, start_time_ms,
                    meters_per_point=0.5,
-                   alt_mean=93, alt_noise_pct=0.002,
+                   alt_mean=92.6, alt_noise_pct=0.001,
                    speed_noise_pct=0.1, orient_noise_deg=5,
                    gps_noise_frac=0.15):
     """
@@ -44,7 +44,7 @@ def generate_route(raw_waypoints, start_time_ms,
         # noise levels
         noise_lat_sd = abs(step_lat) * gps_noise_frac
         noise_lon_sd = abs(step_lon) * gps_noise_frac
-        base_speed = dist / (n_pts - 1)
+        base_speed = 1.25
 
         # sample points (avoid duplicate endpoints)
         i_start = 0 if seg_idx == 0 else 1
@@ -63,7 +63,7 @@ def generate_route(raw_waypoints, start_time_ms,
             rolls.append(random.uniform(-orient_noise_deg, orient_noise_deg))
             # timestamp incremented at 1 Hz
             timestamps.append(t)
-            t += 1000
+            t += 400
 
     # compute yaw (bearing clockwise from north)
     yaws = []
@@ -72,7 +72,7 @@ def generate_route(raw_waypoints, start_time_ms,
             dlat = lats[i+1] - lats[i]
             dlon = lons[i+1] - lons[i]
             bearing = (math.degrees(math.atan2(-dlon, dlat)) + 90) % 360
-            yaws.append(bearing * ((3.5 + random.random()) / 4))
+            yaws.append(bearing * ((49.5 + random.random()) / 50))
         else:
             yaws.append(yaws[-1])
 
@@ -94,20 +94,19 @@ def generate_route(raw_waypoints, start_time_ms,
 if __name__ == '__main__':
     # Provided waypoints (lon, lat)
     raw_waypoints = [
-        [21.78802301936591, 38.28783454648891],
-        [21.787982487721422, 38.28784215409084],
-        [21.78793843158661, 38.28784630369137],
-        [21.787901424433528, 38.28785114489142],
-        [21.787864417281554, 38.287851836492024],
-        [21.78784767595016, 38.28785114489142],
-        [21.78783622135478, 38.287846995291204],
-        [21.78783534023242, 38.287839387689786],
-        [21.78783622135478, 38.287824864085366],
-        [21.78784679482675, 38.28782278928452],
-        [21.78787499075355, 38.28782209768366],
-        [21.787897899943232, 38.28782417248456],
-        [21.787912879028937, 38.287824864085366],
-        [21.78802301936591, 38.28783454648891]
+    [21.788011574517, 38.287843529642],
+    [21.787971042871, 38.287851137244],
+    [21.787926986736, 38.287855286844],
+    [21.787889979582, 38.287860128044],
+    [21.787852972430, 38.287860819645],
+    [21.787836231099, 38.287860128044],
+    [21.787824776504, 38.287855978444],
+    [21.787823895383, 38.287848370844],
+    [21.787824776507, 38.287833847238],
+    [21.787835349980, 38.287831772437],
+    [21.787863545907, 38.287831080836],
+    [21.787886455096, 38.287833155637],
+    [21.787901434182, 38.287833847238]
     ]
     start_time = 1745413233823
     # generate with ~1 point per 0.5m
