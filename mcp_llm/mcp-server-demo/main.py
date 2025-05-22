@@ -8,6 +8,19 @@ mcp = FastMCP("Demo")
 
 
 @mcp.tool()
+def fetch_entity(
+    url:str
+)->str:
+    """Fetch an entity from a given URL in order to create its asset and asset data description for the DT."""
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an error for bad responses
+        entity = response.json()
+        return entity
+    except requests.RequestException as e:
+        return {"error": str(e)}
+
+@mcp.tool()
 def gen_asset_entity(
     asset_id: str,
     parent_id: str,
@@ -120,7 +133,12 @@ def gen_updateMethod(
     samplingPeriod: Optional[int] = None
 )->dict:
     """Generate the update method for the asset data entity, always with sampling and http in the fiware entity\
-        but it can also have a mqtt or a ws if the user specifies it"""
+        but it can also have a mqtt or a ws if the user specifies it
+        
+        Args:
+            url (str): The url of the update method
+            method (str): The method of the update method for example GET, POST, PUT, DELETE
+            samplingPeriod (int): The sampling period of the update method"""
    
     dict={
         "http": {
@@ -139,7 +157,7 @@ def gen_updateMethod(
 def gen_valueRepr(
     type: str,
     unit: str,
-    threshold: dict,
+    threshold: Optional[dict],
     states: Optional[list] = None
 )->dict:
     """Generate a description for the value representation of the asset data entity\
@@ -169,7 +187,22 @@ def gen_valueRepr(
     
     return [dict]
     
+@mcp.tool()
+def post_entity(entity: dict) -> str:
+    """Post the entity to the fiware context broker"""
+    # Post the entity to the FIWARE Context Broker
+    url = "http://150.140.186.118:1026/v2/entities"
+    headers = {
+        "Content-Type": "application/json",
+        "fiware-servicepath": "/"
+    }
 
+    response = requests.post(url, headers=headers, json=entity)
+    if response.status_code == 201:
+        return {"status": "Entity created successfully"}
+    else:
+        return {"error": response.text}
+    
 @mcp.tool()
 def gen_GeoPose(
     address: Optional[str] = None,
