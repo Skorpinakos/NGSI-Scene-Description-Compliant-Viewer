@@ -70,8 +70,8 @@ def save_ply(filename, vertices):
 
 # Usage example:
 if __name__ == "__main__":
-    input_filename = 'background_assets/10M_parking_mesh.ply'   # Replace with your input file name
-    output_filename = 'output.ply'  # Replace with your desired output file name
+    input_filename = 'background_assets/parking_whole_improved/dense_mesh.ply'   # Replace with your input file name
+    output_filename = 'background_assets/parking_whole_improved/output.ply'  # Replace with your desired output file name
 
     # Load vertices from the input PLY file.
     vertices = load_ply_vertices(input_filename)

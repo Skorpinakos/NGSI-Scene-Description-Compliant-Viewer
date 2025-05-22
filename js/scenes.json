@@ -1,14 +1,14 @@
 {
     "scenes": [
       {
-        "id": "parking_707k_pcd_debug",
-        "name": "Parking (0.7M) - Point Cloud DBG",
+        "id": "parking_7500k_pcd_debug",
+        "name": "Parking (7.5M) - Point Cloud DBG",
         "type": "ply",
-        "filePath": "./background_assets/707k_parking.ply",
+        "filePath": "./background_assets/parking_whole_improved/output.ply",
         "options": {
-          "translation": [38.287850, 21.788004,92],
-          "rotation": [0, 0,-0.75],
-          "scale":[1.91,1.91,1.91]
+          "translation": [38.287772, 21.788049,92],
+          "rotation": [0, 0,0],
+          "scale":[1,1,1]
         },
         "movementBoundaries": [
           {
