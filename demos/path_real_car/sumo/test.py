@@ -118,6 +118,11 @@ try:
                 traci.vehicle.getAcceleration(veh_id),
                 traci.vehicle.getAngle(veh_id),
             )
+            # if veh_id == "f_0.0":
+            #     #save the path in a csv
+            #     with open('demos/path_real_car/sumo_path.csv', mode='a') as file:
+            #         file.write(f"{lat},{lon},{traci.vehicle.getSpeed(veh_id)},{traci.vehicle.getAcceleration(veh_id)},{traci.vehicle.getAngle(veh_id)},{step}\n")
+            
             if veh_id == "test":
                 pass
             else:
