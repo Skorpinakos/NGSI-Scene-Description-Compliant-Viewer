@@ -339,7 +339,7 @@ class PlyPointCloudRenderer extends BackgroundRenderer {
         const pointCount = geometry.attributes.position.count;
         
         // Calculate point size based on point count if not explicitly provided
-        const calculatedPointSize = this.pointSize || ((10000000/pointCount)**0.5)*0.01;
+        const calculatedPointSize = this.pointSize || ((10000000/pointCount)**0.25)*0.03;
         
         const material = new THREE.PointsMaterial({
           size: calculatedPointSize,
