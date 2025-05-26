@@ -2,7 +2,7 @@
     "scenes": [
       {
         "id": "parking_7500k_pcd_debug",
-        "name": "Parking (7.5M) - Point Cloud DBG",
+        "name": "Parking (7.5M) - Point Cloud",
         "type": "ply",
         "filePath": "./background_assets/parking_whole_improved/output.ply",
         "options": {
@@ -14,6 +14,24 @@
           {
             "min": [-50, -50, -5],
             "max": [50, 50, 15],
+            "rotation": [0, 0, 0]  
+          }
+        ]
+      },
+      {
+        "id": "parking_6m_splat_debug",
+        "name": "Parking (6M) - SPLAT",
+        "type": "gaussianSplats",
+        "filePath": "./background_assets/parking_whole_improved/6msplats.ksplat",
+        "options": {
+          "translation": [38.287772, 21.788049,92],
+          "rotation": [-1.57, 0,0],
+          "scale":[1,1,1]
+        },
+        "movementBoundaries": [
+          {
+            "min": [-150, -150, -5],
+            "max": [150, 150, 15],
             "rotation": [0, 0, 0]  
           }
         ]
