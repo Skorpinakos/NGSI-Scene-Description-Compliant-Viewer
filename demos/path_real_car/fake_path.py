@@ -24,7 +24,7 @@ broker = "labserver.sense-campus.gr"
 port = 1883
 client.connect(broker, port, 60)
 # Load data from the CSV file and publish it as-is
-with open('demos/path_real_car/points_with_speed.csv', mode='r') as file:
+with open('demos/path_real_car/test_sdena_v2_alt94.csv', mode='r') as file:
     csv_reader = csv.reader(file)
     next(csv_reader)  # Skip the header if present
     while True:

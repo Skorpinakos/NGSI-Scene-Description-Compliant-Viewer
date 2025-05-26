@@ -199,7 +199,7 @@ def post_entity(entity: dict) -> str:
 
     response = requests.post(url, headers=headers, json=entity)
     if response.status_code == 201:
-        return {"status": "Entity created successfully"}
+        return {"status": "Entity created successfully , id: " + entity["id"]}
     else:
         return {"error": response.text}
     
@@ -355,3 +355,6 @@ def gen_asset_repr(prompt:str)->list:
     }
     
     return [repr]
+
+if __name__ == "__main__":
+    mcp.run(transport="stdio")
