@@ -32,7 +32,8 @@ def gen_asset_entity(
     speed: float,
     updateMethodSpatial: dict #irellevant if static asset
 ) -> dict:
-    """Generate a FIWARE entity with everything that is needed, such as 3d representation, geoPose, asset data, etc."""
+    """When an asset descriptor is asked to be created and posted in fiware it must follow the format bellow\
+        Generate a FIWARE entity with everything that is needed, such as 3d representation, geoPose, asset data, etc."""
     # Create the FIWARE entity
     entity = {
         "id": f"urn:ngsi-ld:Asset:{asset_id}",
@@ -189,7 +190,7 @@ def gen_valueRepr(
     
 @mcp.tool()
 def post_entity(entity: dict) -> str:
-    """Post the entity to the fiware context broker"""
+    """Post the entity to the fiware context broker, it must follow the format specified in the gen_asset_entity or gen_asset_data functions."""
     # Post the entity to the FIWARE Context Broker
     url = "http://150.140.186.118:1026/v2/entities"
     headers = {

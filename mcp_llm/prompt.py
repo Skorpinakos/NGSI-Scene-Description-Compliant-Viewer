@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()                                        # reads .env → API key
 
-MODEL = "claude-3-opus-20240229"
+MODEL = "claude-sonnet-4-20250514"
 
 async def main(server_path: str):
     async with AsyncExitStack() as stack:
