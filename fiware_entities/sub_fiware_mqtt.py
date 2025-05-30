@@ -42,7 +42,7 @@ def subscribe_entity_to_mqtt(fiware_service_path, entity_id,entity_type,update_a
 # subscribe_entity_to_mqtt("/AutoSenseAnalytics","4G_Measurement","4G","rssi","4g_rssi")
 
 # subscribe_entity_to_mqtt("/AutoSenseAnalytics/demo","urn:ngsi-ld:Source:001","TempSensor","temperature","urn:ngsi-ld:Source:001")
-subscribe_entity_to_mqtt("/DT/test1","Vehicle:veh0","SumoVehicle","location","Vehicle:veh0")
+subscribe_entity_to_mqtt("/DT/test1","test","GpsTracker","GeoPose","test")
 
 
 # data = """

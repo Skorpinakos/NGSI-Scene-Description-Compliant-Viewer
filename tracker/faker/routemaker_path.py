@@ -14,8 +14,8 @@ def haversine(lat1, lon1, lat2, lon2):
 
 
 def generate_route(raw_waypoints, start_time_ms,
-                   meters_per_point=0.5,
-                   alt_mean=92.6, alt_noise_pct=0.001,
+                   meters_per_point=4,
+                   alt_mean=94, alt_noise_pct=0.001,
                    speed_noise_pct=0.1, orient_noise_deg=5,
                    gps_noise_frac=0.15):
     """
@@ -44,7 +44,7 @@ def generate_route(raw_waypoints, start_time_ms,
         # noise levels
         noise_lat_sd = abs(step_lat) * gps_noise_frac
         noise_lon_sd = abs(step_lon) * gps_noise_frac
-        base_speed = 1.25
+        base_speed = 4
 
         # sample points (avoid duplicate endpoints)
         i_start = 0 if seg_idx == 0 else 1
@@ -71,7 +71,7 @@ def generate_route(raw_waypoints, start_time_ms,
         if i < len(lats) - 1:
             dlat = lats[i+1] - lats[i]
             dlon = lons[i+1] - lons[i]
-            bearing = (math.degrees(math.atan2(-dlon, dlat)) + 90) % 360
+            bearing = (math.degrees(math.atan2(-dlon, dlat))) % 360
             yaws.append(bearing * ((49.5 + random.random()) / 50))
         else:
             yaws.append(yaws[-1])
@@ -238,6 +238,6 @@ if __name__ == '__main__':
     # generate with ~1 point per 0.5m
     df_route = generate_route(raw_waypoints, start_time, meters_per_point=0.5)
     # Save CSV
-    out_path = 'tracker/faker/test_sdena.csv'
+    out_path = 'tracker/faker/test_speed_up.csv'
     df_route.to_csv(out_path, index=False)
     print(f"Saved multi-leg route ({len(df_route)} points) to {out_path}")
