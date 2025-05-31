@@ -8,6 +8,27 @@ mcp = FastMCP("Demo")
 
 
 @mcp.tool()
+def get_entities_from_cb(url: str,
+                         servicepath: str) -> list:
+    """Get all entities from the FIWARE Context Broker that will be likely sensors or assets, than need to be presented in the DT.\
+        Then for each entity create an asset and asset data description for the DT
+        Args:
+            url (str): The URL of the FIWARE Context Broker to fetch entities from.
+        Returns:
+            list: A list of entities fetched from the FIWARE Context Broker."""
+    headers = {
+        "FIWARE-ServicePath": servicepath
+    }
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an error for bad responses
+        entities = response.json()
+        return entities
+    except requests.RequestException as e:
+        return {"error": str(e)}        
+    
+
+@mcp.tool()
 def fetch_entity(
     url:str
 )->str:
@@ -75,7 +96,7 @@ def gen_asset_entity(
         },
     }
 
-    return "FIWARE entity generated"
+    return entity
 
 @mcp.tool()
 def gen_asset_data(
@@ -200,9 +221,11 @@ def post_entity(entity: dict) -> str:
 
     response = requests.post(url, headers=headers, json=entity)
     if response.status_code == 201:
-        return {"status": "Entity created successfully , id: " + entity["id"]}
+        return {"status": "Entity created successfully","url": f"in the FIWARE Context Broker at {url+"/"+entity['id']}"}
+    elif response.status_code == 422:
+        return {"error": "Entity already exists, try with another id","entity": entity}
     else:
-        return {"error": response.text}
+        return {"error": response.text,"entity": entity}
     
 @mcp.tool()
 def gen_GeoPose(
