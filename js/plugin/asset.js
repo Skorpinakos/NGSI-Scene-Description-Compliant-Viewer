@@ -9,6 +9,7 @@ import mqtt from 'mqtt';
 export class Asset{
   constructor(data,asset,scene,clientCoordinateSpaceTranslation){
     //not initializing with a scene as we may want to add it in many scenes
+    console.log("Asset to becreated with data",data);
     this.id=asset;
     this.clientCoordinateSpaceTranslation=clientCoordinateSpaceTranslation;
     this.adapter=new EntityAdapter(asset,data,"Asset");
@@ -69,14 +70,21 @@ export class Asset{
     let resource = this.resourceLinks[0]; // Access the first resource
     // console.log("resource scale",this.id,resource.transformation.scale);
     let model = resource.model; // Extract the model path
-    let textures = resource.textures; // Extract the textures array
+     let textures = resource.textures; // Extract the textures array
+    
+      if (model.startsWith("http://labserver.sense-campus.gr:7300/")) {
+        model = model.replace("http://labserver.sense-campus.gr:7300/", "http://localhost:5001/");
+      }
+    
+    console.log("Model path",model);
+   
    
     this.objLoader.load(model, (asset) => {
       asset.traverse((child) => {
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
             map: textures[0] ? this.textureLoader.load(textures[0]) : null,
-            color: 0xffffff,
+            color: 0x0000ff,
             roughness: 0.5,
             metalness: 0.2,
           });

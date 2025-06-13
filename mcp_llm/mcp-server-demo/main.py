@@ -67,10 +67,7 @@ def gen_asset_entity(
             "type": "Property",
             "value": resoureLink
         },
-        "GeoPose": {
-            "type": "Property",
-            "value": GeoPose
-        },
+        "GeoPose": GeoPose,
         "updateMethodSpatial": {
             "type": "Property",
             "value": updateMethodSpatial
@@ -314,8 +311,7 @@ def gen_GeoPose(
                 "pitch": pitch,
                 "roll": roll
             }
-        },
-        "metadata": {}
+        }
     }
 
     return geo_pose

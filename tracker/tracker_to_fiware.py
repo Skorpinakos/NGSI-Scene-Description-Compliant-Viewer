@@ -39,7 +39,7 @@ def on_message(client, userdata, msg):
     csv_data = payload[1:-1].split(",")
     print(csv_data)
     # Write the message to a CSV file
-    with open("messages.csv", "a") as file:
+    with open("messages_11_06.csv", "a") as file:
         file.write(f"{float(csv_data[0])},{float(csv_data[1])},{float(csv_data[2])},{float(csv_data[3])},{float(csv_data[4])},{float(csv_data[5])},{float(csv_data[6])},{str(csv_data[7])},{int(csv_data[8])}\n")
     # Extract the data from the payload (assuming it's a JSON string)
     try:
