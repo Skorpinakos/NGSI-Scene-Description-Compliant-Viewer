@@ -70,11 +70,11 @@ export class Asset{
     let resource = this.resourceLinks[0]; // Access the first resource
     // console.log("resource scale",this.id,resource.transformation.scale);
     let model = resource.model; // Extract the model path
-     let textures = resource.textures; // Extract the textures array
-    
-      if (model.startsWith("http://labserver.sense-campus.gr:7300/")) {
-        model = model.replace("http://labserver.sense-campus.gr:7300/", "http://localhost:5001/");
-      }
+    let textures = resource.textures; // Extract the textures array
+    console.log("textures",textures)
+      // if (model.startsWith("http://labserver.sense-campus.gr:7300/")) {
+      //   model = model.replace("http://labserver.sense-campus.gr:7300/", "http://localhost:5001/");
+      // }
     
     console.log("Model path",model);
    
@@ -84,7 +84,7 @@ export class Asset{
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
             map: textures[0] ? this.textureLoader.load(textures[0]) : null,
-            color: 0x0000ff,
+            color: 0xffffff,
             roughness: 0.5,
             metalness: 0.2,
           });

@@ -208,7 +208,7 @@ def gen_valueRepr(
     
 @mcp.tool()
 def post_entity(entity: dict) -> str:
-    """Post the entity to the fiware context broker, it must follow the format specified in the gen_asset_entity or gen_asset_data functions."""
+    """Post the entity to the fiware context broker, it must follow the format specified in the gen_asset_entity or gen_asset_data functions. First post the asset data entity and then the asset entity. If the entity already exists it will return an error, try another id. Make sure that the refAssetData field in asset is correct, otherwise post the asset descriptor again with the correct."""
     # Post the entity to the FIWARE Context Broker
     url = "http://150.140.186.118:1026/v2/entities"
     headers = {
@@ -320,7 +320,8 @@ def gen_GeoPose(
 def gen_asset_repr(prompt:str)->list:
     """Generate a 3D asset representation based on the prompt that the user provides
     Args:
-        prompt (str): The prompt that the user provides to generate the 3D asset.
+        prompt (str): The prompt that the is generated based on the description of the fetched entity from the FIWARE Context Broker.\
+        for which the descriptors are generated. It can be a description of a 3D asset, such as "flat ground parking sensor"
     Returns:
         the json of resource link to be used for the fiware asset descriptor
     """
@@ -367,14 +368,128 @@ def gen_asset_repr(prompt:str)->list:
                 0
             ],
             "scale": [
-                0.1,
-                0.1,
-                0.1
+                0.5,
+                0.5,
+                0.5
             ]
             }
     }
     
     return [repr]
+
+@mcp.tool()
+def update_scene_descriptor(assetID: str)-> dict:
+    """Update the scene descriptor with the new asset ID.
+    
+    Args:
+        assetID (str): The ID of the asset to be added to the scene descriptor.
+    
+    Returns:
+        dict: A dictionary containing the updated scene descriptor."""
+    
+    dict={
+        "id": "urn:ngsi-ld:MCPdemoSceneDescriptor:001",
+        "type": "SceneDescriptor",
+        "refAssets": {
+            "type": "Relationship",
+            "value": [],
+            "metadata": {}
+        },
+        "refBackground": {
+            "type": "Relationship",
+            "value": [
+                "urn:ngsi-ld:Bg:001"
+            ],
+            "metadata": {}
+        },
+        "sceneSpace": {
+            "type": "GeoProperty",
+            "value": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                    [
+                        [
+                            [
+                                4.85,
+                                45.76
+                            ],
+                            [
+                                4.86,
+                                45.76
+                            ],
+                            [
+                                4.86,
+                                45.77
+                            ],
+                            [
+                                4.85,
+                                45.77
+                            ],
+                            [
+                                4.85,
+                                45.76
+                            ]
+                        ]
+                    ],
+                    [
+                        [
+                            [
+                                4.85,
+                                45.76
+                            ],
+                            [
+                                4.86,
+                                45.76
+                            ],
+                            [
+                                4.86,
+                                45.77
+                            ],
+                            [
+                                4.85,
+                                45.77
+                            ],
+                            [
+                                4.85,
+                                45.76
+                            ]
+                        ]
+                    ]
+                ]
+            },
+            "metadata": {}
+        },
+        "transformation": {
+            "type": "Property",
+            "value": {
+                "position": [
+                    1,
+                    1,
+                    1
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "scale": [
+                    1,
+                    1,
+                    1
+                ]
+            },
+            "metadata": {}
+        }
+    }
+    
+    # Add the new asset ID to the scene descriptor
+    dict["refAssets"]["value"].append(assetID)
+    
+    #post the updated scene descriptor to the FIWARE Context Broker
+    post_entity(dict)
+    # Return the updated scene descriptor
+    return dict
+
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")

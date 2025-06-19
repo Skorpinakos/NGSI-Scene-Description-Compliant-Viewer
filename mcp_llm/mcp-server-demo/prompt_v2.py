@@ -36,9 +36,11 @@ For **every** entity currently stored in that broker:
    b. **Asset-data descriptor** — a sub-model that represents the data that the initial entity is retrieving.
 
 3. Persist both descriptors back to the same broker:
-   • POST the Asset descriptor first.  
-   • Then POST the Asset-data descriptor.  
+   • POST the Asset-data descriptor first.  
+   • Then POST the Asset descriptor.  
    • If a POST returns 422 (already exists), try with another id instead.
+   • Always make sure that the correct Asset-data descriptor id is included in the Asset descriptor
+   • Update the scene descriptor to contain the new Asset
 
 4. After processing all entities, return a concise summary table containing:
    ─ original entity id  

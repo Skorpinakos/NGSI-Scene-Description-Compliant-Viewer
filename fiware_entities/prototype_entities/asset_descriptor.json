@@ -15,7 +15,11 @@
                     "model": "./virtual_assets/ws/weather_station.obj",
                     "textures": ["./virtual_assets/ws/weather_station.png"],
                     "size": 0.912, 
-                    "scale": [0.5, 0.5, 0.5]
+                    "transformation": {
+                        "rotation": [0,180,0],
+                        "position": [0,0,0],
+                        "scale": [0.1,0.1,0.1]
+                    }
                 }
             ]
     },
@@ -51,26 +55,15 @@
               "unit": "m/s"
          }       
    },
-  "refSemanticRepresentation": {
-    "type": "Relationship",
-    "value": ["urn:ngsi-ld:SemanticRepresentation:001"]
-  },
   "refParent": {
     "type": "Relationship",
     "value": "urn:ngsi-ld:Asset:000"
   },
     "refChildren": {
         "type": "Relationship",
-        "value": [
-            "urn:ngsi-ld:Asset:002"
-        ]
-    },
-    "relOffset": {
-        "type": "Property",
-        "value": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
-        }
+        "value": ["urn:ngsi-ld:Asset:002"]
     }
 }
+
+
+

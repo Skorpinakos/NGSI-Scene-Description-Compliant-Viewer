@@ -1,0 +1,34 @@
+{
+    "id": "uni_parking_demo_006_mcp",
+    "type": "ParkingSensor",
+    "category": {
+        "type": "Text",
+        "value": "OffStreet"
+    },
+    "dateModified": {
+        "type": "DateTime",
+        "value": "2025-05-06T03:59:41.000Z"
+    },
+    "description": {
+        "type": "String",
+        "value": "Round shaped almost flat simple parking sensor with an led on top, located on the ground surface monitoring if a parking spot is available or occupied. The status type is boolean, 0 means available, 1 occupied"
+    },
+    "location": {
+        "type": "Property",
+        "value": {
+            "type": "Point",
+            "coordinates": [
+                21.788504,
+                38.287813
+            ]
+        }
+    },
+    "refParkingSite": {
+        "type": "Text",
+        "value": "http://labserver.sense-campus.gr:1026/v2/entities/parkingsite_upatras_001"
+    },
+    "status": {
+        "type": "Number",
+        "value": 0
+    }
+}

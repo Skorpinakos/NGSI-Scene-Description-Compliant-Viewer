@@ -1,7 +1,7 @@
 {
     "id": "urn:ngsi-ld:SceneDescriptor:001",
     "type": "SceneDescriptor",
-    "refAssets": {
+    "refDynamicAssets": {
         "type": "Relationship",
         "value": ["urn:ngsi-ld:Asset:001", "urn:ngsi-ld:Asset:002"]
     },
@@ -11,40 +11,26 @@
             "type": "MultiPolygon",
             "coordinates": [
             [[
-                [4.85, 45.76],
-                [4.86, 45.76],
-                [4.86, 45.77],
-                [4.85, 45.77],
-                [4.85, 45.76]
+                [21.73, 37.98],
+                [21.74, 37.98],
+                [21.74, 37.99],
+                [21.73, 37.99],
+                [21.73, 37.98]
             ]],
             [[
-                [4.85, 45.76],
-                [4.86, 45.76],
-                [4.86, 45.77],
-                [4.85, 45.77],
-                [4.85, 45.76]
+                [23.72, 37.97],
+                [23.73, 37.97],
+                [23.73, 37.98],
+                [23.72, 37.98],
+                [23.72, 37.97]
             ]]
             ]
         }
     },
-    "transformation": {
-        "type": "Property",
-        "value": {
-            "position": [1,1,1],
-            "rotation": [0,0,0],
-            "scale": [1,1,1]
-        }
-    },
-    "refBackground": {
+    "refStaticAsset": {
         "type": "Relationship",
         "value": [
             "urn:ngsi-ld:Bg:001"
             ]
-    },
-    "refSemanticLayers": {
-        "type": "Relationship",
-        "value": [
-            "urn:ngsi-ld:SemanticLayer:001"
-        ]
     }
 }

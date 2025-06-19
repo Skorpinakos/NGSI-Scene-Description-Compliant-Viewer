@@ -1,0 +1,32 @@
+{
+    "id": "urn:ngsi-ld:StaticAsset:001",
+    "type": "StaticAsset",
+    "name": {
+        "type": "String",
+        "value": "Bodegas Background Asset"
+    },
+    "reprType": {
+        "type": "String",
+        "value": "ply"
+    },
+    "resourceLink": {
+        "type": "URL",
+        "value": "./background_assets/bodegas_3d_model.glb"
+    },
+    "transformation": {
+        "type": "Property",
+        "value": {
+            "translation": [38.245318, 21.731943, 0],
+            "rotation": [0, 0, 1],
+            "scale": [1, 1, 1]
+        }
+    },
+    "movementBoundaries": {
+        "type": "Property",
+        "value": {
+            "min": [-40, -18, 1],
+            "max": [20, -10, 9],
+            "rotation": [0, 0, 1]
+        }
+    }
+}
